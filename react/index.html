@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>React.js — Beginner to Advanced — Learning Trail</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #17121F;
+    --panel: #211A2C;
+    --panel-2: #291F38;
+    --line: #3C314E;
+    --ink: #F2EAF8;
+    --ink-dim: #B7A9C9;
+    --ink-faint: #83718F;
+    --gold: #FF7A59;
+    --gold-dim: #7A3324;
+    --teal: #A78BFA;
+    --teal-dim: #3B2C63;
+    --green: #34D399;
+    --green-dim: #144A38;
+    --danger: #FF6188;
+    --radius: 10px;
+    --maxw: 880px;
+  }
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  body{
+    margin:0;
+    background:
+      radial-gradient(1200px 600px at 15% -10%, rgba(167,139,250,0.10), transparent 60%),
+      radial-gradient(900px 500px at 100% 0%, rgba(255,122,89,0.08), transparent 55%),
+      var(--bg);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", system-ui, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .mono{ font-family: "IBM Plex Mono", monospace; }
+
+  header.hero{
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 48px 20px 28px;
+  }
+  .eyebrow{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 13px;
+    color: var(--teal);
+    letter-spacing: 0.02em;
+  }
+  h1{
+    font-size: clamp(28px, 5vw, 42px);
+    line-height: 1.15;
+    margin: 10px 0 14px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .hero p{
+    color: var(--ink-dim);
+    font-size: 16px;
+    max-width: 62ch;
+  }
+
+  .trailbar{
+    max-width: var(--maxw);
+    margin: 0 auto 8px;
+    padding: 0 20px;
+  }
+  .progress-shell{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .progress-stat{
+    display:flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .progress-stat .num{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--gold);
+  }
+  .progress-stat .lbl{
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+  .progress-track{
+    flex: 1 1 240px;
+    height: 8px;
+    background: var(--panel-2);
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+  }
+  .progress-fill{
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal), var(--green));
+    width: 0%;
+    transition: width 0.4s ease;
+  }
+  .reset-btn{
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--ink-faint);
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .reset-btn:hover{ border-color: var(--danger); color: var(--danger); }
+
+  main{
+    max-width: var(--maxw);
+    margin: 28px auto 80px;
+    padding: 0 20px;
+  }
+
+  .stage{
+    position: relative;
+    border-left: 2px solid var(--line);
+    margin-left: 14px;
+    padding-left: 26px;
+    margin-bottom: 6px;
+  }
+  .stage:last-child{ border-left-color: transparent; }
+
+  .stage-marker{
+    position: absolute;
+    left: -9px;
+    top: 4px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--panel-2);
+    border: 2px solid var(--line);
+    transition: all 0.2s ease;
+  }
+  .stage.complete .stage-marker{
+    background: var(--green);
+    border-color: var(--green);
+  }
+
+  .stage-head{
+    cursor: pointer;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 0;
+    user-select: none;
+  }
+  .stage-title-wrap{ flex: 1; }
+  .stage-num{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    color: var(--ink-faint);
+    display:block;
+    margin-bottom: 2px;
+  }
+  .stage-title{
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+  }
+  .stage-blurb{
+    color: var(--ink-dim);
+    font-size: 13.5px;
+    margin: 6px 0 0;
+    max-width: 60ch;
+  }
+  .stage-meta{
+    display:flex;
+    align-items:center;
+    gap: 10px;
+    white-space: nowrap;
+  }
+  .stage-count{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    color: var(--ink-faint);
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    padding: 3px 8px;
+    border-radius: 999px;
+  }
+  .chevron{
+    width: 18px; height: 18px;
+    color: var(--ink-faint);
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+  }
+  .stage.open .chevron{ transform: rotate(90deg); }
+
+  .stage-body{
+    display: none;
+    padding: 2px 0 22px;
+  }
+  .stage.open .stage-body{ display: block; }
+
+  .item{
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 12px 10px 14px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--teal-dim);
+  }
+  .item.cert{
+    border-color: var(--gold-dim);
+    border-left: 3px solid var(--gold);
+    background: linear-gradient(180deg, rgba(255,122,89,0.09), rgba(255,122,89,0.03));
+  }
+  .item.done{
+    opacity: 0.6;
+    border-left: 3px solid var(--green);
+    background: linear-gradient(180deg, rgba(52,211,153,0.08), rgba(52,211,153,0.02));
+  }
+  .item.done.cert{
+    border-left: 3px solid var(--green);
+  }
+  .flag-btn{
+    flex-shrink: 0;
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    cursor: pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 0;
+    margin-top: 1px;
+  }
+  .flag-btn svg{ width: 15px; height: 15px; }
+  .flag-btn .flag-outline{ color: var(--ink-faint); }
+  .flag-btn .flag-filled{ color: var(--green); display:none; }
+  .item.done .flag-btn{ background: var(--green-dim); border-color: var(--green); }
+  .item.done .flag-outline{ display:none; }
+  .item.done .flag-filled{ display:block; }
+
+  .item-text{
+    flex: 1;
+    font-size: 14.5px;
+  }
+  .item.done .item-text{ text-decoration: line-through; text-decoration-color: var(--ink-faint); }
+
+  .cert-badge{
+    display:inline-flex;
+    align-items:center;
+    gap: 5px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    color: var(--gold);
+    background: rgba(232,179,75,0.1);
+    border: 1px solid var(--gold-dim);
+    padding: 2px 7px;
+    border-radius: 999px;
+    margin-top: 6px;
+  }
+
+  footer{
+    max-width: var(--maxw);
+    margin: 0 auto 60px;
+    padding: 24px 20px;
+    color: var(--ink-faint);
+    font-size: 12.5px;
+    border-top: 1px solid var(--line);
+  }
+
+  @media (max-width: 520px){
+    .stage{ margin-left: 6px; padding-left: 18px; }
+    .stage-title{ font-size: 16.5px; }
+    .progress-shell{ padding: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <span class="eyebrow mono">// personal roadmap — no login, saved on this device</span>
+  <h1>React.js — Beginner to Advanced</h1>
+  <p>Plain JavaScript React, start to finish: JSX and components first, then hooks, state management, routing, testing, performance, and production. Flag what you finish; it stays flagged when you come back.</p>
+</header>
+
+<div class="trailbar">
+  <div class="progress-shell">
+    <div class="progress-stat">
+      <span class="num" id="statDone">0</span>
+      <span class="lbl">completed</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-stat">
+      <span class="num" id="statPct">0%</span>
+      <span class="lbl">of trail</span>
+    </div>
+    <button class="reset-btn mono" id="resetBtn">RESET PROGRESS</button>
+  </div>
+</div>
+
+<main id="trail"></main>
+
+<footer>
+  Built as a static page — safe to host on GitHub Pages. Progress is stored in this browser's local storage only; it won't sync across devices or survive clearing browser data.
+</footer>
+
+<script>
+const DATA = [
+{
+  title: "JavaScript Essentials for React",
+  blurb: "React is just JavaScript with a UI mental model on top — this needs to be second nature first.",
+  items: [
+    "Variables (let/const), scope, and hoisting",
+    "Arrow functions vs regular functions, and how 'this' behaves",
+    "Array methods you'll use constantly: map, filter, reduce, find",
+    "Destructuring objects and arrays, spread/rest operators",
+    "Template literals, optional chaining (?.), nullish coalescing (??)",
+    "Promises and async/await",
+    "ES Modules: import/export syntax",
+    "The DOM: what it is, and why manipulating it directly gets messy at scale",
+  ]
+},
+{
+  title: "React Fundamentals & JSX",
+  blurb: "The core mental shift from 'update the DOM' to 'describe the UI as a function of state'.",
+  items: [
+    "What a component is, and how JSX compiles down to JS",
+    "Rendering a component tree: React.createRoot and mounting an app",
+    "Embedding expressions in JSX, and JSX gotchas (className, key, etc.)",
+    "Fragments (<>...</>) and why you can't return multiple root elements",
+    "Conditional rendering: ternaries, &&, and early returns",
+    "Rendering lists and why the 'key' prop matters",
+  ]
+},
+{
+  title: "Components, Props & Composition",
+  blurb: "Building UI out of small, predictable, reusable pieces.",
+  items: [
+    "Function components and passing data via props",
+    "Default props and prop destructuring in function signatures",
+    "The 'children' prop and composing components inside components",
+    "Lifting state up: sharing state between sibling components",
+    "Presentational vs container component thinking",
+    "PropTypes basics for runtime prop validation (pre-TypeScript safety net)",
+  ]
+},
+{
+  title: "State & Events",
+  blurb: "Making the UI actually respond to the user.",
+  items: [
+    "useState: reading and updating local component state",
+    "Why state updates are asynchronous/batched, and what that means in practice",
+    "Handling events: onClick, onChange, onSubmit and the synthetic event system",
+    "Controlled vs uncontrolled inputs",
+    "Updating state that depends on previous state correctly (functional updates)",
+    "Updating arrays and objects in state immutably",
+  ]
+},
+{
+  title: "React Hooks Fundamentals",
+  blurb: "Hooks are how modern React components get memory and side effects.",
+  items: [
+    "useEffect: running code after render, and the dependency array",
+    "Cleanup functions in useEffect (unsubscribing, clearing timers)",
+    "Fetching data in useEffect — and why this pattern has limits",
+    "useRef: accessing DOM nodes directly",
+    "The Rules of Hooks and why they exist",
+  ]
+},
+{
+  title: "React Hooks in Depth",
+  blurb: "Where most real-world React bugs and 'why did this re-render' confusion actually live.",
+  items: [
+    "useRef for holding mutable values across renders (not just DOM refs)",
+    "useMemo: memoizing expensive calculations, and when it's not worth it",
+    "useCallback: memoizing functions to prevent unnecessary child re-renders",
+    "useContext: sharing state without prop drilling",
+    "useReducer: managing complex state transitions predictably",
+    "Writing your own custom hooks to extract reusable logic",
+  ]
+},
+{
+  title: "Forms in React",
+  blurb: "Forms are deceptively fiddly — worth learning properly once.",
+  items: [
+    "Building controlled forms by hand with useState",
+    "Basic client-side validation patterns",
+    "Introducing a form library: React Hook Form fundamentals",
+    "Schema-based validation with Yup or Zod",
+    "Handling multi-step forms and form submission states (loading/error/success)",
+  ]
+},
+{
+  title: "Routing with React Router",
+  blurb: "Turning a single-page app into something that feels like multiple pages.",
+  items: [
+    "Setting up React Router and defining routes",
+    "Dynamic route params and reading them in a component",
+    "Nested routes and shared layouts",
+    "Navigation: Link, useNavigate, and programmatic redirects",
+    "Protected routes for authenticated-only pages",
+  ]
+},
+{
+  title: "Working with APIs & Data Fetching",
+  blurb: "Almost every real app is really just 'fetch data, show it, let the user change it'.",
+  items: [
+    "Fetching data with fetch/axios and handling loading/error states manually",
+    "Why manual fetching in useEffect gets messy as an app grows",
+    "React Query / TanStack Query: caching, refetching, and background updates",
+    "Optimistic updates for a snappier UI",
+    "Handling pagination and infinite scroll patterns",
+  ]
+},
+{
+  title: "State Management at Scale",
+  blurb: "Once prop drilling and Context stop being enough.",
+  items: [
+    "Recognizing when local state truly isn't enough anymore",
+    "Context API limits: performance pitfalls at scale",
+    "Lightweight global state: Zustand or Jotai, hands-on",
+    "Redux Toolkit fundamentals — only where the project genuinely needs it",
+    "Separating 'server state' from 'client state' as a design decision",
+  ]
+},
+{
+  title: "Styling React Apps",
+  blurb: "Pick one approach and get genuinely fluent rather than dabbling in five.",
+  items: [
+    "CSS Modules for scoped, conflict-free component styles",
+    "Utility-first CSS with Tailwind CSS",
+    "Component libraries: shadcn/ui, Chakra UI, or Material UI — tradeoffs",
+    "Responsive design patterns for component-based UIs",
+    "CSS-in-JS (styled-components/Emotion) — what it offers and its costs",
+  ]
+},
+{
+  title: "Testing React Applications",
+  blurb: "Confidence to change code without breaking it silently.",
+  items: [
+    "Unit testing with Vitest or Jest",
+    "Testing components with React Testing Library — behavior, not internals",
+    "Mocking API calls and modules in tests",
+    "End-to-end testing basics with Playwright or Cypress",
+  ]
+},
+{
+  title: "Build Tools & React Internals",
+  blurb: "What's actually happening under 'npm run dev', and why React renders the way it does.",
+  items: [
+    "Vite basics: dev server, bundling, and why it replaced Create React App",
+    "The Virtual DOM and reconciliation, explained plainly",
+    "What actually triggers a re-render, and how to reason about it",
+    "Code splitting with React.lazy and Suspense",
+    "Using React DevTools to profile and debug renders",
+  ]
+},
+{
+  title: "Advanced Patterns",
+  blurb: "The patterns that show up once you're reading other people's production React code.",
+  items: [
+    "Compound components pattern",
+    "Render props (and why hooks mostly replaced this)",
+    "Higher-Order Components (HOCs) — what they were used for, historically",
+    "Error boundaries and graceful failure states",
+    "Portals for rendering outside the normal component tree (modals, tooltips)",
+    "Accessibility (a11y) basics: semantic HTML, ARIA, keyboard navigation",
+  ]
+},
+{
+  title: "Performance Optimization",
+  blurb: "Making a correct app into a fast one, deliberately rather than by guessing.",
+  items: [
+    "Identifying unnecessary re-renders with React DevTools Profiler",
+    "React.memo and when it actually helps",
+    "Virtualization for long lists (react-window / react-virtualized)",
+    "Bundle size awareness and lazy-loading routes/components",
+    "Core Web Vitals: what they measure and why they matter for React apps",
+  ]
+},
+{
+  title: "Deployment & Production",
+  blurb: "Getting a React app live and keeping it stable.",
+  items: [
+    "Building for production (Vite build) and understanding the output",
+    "Deploying a static React app: Netlify, Vercel, or GitHub Pages",
+    "Environment variables in a Vite/React project",
+    "Setting up basic CI (lint, test, build) with GitHub Actions",
+    "Error tracking basics (Sentry) for a production frontend",
+  ]
+},
+{
+  title: "Portfolio, Career & Going Further",
+  blurb: "Turning the roadmap into projects and real fluency.",
+  items: [
+    "Build 2–3 complete projects: one CRUD app, one app consuming a real API, one with auth",
+    "Rebuild one small feature from scratch without references, to test real fluency",
+    "Read the official React docs' 'Thinking in React' guide closely — it answers most 'why' questions",
+    "Contribute to one open-source React project or component library",
+    "Consider TypeScript next: once React itself feels natural, typing it properly is a fast, high-value add-on",
+    "Consider Next.js next if you want server rendering, routing, and full-stack features built in",
+  ]
+},
+];
+
+const STORAGE_KEY = "reactjs-progress-v1";
+
+function loadState(){
+  try{
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+  }catch(e){ return {}; }
+}
+function saveState(state){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+let state = loadState();
+let totalItems = 0;
+
+function itemId(si, ii){ return `s${si}-i${ii}`; }
+
+function flagSVGOutline(){
+  return `<svg class="flag-outline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22V4"/><path d="M4 4c2-1.5 4-1.5 6 0s4 1.5 6 0v10c-2 1.5-4 1.5-6 0s-4-1.5-6 0"/></svg>`;
+}
+function flagSVGFilled(){
+  return `<svg class="flag-filled" viewBox="0 0 24 24" fill="currentColor"><path d="M5 21a1 1 0 0 1-1-1V4c2-1.3 4-1.3 6 0s4 1.3 6 0a1 1 0 0 1 1.4.9v9.6a1 1 0 0 1-.5.87c-2.2 1.3-4.4 1.3-6.4-.02-2-1.3-4-1.3-5.5-.35V20a1 1 0 0 1-1 1Z"/></svg>`;
+}
+
+function render(){
+  const trail = document.getElementById("trail");
+  trail.innerHTML = "";
+  totalItems = 0;
+
+  DATA.forEach((stage, si) => {
+    const stageEl = document.createElement("div");
+    stageEl.className = "stage";
+    stageEl.dataset.stageIndex = si;
+
+    const items = stage.items.map((it, ii) => {
+      totalItems++;
+      const obj = typeof it === "string" ? { text: it, cert: false } : it;
+      obj.id = itemId(si, ii);
+      return obj;
+    });
+
+    const doneCount = items.filter(it => state[it.id]).length;
+    if (doneCount === items.length) stageEl.classList.add("complete");
+
+    stageEl.innerHTML = `
+      <div class="stage-marker"></div>
+      <div class="stage-head">
+        <div class="stage-title-wrap">
+          <span class="stage-num mono">STAGE ${String(si+1).padStart(2,"0")}</span>
+          <h2 class="stage-title">${stage.title}</h2>
+          <p class="stage-blurb">${stage.blurb}</p>
+        </div>
+        <div class="stage-meta">
+          <span class="stage-count mono">${doneCount}/${items.length}</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+        </div>
+      </div>
+      <div class="stage-body"></div>
+    `;
+
+    const body = stageEl.querySelector(".stage-body");
+    items.forEach(it => {
+      const itemEl = document.createElement("div");
+      itemEl.className = "item" + (it.cert ? " cert" : "") + (state[it.id] ? " done" : "");
+      itemEl.dataset.id = it.id;
+      itemEl.innerHTML = `
+        <button class="flag-btn" aria-label="Toggle complete">
+          ${flagSVGOutline()}
+          ${flagSVGFilled()}
+        </button>
+        <div class="item-text">
+          ${it.text}
+          ${it.cert ? `<div class="cert-badge">CERTIFICATION</div>` : ``}
+        </div>
+      `;
+      itemEl.querySelector(".flag-btn").addEventListener("click", () => {
+        state[it.id] = !state[it.id];
+        saveState(state);
+        render();
+        restoreOpenStages();
+      });
+      body.appendChild(itemEl);
+    });
+
+    stageEl.querySelector(".stage-head").addEventListener("click", () => {
+      stageEl.classList.toggle("open");
+    });
+
+    trail.appendChild(stageEl);
+  });
+
+  updateProgress();
+}
+
+function updateProgress(){
+  const doneCount = Object.values(state).filter(Boolean).length;
+  const pct = totalItems ? Math.round((doneCount / totalItems) * 100) : 0;
+  document.getElementById("statDone").textContent = doneCount;
+  document.getElementById("statPct").textContent = pct + "%";
+  document.getElementById("progressFill").style.width = pct + "%";
+}
+
+let openStageIndexes = new Set([0]);
+function restoreOpenStages(){
+  document.querySelectorAll(".stage").forEach(el => {
+    if (openStageIndexes.has(Number(el.dataset.stageIndex))) el.classList.add("open");
+  });
+}
+document.addEventListener("click", (e) => {
+  const head = e.target.closest(".stage-head");
+  if (!head) return;
+  const stageEl = head.closest(".stage");
+  const idx = Number(stageEl.dataset.stageIndex);
+  if (openStageIndexes.has(idx)) openStageIndexes.delete(idx);
+  else openStageIndexes.add(idx);
+});
+
+document.getElementById("resetBtn").addEventListener("click", () => {
+  if (confirm("Reset all progress on this device? This can't be undone.")) {
+    state = {};
+    saveState(state);
+    render();
+    restoreOpenStages();
+  }
+});
+
+render();
+restoreOpenStages();
+</script>
+</body>
+</html>
