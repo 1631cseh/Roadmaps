@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FastAPI Backend Development — Learning Trail</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0F1115;
+    --panel: #161920;
+    --panel-2: #1C2029;
+    --line: #2A2F3A;
+    --ink: #E7E9EE;
+    --ink-dim: #9AA1AE;
+    --ink-faint: #656C7A;
+    --gold: #E8B34B;
+    --gold-dim: #7A5F27;
+    --teal: #4FD1C5;
+    --teal-dim: #1F4744;
+    --danger: #E2665A;
+    --radius: 10px;
+    --maxw: 880px;
+  }
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  body{
+    margin:0;
+    background:
+      radial-gradient(1200px 600px at 15% -10%, rgba(79,209,197,0.08), transparent 60%),
+      radial-gradient(900px 500px at 100% 0%, rgba(232,179,75,0.06), transparent 55%),
+      var(--bg);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", system-ui, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .mono{ font-family: "IBM Plex Mono", monospace; }
+
+  header.hero{
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 48px 20px 28px;
+  }
+  .eyebrow{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 13px;
+    color: var(--teal);
+    letter-spacing: 0.02em;
+  }
+  h1{
+    font-size: clamp(28px, 5vw, 42px);
+    line-height: 1.15;
+    margin: 10px 0 14px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .hero p{
+    color: var(--ink-dim);
+    font-size: 16px;
+    max-width: 62ch;
+  }
+
+  .trailbar{
+    max-width: var(--maxw);
+    margin: 0 auto 8px;
+    padding: 0 20px;
+  }
+  .progress-shell{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .progress-stat{
+    display:flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .progress-stat .num{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--gold);
+  }
+  .progress-stat .lbl{
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+  .progress-track{
+    flex: 1 1 240px;
+    height: 8px;
+    background: var(--panel-2);
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+  }
+  .progress-fill{
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal), var(--gold));
+    width: 0%;
+    transition: width 0.4s ease;
+  }
+  .reset-btn{
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--ink-faint);
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .reset-btn:hover{ border-color: var(--danger); color: var(--danger); }
+
+  main{
+    max-width: var(--maxw);
+    margin: 28px auto 80px;
+    padding: 0 20px;
+  }
+
+  .stage{
+    position: relative;
+    border-left: 2px solid var(--line);
+    margin-left: 14px;
+    padding-left: 26px;
+    margin-bottom: 6px;
+  }
+  .stage:last-child{ border-left-color: transparent; }
+
+  .stage-marker{
+    position: absolute;
+    left: -9px;
+    top: 4px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--panel-2);
+    border: 2px solid var(--line);
+    transition: all 0.2s ease;
+  }
+  .stage.complete .stage-marker{
+    background: var(--teal);
+    border-color: var(--teal);
+  }
+
+  .stage-head{
+    cursor: pointer;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 0;
+    user-select: none;
+  }
+  .stage-title-wrap{ flex: 1; }
+  .stage-num{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    color: var(--ink-faint);
+    display:block;
+    margin-bottom: 2px;
+  }
+  .stage-title{
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+  }
+  .stage-blurb{
+    color: var(--ink-dim);
+    font-size: 13.5px;
+    margin: 6px 0 0;
+    max-width: 60ch;
+  }
+  .stage-meta{
+    display:flex;
+    align-items:center;
+    gap: 10px;
+    white-space: nowrap;
+  }
+  .stage-count{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    color: var(--ink-faint);
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    padding: 3px 8px;
+    border-radius: 999px;
+  }
+  .chevron{
+    width: 18px; height: 18px;
+    color: var(--ink-faint);
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+  }
+  .stage.open .chevron{ transform: rotate(90deg); }
+
+  .stage-body{
+    display: none;
+    padding: 2px 0 22px;
+  }
+  .stage.open .stage-body{ display: block; }
+
+  .item{
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    margin-bottom: 4px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+  }
+  .item.cert{
+    border-color: var(--gold-dim);
+    background: linear-gradient(180deg, rgba(232,179,75,0.06), rgba(232,179,75,0.02));
+  }
+  .item.done{
+    opacity: 0.55;
+  }
+  .flag-btn{
+    flex-shrink: 0;
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    border: 1px solid var(--line);
+    background: var(--panel-2);
+    cursor: pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 0;
+    margin-top: 1px;
+  }
+  .flag-btn svg{ width: 15px; height: 15px; }
+  .flag-btn .flag-outline{ color: var(--ink-faint); }
+  .flag-btn .flag-filled{ color: var(--teal); display:none; }
+  .item.done .flag-btn{ background: var(--teal-dim); border-color: var(--teal); }
+  .item.done .flag-outline{ display:none; }
+  .item.done .flag-filled{ display:block; }
+
+  .item-text{
+    flex: 1;
+    font-size: 14.5px;
+  }
+  .item.done .item-text{ text-decoration: line-through; text-decoration-color: var(--ink-faint); }
+
+  .cert-badge{
+    display:inline-flex;
+    align-items:center;
+    gap: 5px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    color: var(--gold);
+    background: rgba(232,179,75,0.1);
+    border: 1px solid var(--gold-dim);
+    padding: 2px 7px;
+    border-radius: 999px;
+    margin-top: 6px;
+  }
+
+  footer{
+    max-width: var(--maxw);
+    margin: 0 auto 60px;
+    padding: 24px 20px;
+    color: var(--ink-faint);
+    font-size: 12.5px;
+    border-top: 1px solid var(--line);
+  }
+
+  @media (max-width: 520px){
+    .stage{ margin-left: 6px; padding-left: 18px; }
+    .stage-title{ font-size: 16.5px; }
+    .progress-shell{ padding: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <span class="eyebrow mono">// personal roadmap — no login, saved on this device</span>
+  <h1>FastAPI Backend Development</h1>
+  <p>Basics through advanced backend engineering, built around FastAPI: HTTP and databases first, then auth, async, caching, deployment, and system design. Flag what you finish — it stays flagged when you come back.</p>
+</header>
+
+<div class="trailbar">
+  <div class="progress-shell">
+    <div class="progress-stat">
+      <span class="num" id="statDone">0</span>
+      <span class="lbl">completed</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-stat">
+      <span class="num" id="statPct">0%</span>
+      <span class="lbl">of trail</span>
+    </div>
+    <button class="reset-btn mono" id="resetBtn">RESET PROGRESS</button>
+  </div>
+</div>
+
+<main id="trail"></main>
+
+<footer>
+  Built as a static page — safe to host on GitHub Pages. Progress is stored in this browser's local storage only; it won't sync across devices or survive clearing browser data.
+</footer>
+
+<script>
+const DATA = [
+{
+  title: "Web & Backend Foundations",
+  blurb: "The concepts every backend rests on, regardless of framework.",
+  items: [
+    "How the internet works: client-server model, DNS, IP, ports",
+    "HTTP fundamentals: methods, status codes, headers, request/response cycle",
+    "REST principles: resources, statelessness, idempotency",
+    "JSON as the data interchange format — structure and parsing",
+    "URL structure, query params, path params, request bodies",
+    "Synchronous vs asynchronous request handling — the core idea",
+  ]
+},
+{
+  title: "Python Refresher for Backend",
+  blurb: "The Python features you'll lean on constantly once you're building APIs.",
+  items: [
+    "Type hints — essential, since FastAPI is built around them",
+    "Data classes and Pydantic-style modeling of data",
+    "Decorators — how FastAPI's routing syntax actually works under the hood",
+    "async/await syntax and the event loop, conceptually",
+    "Virtual environments and dependency management (pip, poetry, or uv)",
+  ]
+},
+{
+  title: "FastAPI Basics",
+  blurb: "Getting a real API up, running, and returning data correctly.",
+  items: [
+    "Installing FastAPI + Uvicorn and running your first app",
+    "Path operations: GET, POST, PUT, PATCH, DELETE",
+    "Path parameters and query parameters with type validation",
+    "Request bodies with Pydantic models",
+    "Response models and controlling what gets serialized back",
+    "Status codes and raising HTTPException properly",
+    "Automatic docs: Swagger UI (/docs) and ReDoc (/redoc)",
+    "Project structure: organizing routers, models, and schemas as the app grows",
+  ]
+},
+{
+  title: "Pydantic & Data Validation",
+  blurb: "FastAPI's real power comes from Pydantic — worth learning properly, not just by osmosis.",
+  items: [
+    "Pydantic models: fields, types, default values",
+    "Validators: field_validator / model_validator for custom rules",
+    "Nested models and list/dict fields",
+    "Separating schemas: Create vs Update vs Read (Response) models",
+    "Config options: aliasing, ORM mode (from_attributes), examples",
+    "Environment/config management with Pydantic Settings",
+  ]
+},
+{
+  title: "Databases & SQL Fundamentals",
+  blurb: "Almost every backend exists to talk to a database correctly and safely.",
+  items: [
+    "Relational database basics: tables, keys, relationships",
+    "SQL fundamentals: SELECT, JOIN, WHERE, GROUP BY, aggregate functions",
+    "Normalization basics and when to denormalize",
+    "Indexes: what they are and why queries get slow without them",
+    "Transactions and ACID properties explained plainly",
+    "Choosing Postgres vs MySQL vs SQLite for a project",
+  ]
+},
+{
+  title: "FastAPI + Databases (ORM Layer)",
+  blurb: "Connecting your API to real, persistent data.",
+  items: [
+    "SQLAlchemy Core vs ORM — the difference and when each is used",
+    "Defining models with SQLAlchemy ORM (or SQLModel)",
+    "Database sessions and dependency injection with Depends()",
+    "Alembic migrations: creating, applying, and rolling back schema changes",
+    "Writing CRUD endpoints backed by a real database",
+    "Relationships in the ORM: one-to-many, many-to-many",
+    "Pagination, filtering, and sorting query results properly",
+    "Preventing SQL injection and understanding parameterized queries",
+  ]
+},
+{
+  title: "Authentication & Authorization",
+  blurb: "Almost no real backend ships without this — and it's easy to get subtly wrong.",
+  items: [
+    "Password hashing correctly (bcrypt/argon2, never plain text)",
+    "Session-based auth vs token-based auth — tradeoffs",
+    "JWT (JSON Web Tokens): structure, signing, and verification",
+    "Implementing login/signup/refresh-token flow in FastAPI",
+    "OAuth2 password flow and FastAPI's built-in OAuth2PasswordBearer",
+    "Role-based access control (RBAC) for protecting routes",
+    "OAuth2 with third-party providers (Google/GitHub login) at a conceptual level",
+    "API keys for service-to-service authentication",
+  ]
+},
+{
+  title: "API Design Best Practices",
+  blurb: "The difference between an API that works and one other developers actually enjoy using.",
+  items: [
+    "RESTful resource naming and versioning strategies (/v1/...)",
+    "Consistent error response formats across an API",
+    "Request/response DTOs and not leaking internal DB models",
+    "Idempotency keys for safe retries on POST/PUT",
+    "Rate limiting concepts and basic implementation",
+    "CORS: what it is and configuring it correctly in FastAPI",
+    "API documentation quality: examples, descriptions, tags in OpenAPI/Swagger",
+  ]
+},
+{
+  title: "Testing Backend Applications",
+  blurb: "Untested APIs are a liability the moment more than one person depends on them.",
+  items: [
+    "Unit testing with pytest: fixtures, assertions, parametrize",
+    "Testing FastAPI endpoints with TestClient / httpx AsyncClient",
+    "Mocking external services and database calls in tests",
+    "Test databases: using a separate DB or transactions-per-test",
+    "Integration tests vs unit tests — where to draw the line",
+    "Basic test coverage tooling (pytest-cov)",
+  ]
+},
+{
+  title: "Async & Concurrency in FastAPI",
+  blurb: "This is where FastAPI genuinely differs from older sync frameworks — worth understanding deeply.",
+  items: [
+    "Sync vs async endpoints in FastAPI — when each runs where",
+    "The event loop explained without hand-waving",
+    "async/await with databases: async SQLAlchemy, asyncpg",
+    "Making concurrent external API calls with httpx (async)",
+    "Common async pitfalls: blocking calls inside async endpoints",
+    "Background tasks with FastAPI's BackgroundTasks",
+  ]
+},
+{
+  title: "Caching & Performance",
+  blurb: "Making a correct API into a fast one.",
+  items: [
+    "Why and when to cache (and the invalidation problem)",
+    "Redis fundamentals: key-value store, TTLs, common data structures",
+    "Caching FastAPI responses/query results with Redis",
+    "Database query optimization: N+1 problem and how to spot it",
+    "Connection pooling for databases",
+    "Basic load testing a FastAPI app (locust or k6)",
+  ]
+},
+{
+  title: "Background Jobs & Message Queues",
+  blurb: "For work that shouldn't block the request-response cycle.",
+  items: [
+    "Why long-running work needs to move off the request thread",
+    "Task queues: Celery (with Redis/RabbitMQ) or lighter alternatives like RQ/ARQ",
+    "Scheduling recurring jobs (cron-style tasks)",
+    "Message queues and pub/sub concepts (RabbitMQ/Kafka at a conceptual level)",
+    "Designing an event-driven flow between two services",
+  ]
+},
+{
+  title: "Containerization & Deployment",
+  blurb: "Getting your FastAPI app to run reliably somewhere other than your laptop.",
+  items: [
+    "Docker fundamentals: images, containers, Dockerfile basics",
+    "Writing a production-ready Dockerfile for a FastAPI app",
+    "docker-compose for local multi-service setups (API + DB + Redis)",
+    "Running FastAPI in production with Uvicorn + Gunicorn workers",
+    "Environment-based configuration (dev/staging/prod)",
+    "Reverse proxies: Nginx basics in front of your API",
+    { text: "Certification milestone: Docker Certified Associate (optional but well-recognized)", cert: true },
+  ]
+},
+{
+  title: "CI/CD & DevOps Basics",
+  blurb: "Shipping changes safely and repeatedly, not just once.",
+  items: [
+    "CI/CD concepts: build, test, deploy pipeline stages",
+    "Setting up GitHub Actions (or Azure DevOps Pipelines) for a FastAPI project",
+    "Automated testing and linting as pipeline gates",
+    "Environment secrets management in CI/CD",
+    "Blue-green and rolling deployment concepts",
+    "Basic Infrastructure-as-Code awareness (Terraform, conceptually)",
+  ]
+},
+{
+  title: "Cloud & Infrastructure Basics",
+  blurb: "Where your backend actually lives once it's not localhost.",
+  items: [
+    "Core cloud concepts: compute, storage, networking (provider-agnostic)",
+    "Deploying a FastAPI app to a VM vs a managed platform (Render/Railway/Azure App Service)",
+    "Managed databases vs self-hosted (RDS/Azure Database for Postgres)",
+    "Object storage for files (S3-compatible storage)",
+    "Environment variables and secrets managers in the cloud",
+    { text: "Certification milestone: pick ONE cloud associate cert — AWS Certified Developer Associate, or Microsoft Azure Developer Associate (AZ-204)", cert: true },
+  ]
+},
+{
+  title: "Security Best Practices",
+  blurb: "The backend responsibilities that don't show up until something goes wrong.",
+  items: [
+    "OWASP Top 10 — know each one and how it applies to APIs",
+    "Input validation and sanitization beyond Pydantic's defaults",
+    "Secure headers and HTTPS/TLS basics",
+    "Secrets management: never committing keys, using vaults/env managers",
+    "Dependency vulnerability scanning (pip-audit, Dependabot)",
+    "Basic threat modeling for a new API endpoint",
+  ]
+},
+{
+  title: "Monitoring, Logging & Observability",
+  blurb: "Knowing what your backend is doing in production, not guessing.",
+  items: [
+    "Structured logging in FastAPI (not just print statements)",
+    "Centralized logging concepts (ELK stack / cloud-native logging)",
+    "Application metrics: request rate, latency, error rate (the 'RED' metrics)",
+    "Health check and readiness/liveness endpoints",
+    "Basic distributed tracing concepts for multi-service systems",
+    "Alerting basics: what to alert on and what to just log",
+  ]
+},
+{
+  title: "Advanced FastAPI & Scaling",
+  blurb: "The features and patterns that show up once an app gets real traffic and real complexity.",
+  items: [
+    "WebSockets in FastAPI for real-time features",
+    "Dependency injection patterns beyond the basics (sub-dependencies, yield dependencies)",
+    "Middleware: writing custom middleware for logging/auth/timing",
+    "GraphQL as an alternative to REST — when it's worth it (Strawberry/FastAPI)",
+    "API Gateways and when to introduce one",
+    "Horizontal scaling: statelessness, load balancers, sticky sessions pitfalls",
+    "Feature flags and gradual rollout strategies",
+  ]
+},
+{
+  title: "Microservices & System Design",
+  blurb: "Thinking beyond a single service to how backend systems are architected at scale.",
+  items: [
+    "Monolith vs microservices — real tradeoffs, not just hype",
+    "Service-to-service communication: REST vs gRPC vs messaging",
+    "API Gateway and Backend-for-Frontend (BFF) patterns",
+    "Database-per-service vs shared database tradeoffs",
+    "Basic system design practice: designing a URL shortener, a rate limiter, a notification service",
+    "CAP theorem and consistency tradeoffs, explained plainly",
+    { text: "Certification milestone: AWS Certified Solutions Architect – Associate (strong signal for backend/systems roles)", cert: true },
+  ]
+},
+{
+  title: "Portfolio, Career & Becoming a Backend Expert",
+  blurb: "Turning everything above into projects and credibility the market recognizes.",
+  items: [
+    "Build one substantial FastAPI project end-to-end: auth, DB, background jobs, deployed live",
+    "Write proper documentation/README for your projects (setup, architecture, decisions)",
+    "Contribute to an open-source FastAPI/Python backend project",
+    "Do a few real system design interview practice questions",
+    "Get comfortable explaining tradeoffs out loud (why Postgres over Mongo, why Celery over cron, etc.)",
+    "Specialize deliberately: pick ONE deep area (high-scale systems, security, or DevOps/platform) to go expert-deep on",
+  ]
+},
+];
+
+const STORAGE_KEY = "backend-fastapi-progress-v1";
+
+function loadState(){
+  try{
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+  }catch(e){ return {}; }
+}
+function saveState(state){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+let state = loadState();
+let totalItems = 0;
+
+function itemId(si, ii){ return `s${si}-i${ii}`; }
+
+function flagSVGOutline(){
+  return `<svg class="flag-outline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22V4"/><path d="M4 4c2-1.5 4-1.5 6 0s4 1.5 6 0v10c-2 1.5-4 1.5-6 0s-4-1.5-6 0"/></svg>`;
+}
+function flagSVGFilled(){
+  return `<svg class="flag-filled" viewBox="0 0 24 24" fill="currentColor"><path d="M5 21a1 1 0 0 1-1-1V4c2-1.3 4-1.3 6 0s4 1.3 6 0a1 1 0 0 1 1.4.9v9.6a1 1 0 0 1-.5.87c-2.2 1.3-4.4 1.3-6.4-.02-2-1.3-4-1.3-5.5-.35V20a1 1 0 0 1-1 1Z"/></svg>`;
+}
+
+function render(){
+  const trail = document.getElementById("trail");
+  trail.innerHTML = "";
+  totalItems = 0;
+
+  DATA.forEach((stage, si) => {
+    const stageEl = document.createElement("div");
+    stageEl.className = "stage";
+    stageEl.dataset.stageIndex = si;
+
+    const items = stage.items.map((it, ii) => {
+      totalItems++;
+      const obj = typeof it === "string" ? { text: it, cert: false } : it;
+      obj.id = itemId(si, ii);
+      return obj;
+    });
+
+    const doneCount = items.filter(it => state[it.id]).length;
+    if (doneCount === items.length) stageEl.classList.add("complete");
+
+    stageEl.innerHTML = `
+      <div class="stage-marker"></div>
+      <div class="stage-head">
+        <div class="stage-title-wrap">
+          <span class="stage-num mono">STAGE ${String(si+1).padStart(2,"0")}</span>
+          <h2 class="stage-title">${stage.title}</h2>
+          <p class="stage-blurb">${stage.blurb}</p>
+        </div>
+        <div class="stage-meta">
+          <span class="stage-count mono">${doneCount}/${items.length}</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+        </div>
+      </div>
+      <div class="stage-body"></div>
+    `;
+
+    const body = stageEl.querySelector(".stage-body");
+    items.forEach(it => {
+      const itemEl = document.createElement("div");
+      itemEl.className = "item" + (it.cert ? " cert" : "") + (state[it.id] ? " done" : "");
+      itemEl.dataset.id = it.id;
+      itemEl.innerHTML = `
+        <button class="flag-btn" aria-label="Toggle complete">
+          ${flagSVGOutline()}
+          ${flagSVGFilled()}
+        </button>
+        <div class="item-text">
+          ${it.text}
+          ${it.cert ? `<div class="cert-badge">CERTIFICATION</div>` : ``}
+        </div>
+      `;
+      itemEl.querySelector(".flag-btn").addEventListener("click", () => {
+        state[it.id] = !state[it.id];
+        saveState(state);
+        render();
+        restoreOpenStages();
+      });
+      body.appendChild(itemEl);
+    });
+
+    stageEl.querySelector(".stage-head").addEventListener("click", () => {
+      stageEl.classList.toggle("open");
+    });
+
+    trail.appendChild(stageEl);
+  });
+
+  updateProgress();
+}
+
+function updateProgress(){
+  const doneCount = Object.values(state).filter(Boolean).length;
+  const pct = totalItems ? Math.round((doneCount / totalItems) * 100) : 0;
+  document.getElementById("statDone").textContent = doneCount;
+  document.getElementById("statPct").textContent = pct + "%";
+  document.getElementById("progressFill").style.width = pct + "%";
+}
+
+let openStageIndexes = new Set([0]);
+function restoreOpenStages(){
+  document.querySelectorAll(".stage").forEach(el => {
+    if (openStageIndexes.has(Number(el.dataset.stageIndex))) el.classList.add("open");
+  });
+}
+document.addEventListener("click", (e) => {
+  const head = e.target.closest(".stage-head");
+  if (!head) return;
+  const stageEl = head.closest(".stage");
+  const idx = Number(stageEl.dataset.stageIndex);
+  if (openStageIndexes.has(idx)) openStageIndexes.delete(idx);
+  else openStageIndexes.add(idx);
+});
+
+document.getElementById("resetBtn").addEventListener("click", () => {
+  if (confirm("Reset all progress on this device? This can't be undone.")) {
+    state = {};
+    saveState(state);
+    render();
+    restoreOpenStages();
+  }
+});
+
+render();
+restoreOpenStages();
+</script>
+</body>
+</html>
