@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
   :root{
     --bg: #0F1115;
@@ -274,6 +275,42 @@
     border-top: 1px solid var(--line);
   }
 
+  .sync-panel{
+    display: none;
+    max-width: var(--maxw);
+    margin: 10px auto 0;
+    padding: 0 20px;
+  }
+  .sync-panel.open{ display: block; }
+  .sync-panel .sync-note{
+    color: var(--ink-dim);
+    font-size: 13px;
+    margin: 10px 0 8px;
+  }
+  #qrcodeBox{
+    display: inline-block;
+    padding: 10px;
+    background: #fff;
+    border-radius: 8px;
+    margin: 4px 0 12px;
+  }
+  .sync-row{
+    display: flex;
+    gap: 8px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+  }
+  .sync-input{
+    flex: 1 1 220px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    min-width: 0;
+  }
+
   @media (max-width: 520px){
     .stage{ margin-left: 6px; padding-left: 18px; }
     .stage-title{ font-size: 16.5px; }
@@ -284,9 +321,9 @@
 <body>
 
 <header class="hero">
-  
+  <span class="eyebrow mono">// LEARNING ROADMAP</span>
   <h1>FastAPI Backend Development</h1>
-  <p>Basics through advanced backend engineering, built around FastAPI: HTTP and databases first, then auth, async, caching, deployment, and system design. Flag what you finish — it stays flagged when you come back.</p>
+  <p>Basics through advanced backend engineering, built around FastAPI: HTTP and databases first, then auth, async, caching, deployment, and system design. Flag each concept as it's completed.</p>
 </header>
 
 <div class="trailbar">
@@ -300,14 +337,29 @@
       <span class="num" id="statPct">0%</span>
       <span class="lbl">of trail</span>
     </div>
+    <button class="reset-btn mono" id="syncBtn">SYNC ACROSS DEVICES</button>
     <button class="reset-btn mono" id="resetBtn">RESET PROGRESS</button>
+  </div>
+
+  <div class="sync-panel" id="syncPanel">
+    <p class="sync-note">Scan this code with a camera app, or open the link, to load this progress.</p>
+    <div id="qrcodeBox"></div>
+    <div class="sync-row">
+      <input type="text" id="syncLinkInput" class="sync-input mono" readonly>
+      <button class="reset-btn mono" id="copyLinkBtn">COPY LINK</button>
+    </div>
+    <p class="sync-note">Have a link or code to load instead? Paste it below.</p>
+    <div class="sync-row">
+      <input type="text" id="pasteCodeInput" class="sync-input mono" placeholder="paste sync link or code here">
+      <button class="reset-btn mono" id="applyPasteBtn">APPLY</button>
+    </div>
   </div>
 </div>
 
 <main id="trail"></main>
 
 <footer>
-  Built as a static page — safe to host on GitHub Pages. Progress is stored in this browser's local storage only; it won't sync across devices or survive clearing browser data.
+  Progress is saved automatically in this browser as items are completed.
 </footer>
 
 <script>
@@ -686,6 +738,91 @@ document.getElementById("resetBtn").addEventListener("click", () => {
     restoreOpenStages();
   }
 });
+
+function encodeStateToCode(obj){
+  return btoa(encodeURIComponent(JSON.stringify(obj))).replace(/=+$/,"");
+}
+function decodeCodeToState(code){
+  const padded = code + "=".repeat((4 - code.length % 4) % 4);
+  return JSON.parse(decodeURIComponent(atob(padded)));
+}
+function buildSyncLink(){
+  const code = encodeStateToCode(state);
+  const base = location.origin + location.pathname;
+  return base + "#sync=" + code;
+}
+function extractCodeFromInput(value){
+  const trimmed = value.trim();
+  const hashIdx = trimmed.indexOf("#sync=");
+  if (hashIdx !== -1) return trimmed.slice(hashIdx + 6);
+  const qIdx = trimmed.indexOf("sync=");
+  if (qIdx !== -1) return trimmed.slice(qIdx + 5);
+  return trimmed;
+}
+function applyIncomingState(incoming){
+  if (typeof incoming !== "object" || incoming === null) throw new Error("bad format");
+  const mergeChoice = confirm(
+    "Click OK to MERGE this with what's already flagged on this device.\nClick Cancel to REPLACE this device's progress entirely with the incoming data."
+  );
+  state = mergeChoice ? Object.assign({}, state, incoming) : Object.assign({}, incoming);
+  saveState(state);
+  render();
+  restoreOpenStages();
+}
+
+let qrRendered = false;
+function renderSyncPanel(){
+  const link = buildSyncLink();
+  document.getElementById("syncLinkInput").value = link;
+  const box = document.getElementById("qrcodeBox");
+  box.innerHTML = "";
+  try {
+    new QRCode(box, { text: link, width: 176, height: 176, correctLevel: QRCode.CorrectLevel.M });
+  } catch(e) { box.textContent = "QR unavailable — use the link/copy option below."; }
+}
+
+document.getElementById("syncBtn").addEventListener("click", () => {
+  const panel = document.getElementById("syncPanel");
+  panel.classList.toggle("open");
+  if (panel.classList.contains("open")) renderSyncPanel();
+});
+
+document.getElementById("copyLinkBtn").addEventListener("click", () => {
+  const input = document.getElementById("syncLinkInput");
+  input.select();
+  input.setSelectionRange(0, 99999);
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(input.value).then(() => alert("Link copied.")).catch(() => document.execCommand("copy"));
+  } else {
+    document.execCommand("copy");
+  }
+});
+
+document.getElementById("applyPasteBtn").addEventListener("click", () => {
+  const raw = document.getElementById("pasteCodeInput").value;
+  if (!raw.trim()) return;
+  try {
+    const code = extractCodeFromInput(raw);
+    const incoming = decodeCodeToState(code);
+    applyIncomingState(incoming);
+    document.getElementById("pasteCodeInput").value = "";
+    alert("Progress applied.");
+  } catch (e) {
+    alert("Could not read that — make sure it's a sync link or code from this same roadmap.");
+  }
+});
+
+(function checkIncomingHash(){
+  const hash = location.hash;
+  if (hash && hash.indexOf("sync=") !== -1) {
+    try {
+      const code = hash.slice(hash.indexOf("sync=") + 5);
+      const incoming = decodeCodeToState(code);
+      applyIncomingState(incoming);
+    } catch(e) { /* ignore malformed hash */ }
+    history.replaceState(null, "", location.pathname + location.search);
+  }
+})();
 
 render();
 restoreOpenStages();
