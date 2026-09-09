@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
   :root{
     --bg: #17121F;
@@ -283,6 +284,42 @@
     border-top: 1px solid var(--line);
   }
 
+  .sync-panel{
+    display: none;
+    max-width: var(--maxw);
+    margin: 10px auto 0;
+    padding: 0 20px;
+  }
+  .sync-panel.open{ display: block; }
+  .sync-panel .sync-note{
+    color: var(--ink-dim);
+    font-size: 13px;
+    margin: 10px 0 8px;
+  }
+  #qrcodeBox{
+    display: inline-block;
+    padding: 10px;
+    background: #fff;
+    border-radius: 8px;
+    margin: 4px 0 12px;
+  }
+  .sync-row{
+    display: flex;
+    gap: 8px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+  }
+  .sync-input{
+    flex: 1 1 220px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    min-width: 0;
+  }
+
   @media (max-width: 520px){
     .stage{ margin-left: 6px; padding-left: 18px; }
     .stage-title{ font-size: 16.5px; }
@@ -309,10 +346,22 @@
       <span class="num" id="statPct">0%</span>
       <span class="lbl">of trail</span>
     </div>
-    <button class="reset-btn mono" id="exportBtn">EXPORT</button>
-    <button class="reset-btn mono" id="importBtn">IMPORT</button>
-    <input type="file" id="importFile" accept="application/json" style="display:none">
+    <button class="reset-btn mono" id="syncBtn">SYNC ACROSS DEVICES</button>
     <button class="reset-btn mono" id="resetBtn">RESET PROGRESS</button>
+  </div>
+
+  <div class="sync-panel" id="syncPanel">
+    <p class="sync-note">Scan this on your other device's camera app (or open the link there) to bring this device's progress over. It's baked into the link itself — nothing is uploaded anywhere.</p>
+    <div id="qrcodeBox"></div>
+    <div class="sync-row">
+      <input type="text" id="syncLinkInput" class="sync-input mono" readonly>
+      <button class="reset-btn mono" id="copyLinkBtn">COPY LINK</button>
+    </div>
+    <p class="sync-note">Got a link or code from your other device? Paste it below.</p>
+    <div class="sync-row">
+      <input type="text" id="pasteCodeInput" class="sync-input mono" placeholder="paste sync link or code here">
+      <button class="reset-btn mono" id="applyPasteBtn">APPLY</button>
+    </div>
   </div>
 </div>
 
@@ -646,55 +695,90 @@ document.getElementById("resetBtn").addEventListener("click", () => {
   }
 });
 
-document.getElementById("exportBtn").addEventListener("click", () => {
-  const payload = {
-    source: STORAGE_KEY,
-    exportedAt: new Date().toISOString(),
-    state: state
-  };
-  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = STORAGE_KEY + "-export.json";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+function encodeStateToCode(obj){
+  return btoa(encodeURIComponent(JSON.stringify(obj))).replace(/=+$/,"");
+}
+function decodeCodeToState(code){
+  const padded = code + "=".repeat((4 - code.length % 4) % 4);
+  return JSON.parse(decodeURIComponent(atob(padded)));
+}
+function buildSyncLink(){
+  const code = encodeStateToCode(state);
+  const base = location.origin + location.pathname;
+  return base + "#sync=" + code;
+}
+function extractCodeFromInput(value){
+  const trimmed = value.trim();
+  const hashIdx = trimmed.indexOf("#sync=");
+  if (hashIdx !== -1) return trimmed.slice(hashIdx + 6);
+  const qIdx = trimmed.indexOf("sync=");
+  if (qIdx !== -1) return trimmed.slice(qIdx + 5);
+  return trimmed;
+}
+function applyIncomingState(incoming){
+  if (typeof incoming !== "object" || incoming === null) throw new Error("bad format");
+  const mergeChoice = confirm(
+    "Click OK to MERGE this with what's already flagged on this device.\nClick Cancel to REPLACE this device's progress entirely with the incoming data."
+  );
+  state = mergeChoice ? Object.assign({}, state, incoming) : Object.assign({}, incoming);
+  saveState(state);
+  render();
+  restoreOpenStages();
+}
+
+let qrRendered = false;
+function renderSyncPanel(){
+  const link = buildSyncLink();
+  document.getElementById("syncLinkInput").value = link;
+  const box = document.getElementById("qrcodeBox");
+  box.innerHTML = "";
+  try {
+    new QRCode(box, { text: link, width: 176, height: 176, correctLevel: QRCode.CorrectLevel.M });
+  } catch(e) { box.textContent = "QR unavailable — use the link/copy option below."; }
+}
+
+document.getElementById("syncBtn").addEventListener("click", () => {
+  const panel = document.getElementById("syncPanel");
+  panel.classList.toggle("open");
+  if (panel.classList.contains("open")) renderSyncPanel();
 });
 
-document.getElementById("importBtn").addEventListener("click", () => {
-  document.getElementById("importFile").click();
+document.getElementById("copyLinkBtn").addEventListener("click", () => {
+  const input = document.getElementById("syncLinkInput");
+  input.select();
+  input.setSelectionRange(0, 99999);
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(input.value).then(() => alert("Link copied.")).catch(() => document.execCommand("copy"));
+  } else {
+    document.execCommand("copy");
+  }
 });
 
-document.getElementById("importFile").addEventListener("change", (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (ev) => {
+document.getElementById("applyPasteBtn").addEventListener("click", () => {
+  const raw = document.getElementById("pasteCodeInput").value;
+  if (!raw.trim()) return;
+  try {
+    const code = extractCodeFromInput(raw);
+    const incoming = decodeCodeToState(code);
+    applyIncomingState(incoming);
+    document.getElementById("pasteCodeInput").value = "";
+    alert("Progress applied.");
+  } catch (e) {
+    alert("Could not read that — make sure it's a sync link or code from this same roadmap.");
+  }
+});
+
+(function checkIncomingHash(){
+  const hash = location.hash;
+  if (hash && hash.indexOf("sync=") !== -1) {
     try {
-      const parsed = JSON.parse(ev.target.result);
-      const incoming = parsed && parsed.state ? parsed.state : parsed;
-      if (typeof incoming !== "object" || incoming === null) throw new Error("bad format");
-      const mergeChoice = confirm(
-        "Click OK to MERGE this file's progress with what's already on this device.\nClick Cancel to REPLACE this device's progress entirely with the file's contents."
-      );
-      if (mergeChoice) {
-        state = Object.assign({}, state, incoming);
-      } else {
-        state = Object.assign({}, incoming);
-      }
-      saveState(state);
-      render();
-      restoreOpenStages();
-      alert("Progress imported.");
-    } catch (err) {
-      alert("Could not read that file — make sure it's a progress JSON exported from this same roadmap.");
-    }
-  };
-  reader.readAsText(file);
-  e.target.value = "";
-});
+      const code = hash.slice(hash.indexOf("sync=") + 5);
+      const incoming = decodeCodeToState(code);
+      applyIncomingState(incoming);
+    } catch(e) { /* ignore malformed hash */ }
+    history.replaceState(null, "", location.pathname + location.search);
+  }
+})();
 
 render();
 restoreOpenStages();
