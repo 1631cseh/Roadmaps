@@ -293,7 +293,7 @@
 <body>
 
 <header class="hero">
- 
+  <span class="eyebrow mono">// personal roadmap — no login, saved on this device</span>
   <h1>React.js — Beginner to Advanced</h1>
   <p>Plain JavaScript React, start to finish: JSX and components first, then hooks, state management, routing, testing, performance, and production. Flag what you finish; it stays flagged when you come back.</p>
 </header>
@@ -309,6 +309,9 @@
       <span class="num" id="statPct">0%</span>
       <span class="lbl">of trail</span>
     </div>
+    <button class="reset-btn mono" id="exportBtn">EXPORT</button>
+    <button class="reset-btn mono" id="importBtn">IMPORT</button>
+    <input type="file" id="importFile" accept="application/json" style="display:none">
     <button class="reset-btn mono" id="resetBtn">RESET PROGRESS</button>
   </div>
 </div>
@@ -641,6 +644,56 @@ document.getElementById("resetBtn").addEventListener("click", () => {
     render();
     restoreOpenStages();
   }
+});
+
+document.getElementById("exportBtn").addEventListener("click", () => {
+  const payload = {
+    source: STORAGE_KEY,
+    exportedAt: new Date().toISOString(),
+    state: state
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = STORAGE_KEY + "-export.json";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+});
+
+document.getElementById("importBtn").addEventListener("click", () => {
+  document.getElementById("importFile").click();
+});
+
+document.getElementById("importFile").addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    try {
+      const parsed = JSON.parse(ev.target.result);
+      const incoming = parsed && parsed.state ? parsed.state : parsed;
+      if (typeof incoming !== "object" || incoming === null) throw new Error("bad format");
+      const mergeChoice = confirm(
+        "Click OK to MERGE this file's progress with what's already on this device.\nClick Cancel to REPLACE this device's progress entirely with the file's contents."
+      );
+      if (mergeChoice) {
+        state = Object.assign({}, state, incoming);
+      } else {
+        state = Object.assign({}, incoming);
+      }
+      saveState(state);
+      render();
+      restoreOpenStages();
+      alert("Progress imported.");
+    } catch (err) {
+      alert("Could not read that file — make sure it's a progress JSON exported from this same roadmap.");
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = "";
 });
 
 render();
