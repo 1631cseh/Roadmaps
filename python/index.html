@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python — Beginner to Advanced — Learning Trail</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  :root{
+    --bg: #0D1B2A;
+    --panel: #12283C;
+    --panel-2: #16324A;
+    --line: #234A67;
+    --ink: #EAF2FA;
+    --ink-dim: #9FB8CC;
+    --ink-faint: #648199;
+    --gold: #FFD43B;
+    --gold-dim: #7A6412;
+    --teal: #4B8BBE;
+    --teal-dim: #1E3A54;
+    --green: #34D399;
+    --green-dim: #144A38;
+    --danger: #FF6B6B;
+    --radius: 10px;
+    --maxw: 880px;
+  }
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  body{
+    margin:0;
+    background:
+      radial-gradient(1200px 600px at 15% -10%, rgba(75,139,190,0.14), transparent 60%),
+      radial-gradient(900px 500px at 100% 0%, rgba(255,212,59,0.07), transparent 55%),
+      var(--bg);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", system-ui, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .mono{ font-family: "IBM Plex Mono", monospace; }
+
+  header.hero{
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 48px 20px 28px;
+  }
+  .eyebrow{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 13px;
+    color: var(--teal);
+    letter-spacing: 0.02em;
+  }
+  h1{
+    font-size: clamp(28px, 5vw, 42px);
+    line-height: 1.15;
+    margin: 10px 0 14px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .hero p{
+    color: var(--ink-dim);
+    font-size: 16px;
+    max-width: 62ch;
+  }
+
+  .trailbar{
+    max-width: var(--maxw);
+    margin: 0 auto 8px;
+    padding: 0 20px;
+  }
+  .progress-shell{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .progress-stat{
+    display:flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .progress-stat .num{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--gold);
+  }
+  .progress-stat .lbl{
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+  .progress-track{
+    flex: 1 1 240px;
+    height: 8px;
+    background: var(--panel-2);
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+  }
+  .progress-fill{
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal), var(--green));
+    width: 0%;
+    transition: width 0.4s ease;
+  }
+  .reset-btn{
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--ink-faint);
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .reset-btn:hover{ border-color: var(--danger); color: var(--danger); }
+
+  main{
+    max-width: var(--maxw);
+    margin: 28px auto 80px;
+    padding: 0 20px;
+  }
+
+  .stage{
+    position: relative;
+    border-left: 2px solid var(--line);
+    margin-left: 14px;
+    padding-left: 26px;
+    margin-bottom: 6px;
+  }
+  .stage:last-child{ border-left-color: transparent; }
+
+  .stage-marker{
+    position: absolute;
+    left: -9px;
+    top: 4px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--panel-2);
+    border: 2px solid var(--line);
+    transition: all 0.2s ease;
+  }
+  .stage.complete .stage-marker{
+    background: var(--green);
+    border-color: var(--green);
+  }
+
+  .stage-head{
+    cursor: pointer;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 0;
+    user-select: none;
+  }
+  .stage-title-wrap{ flex: 1; }
+  .stage-num{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    color: var(--ink-faint);
+    display:block;
+    margin-bottom: 2px;
+  }
+  .stage-title{
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+  }
+  .stage-blurb{
+    color: var(--ink-dim);
+    font-size: 13.5px;
+    margin: 6px 0 0;
+    max-width: 60ch;
+  }
+  .stage-meta{
+    display:flex;
+    align-items:center;
+    gap: 10px;
+    white-space: nowrap;
+  }
+  .stage-count{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    color: var(--ink-faint);
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    padding: 3px 8px;
+    border-radius: 999px;
+  }
+  .chevron{
+    width: 18px; height: 18px;
+    color: var(--ink-faint);
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+  }
+  .stage.open .chevron{ transform: rotate(90deg); }
+
+  .stage-body{
+    display: none;
+    padding: 2px 0 22px;
+  }
+  .stage.open .stage-body{ display: block; }
+
+  .item{
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 12px 10px 14px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--teal-dim);
+  }
+  .item.cert{
+    border-color: var(--gold-dim);
+    border-left: 3px solid var(--gold);
+    background: linear-gradient(180deg, rgba(255,212,59,0.10), rgba(255,212,59,0.03));
+  }
+  .item.done{
+    opacity: 0.6;
+    border-left: 3px solid var(--green);
+    background: linear-gradient(180deg, rgba(52,211,153,0.08), rgba(52,211,153,0.02));
+  }
+  .item.done.cert{
+    border-left: 3px solid var(--green);
+  }
+  .flag-btn{
+    flex-shrink: 0;
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    cursor: pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 0;
+    margin-top: 1px;
+  }
+  .flag-btn svg{ width: 15px; height: 15px; }
+  .flag-btn .flag-outline{ color: var(--ink-faint); }
+  .flag-btn .flag-filled{ color: var(--green); display:none; }
+  .item.done .flag-btn{ background: var(--green-dim); border-color: var(--green); }
+  .item.done .flag-outline{ display:none; }
+  .item.done .flag-filled{ display:block; }
+
+  .item-text{
+    flex: 1;
+    font-size: 14.5px;
+  }
+  .item.done .item-text{ text-decoration: line-through; text-decoration-color: var(--ink-faint); }
+
+  .cert-badge{
+    display:inline-flex;
+    align-items:center;
+    gap: 5px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    color: var(--gold);
+    background: rgba(232,179,75,0.1);
+    border: 1px solid var(--gold-dim);
+    padding: 2px 7px;
+    border-radius: 999px;
+    margin-top: 6px;
+  }
+
+  footer{
+    max-width: var(--maxw);
+    margin: 0 auto 60px;
+    padding: 24px 20px;
+    color: var(--ink-faint);
+    font-size: 12.5px;
+    border-top: 1px solid var(--line);
+  }
+
+  .sync-panel{
+    display: none;
+    max-width: var(--maxw);
+    margin: 10px auto 0;
+    padding: 0 20px;
+  }
+  .sync-panel.open{ display: block; }
+  .sync-panel .sync-note{
+    color: var(--ink-dim);
+    font-size: 13px;
+    margin: 10px 0 8px;
+  }
+  #qrcodeBox{
+    display: inline-block;
+    padding: 10px;
+    background: #fff;
+    border-radius: 8px;
+    margin: 4px 0 12px;
+  }
+  .sync-row{
+    display: flex;
+    gap: 8px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+  }
+  .sync-input{
+    flex: 1 1 220px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    min-width: 0;
+  }
+
+  @media (max-width: 520px){
+    .stage{ margin-left: 6px; padding-left: 18px; }
+    .stage-title{ font-size: 16.5px; }
+    .progress-shell{ padding: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <span class="eyebrow mono">// LEARNING ROADMAP</span>
+  <h1>Python — Beginner to Advanced</h1>
+  <p>Core Python from first script to advanced internals: syntax and data structures first, then OOP, the standard library, testing, concurrency, packaging, and performance. Flag each concept as it's completed.</p>
+</header>
+
+<div class="trailbar">
+  <div class="progress-shell">
+    <div class="progress-stat">
+      <span class="num" id="statDone">0</span>
+      <span class="lbl">completed</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-stat">
+      <span class="num" id="statPct">0%</span>
+      <span class="lbl">of trail</span>
+    </div>
+    <button class="reset-btn mono" id="syncBtn">SYNC ACROSS DEVICES</button>
+    <button class="reset-btn mono" id="resetBtn">RESET PROGRESS</button>
+  </div>
+
+  <div class="sync-panel" id="syncPanel">
+    <p class="sync-note">Scan this code with a camera app, or open the link, to load this progress.</p>
+    <div id="qrcodeBox"></div>
+    <div class="sync-row">
+      <input type="text" id="syncLinkInput" class="sync-input mono" readonly>
+      <button class="reset-btn mono" id="copyLinkBtn">COPY LINK</button>
+    </div>
+    <p class="sync-note">Have a link or code to load instead? Paste it below.</p>
+    <div class="sync-row">
+      <input type="text" id="pasteCodeInput" class="sync-input mono" placeholder="paste sync link or code here">
+      <button class="reset-btn mono" id="applyPasteBtn">APPLY</button>
+    </div>
+  </div>
+</div>
+
+<main id="trail"></main>
+
+<footer>
+  Progress is saved automatically in this browser as items are completed.
+</footer>
+
+<script>
+const DATA = [
+{
+  title: "Python Basics & Syntax",
+  blurb: "The absolute starting point — comfortable reading and writing simple Python.",
+  items: [
+    "Installing Python and running scripts (python vs python3, REPL basics)",
+    "Variables, naming conventions, and dynamic typing",
+    "Core data types: int, float, str, bool, and type conversion",
+    "Operators: arithmetic, comparison, logical, and operator precedence",
+    "Input/output: input(), print(), and basic string formatting",
+    "Conditionals: if/elif/else",
+    "Loops: for, while, break, continue, else on loops",
+    "Writing and running your first multi-file script",
+  ]
+},
+{
+  title: "Core Data Structures",
+  blurb: "The containers you'll reach for constantly in every Python program.",
+  items: [
+    "Lists: indexing, slicing, mutating, common methods",
+    "Tuples: immutability and when to prefer them over lists",
+    "Dictionaries: keys, values, iteration, common methods",
+    "Sets: uniqueness, set operations (union, intersection, difference)",
+    "Strings in depth: slicing, formatting (f-strings), common string methods",
+    "Choosing the right data structure for a problem",
+    "List, dict, and set comprehensions",
+  ]
+},
+{
+  title: "Functions & Functional Basics",
+  blurb: "Structuring code into reusable, well-defined pieces.",
+  items: [
+    "Defining functions: parameters, return values, default arguments",
+    "*args and **kwargs — what they are and when to use them",
+    "Variable scope: local, global, and the 'nonlocal' keyword",
+    "Lambda functions and when a lambda is (and isn't) appropriate",
+    "Higher-order functions: map, filter, and functools.reduce",
+    "Recursion: writing and reasoning about recursive functions",
+    "Docstrings and writing functions others can understand",
+  ]
+},
+{
+  title: "Object-Oriented Programming",
+  blurb: "How real Python codebases organize state and behavior together.",
+  items: [
+    "Classes and objects: attributes, methods, the __init__ constructor",
+    "Instance vs class attributes and methods",
+    "Inheritance and method overriding",
+    "Polymorphism and duck typing in Python",
+    "Encapsulation conventions: public, _protected, __private naming",
+    "Dunder (magic) methods: __str__, __repr__, __eq__, __len__, etc.",
+    "Class methods and static methods (@classmethod, @staticmethod)",
+    "Composition vs inheritance — when to prefer each",
+    "Dataclasses for reducing boilerplate in simple classes",
+  ]
+},
+{
+  title: "Modules, Packages & Environments",
+  blurb: "Organizing code across files and keeping dependencies under control.",
+  items: [
+    "Modules: import styles, __name__ == '__main__' pattern",
+    "Organizing a project into packages with __init__.py",
+    "Virtual environments: venv and why every project needs its own",
+    "Installing and managing dependencies with pip and requirements.txt",
+    "Modern dependency management with Poetry or uv",
+    "Understanding PYTHONPATH and how imports are resolved",
+  ]
+},
+{
+  title: "File Handling & Data Formats",
+  blurb: "Getting data in and out of a Python program reliably.",
+  items: [
+    "Reading and writing text files, and the 'with' statement for file handling",
+    "Working with CSV files (the csv module and pandas basics)",
+    "Working with JSON: json.load/dump and serialization basics",
+    "Working with paths portably using pathlib",
+    "Reading configuration files (YAML/TOML/.env basics)",
+  ]
+},
+{
+  title: "Error Handling & Debugging",
+  blurb: "Writing code that fails predictably instead of mysteriously.",
+  items: [
+    "try/except/else/finally and catching specific exceptions",
+    "Raising custom exceptions and building an exception hierarchy",
+    "Using assertions appropriately",
+    "Debugging with pdb / breakpoint()",
+    "Logging properly with the logging module instead of print statements",
+    "Reading and interpreting Python tracebacks confidently",
+  ]
+},
+{
+  title: "Iterators, Generators & Comprehensions",
+  blurb: "The patterns that make Python code both elegant and memory-efficient.",
+  items: [
+    "The iterator protocol: __iter__ and __next__ explained",
+    "Generator functions and the yield keyword",
+    "Generator expressions vs list comprehensions — memory tradeoffs",
+    "itertools: chain, groupby, islice, and other essentials",
+    "Lazy evaluation: why generators matter for large datasets",
+  ]
+},
+{
+  title: "Decorators, Context Managers & Closures",
+  blurb: "The 'advanced beginner' concepts that unlock reading real-world Python code.",
+  items: [
+    "Closures: functions that remember their enclosing scope",
+    "Writing your own decorators, and decorators with arguments",
+    "Common built-in decorators: @property, @staticmethod, @classmethod, @lru_cache",
+    "Context managers: the 'with' statement, __enter__ / __exit__",
+    "Writing custom context managers with contextlib",
+  ]
+},
+{
+  title: "Python Standard Library Deep Dive",
+  blurb: "Batteries-included — knowing what's already there saves you from reinventing it.",
+  items: [
+    "collections: Counter, defaultdict, namedtuple, deque",
+    "datetime and working with dates, times, and timezones",
+    "re: regular expressions for pattern matching in text",
+    "functools: partial, wraps, lru_cache in more depth",
+    "os and sys: interacting with the operating system and interpreter",
+    "argparse: building command-line interfaces",
+    "typing: type hints, Optional, Union, generics for static analysis",
+  ]
+},
+{
+  title: "Testing in Python",
+  blurb: "Confidence that your code does what you think it does.",
+  items: [
+    "Writing unit tests with pytest: fixtures, assertions, parametrize",
+    "Mocking dependencies with unittest.mock",
+    "Test organization: structuring a tests/ directory for a real project",
+    "Measuring test coverage with pytest-cov",
+    "Test-driven development (TDD) at a conceptual level",
+  ]
+},
+{
+  title: "Concurrency & Parallelism",
+  blurb: "Making Python do more than one thing at once, correctly.",
+  items: [
+    "The Global Interpreter Lock (GIL) — what it actually restricts",
+    "Threading: when threads help (I/O-bound work) and when they don't",
+    "Multiprocessing: true parallelism for CPU-bound work",
+    "asyncio fundamentals: the event loop, async/await, coroutines",
+    "Choosing between threading, multiprocessing, and asyncio for a given problem",
+  ]
+},
+{
+  title: "Working with Databases",
+  blurb: "Persisting data from a Python program.",
+  items: [
+    "sqlite3 basics for lightweight local storage",
+    "Connecting to Postgres/MySQL with a driver (psycopg2, mysqlclient)",
+    "ORMs: SQLAlchemy fundamentals for mapping objects to tables",
+    "Writing safe, parameterized queries to avoid SQL injection",
+  ]
+},
+{
+  title: "Packaging & Distributing Code",
+  blurb: "Turning a script into something installable and shareable.",
+  items: [
+    "Project structure conventions (src layout vs flat layout)",
+    "pyproject.toml and modern packaging standards",
+    "Building a distributable package and publishing to PyPI",
+    "Versioning conventions (semantic versioning) for a package",
+    "Writing a good README and choosing a license",
+  ]
+},
+{
+  title: "Performance & Optimization",
+  blurb: "Making correct code fast, based on evidence rather than guesses.",
+  items: [
+    "Profiling code with cProfile and timeit before optimizing anything",
+    "Common performance pitfalls (unnecessary copies, repeated lookups)",
+    "Memory profiling basics",
+    "When to reach for NumPy/vectorization instead of pure-Python loops",
+    "When C extensions or Cython are actually worth the complexity",
+  ]
+},
+{
+  title: "Advanced Python Concepts",
+  blurb: "What's happening under the hood once you're past intermediate fluency.",
+  items: [
+    "Metaclasses: what they are and why you'll rarely need them",
+    "Descriptors: the mechanism behind @property under the hood",
+    "The data model in depth: how Python objects really work",
+    "Abstract Base Classes (ABCs) and the abc module",
+    "Monkey patching: what it is and why to be cautious with it",
+    "Memory management basics: reference counting and garbage collection",
+  ]
+},
+{
+  title: "Tooling & Best Practices",
+  blurb: "The habits that separate 'code that runs' from 'code a team can maintain'.",
+  items: [
+    "Code style and linting: PEP 8, black, ruff/flake8",
+    "Static type checking with mypy",
+    "Pre-commit hooks for enforcing checks automatically",
+    "Git workflows for a Python project: branches, PRs, code review basics",
+    "Setting up CI (lint, test) with GitHub Actions for a Python repo",
+    { text: "Certification milestone: PCEP – Certified Entry-Level Python Programmer (Python Institute)", cert: true },
+    { text: "Certification milestone: PCAP – Certified Associate in Python Programming (Python Institute)", cert: true },
+  ]
+},
+{
+  title: "Portfolio & Going Further",
+  blurb: "Turning the roadmap into projects and real fluency.",
+  items: [
+    "Build 2–3 substantial projects: a CLI tool, a script automating something real, and one with a database",
+    "Rebuild one small program from scratch without references to test real fluency",
+    "Read a well-regarded open-source Python codebase to see these patterns used for real",
+    "Contribute a small fix to an open-source Python project",
+    { text: "Certification milestone: PCPP1 – Certified Professional in Python Programming (advanced, optional capstone)", cert: true },
+    "Pick a specialization next: web backends (FastAPI/Django), data/AI (pandas/PyTorch), or automation/DevOps tooling",
+  ]
+},
+];
+
+const STORAGE_KEY = "python-progress-v1";
+
+function loadState(){
+  try{
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+  }catch(e){ return {}; }
+}
+function saveState(state){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+let state = loadState();
+let totalItems = 0;
+
+function itemId(si, ii){ return `s${si}-i${ii}`; }
+
+function flagSVGOutline(){
+  return `<svg class="flag-outline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22V4"/><path d="M4 4c2-1.5 4-1.5 6 0s4 1.5 6 0v10c-2 1.5-4 1.5-6 0s-4-1.5-6 0"/></svg>`;
+}
+function flagSVGFilled(){
+  return `<svg class="flag-filled" viewBox="0 0 24 24" fill="currentColor"><path d="M5 21a1 1 0 0 1-1-1V4c2-1.3 4-1.3 6 0s4 1.3 6 0a1 1 0 0 1 1.4.9v9.6a1 1 0 0 1-.5.87c-2.2 1.3-4.4 1.3-6.4-.02-2-1.3-4-1.3-5.5-.35V20a1 1 0 0 1-1 1Z"/></svg>`;
+}
+
+function render(){
+  const trail = document.getElementById("trail");
+  trail.innerHTML = "";
+  totalItems = 0;
+
+  DATA.forEach((stage, si) => {
+    const stageEl = document.createElement("div");
+    stageEl.className = "stage";
+    stageEl.dataset.stageIndex = si;
+
+    const items = stage.items.map((it, ii) => {
+      totalItems++;
+      const obj = typeof it === "string" ? { text: it, cert: false } : it;
+      obj.id = itemId(si, ii);
+      return obj;
+    });
+
+    const doneCount = items.filter(it => state[it.id]).length;
+    if (doneCount === items.length) stageEl.classList.add("complete");
+
+    stageEl.innerHTML = `
+      <div class="stage-marker"></div>
+      <div class="stage-head">
+        <div class="stage-title-wrap">
+          <span class="stage-num mono">STAGE ${String(si+1).padStart(2,"0")}</span>
+          <h2 class="stage-title">${stage.title}</h2>
+          <p class="stage-blurb">${stage.blurb}</p>
+        </div>
+        <div class="stage-meta">
+          <span class="stage-count mono">${doneCount}/${items.length}</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+        </div>
+      </div>
+      <div class="stage-body"></div>
+    `;
+
+    const body = stageEl.querySelector(".stage-body");
+    items.forEach(it => {
+      const itemEl = document.createElement("div");
+      itemEl.className = "item" + (it.cert ? " cert" : "") + (state[it.id] ? " done" : "");
+      itemEl.dataset.id = it.id;
+      itemEl.innerHTML = `
+        <button class="flag-btn" aria-label="Toggle complete">
+          ${flagSVGOutline()}
+          ${flagSVGFilled()}
+        </button>
+        <div class="item-text">
+          ${it.text}
+          ${it.cert ? `<div class="cert-badge">CERTIFICATION</div>` : ``}
+        </div>
+      `;
+      itemEl.querySelector(".flag-btn").addEventListener("click", () => {
+        state[it.id] = !state[it.id];
+        saveState(state);
+        render();
+        restoreOpenStages();
+      });
+      body.appendChild(itemEl);
+    });
+
+    stageEl.querySelector(".stage-head").addEventListener("click", () => {
+      stageEl.classList.toggle("open");
+    });
+
+    trail.appendChild(stageEl);
+  });
+
+  updateProgress();
+}
+
+function updateProgress(){
+  const doneCount = Object.values(state).filter(Boolean).length;
+  const pct = totalItems ? Math.round((doneCount / totalItems) * 100) : 0;
+  document.getElementById("statDone").textContent = doneCount;
+  document.getElementById("statPct").textContent = pct + "%";
+  document.getElementById("progressFill").style.width = pct + "%";
+}
+
+let openStageIndexes = new Set([0]);
+function restoreOpenStages(){
+  document.querySelectorAll(".stage").forEach(el => {
+    if (openStageIndexes.has(Number(el.dataset.stageIndex))) el.classList.add("open");
+  });
+}
+document.addEventListener("click", (e) => {
+  const head = e.target.closest(".stage-head");
+  if (!head) return;
+  const stageEl = head.closest(".stage");
+  const idx = Number(stageEl.dataset.stageIndex);
+  if (openStageIndexes.has(idx)) openStageIndexes.delete(idx);
+  else openStageIndexes.add(idx);
+});
+
+document.getElementById("resetBtn").addEventListener("click", () => {
+  if (confirm("Reset all progress on this device? This can't be undone.")) {
+    state = {};
+    saveState(state);
+    render();
+    restoreOpenStages();
+  }
+});
+
+function encodeStateToCode(obj){
+  return btoa(encodeURIComponent(JSON.stringify(obj))).replace(/=+$/,"");
+}
+function decodeCodeToState(code){
+  const padded = code + "=".repeat((4 - code.length % 4) % 4);
+  return JSON.parse(decodeURIComponent(atob(padded)));
+}
+function buildSyncLink(){
+  const code = encodeStateToCode(state);
+  const base = location.origin + location.pathname;
+  return base + "#sync=" + code;
+}
+function extractCodeFromInput(value){
+  const trimmed = value.trim();
+  const hashIdx = trimmed.indexOf("#sync=");
+  if (hashIdx !== -1) return trimmed.slice(hashIdx + 6);
+  const qIdx = trimmed.indexOf("sync=");
+  if (qIdx !== -1) return trimmed.slice(qIdx + 5);
+  return trimmed;
+}
+function applyIncomingState(incoming){
+  if (typeof incoming !== "object" || incoming === null) throw new Error("bad format");
+  const mergeChoice = confirm(
+    "Click OK to MERGE this with what's already flagged on this device.\nClick Cancel to REPLACE this device's progress entirely with the incoming data."
+  );
+  state = mergeChoice ? Object.assign({}, state, incoming) : Object.assign({}, incoming);
+  saveState(state);
+  render();
+  restoreOpenStages();
+}
+
+let qrRendered = false;
+function renderSyncPanel(){
+  const link = buildSyncLink();
+  document.getElementById("syncLinkInput").value = link;
+  const box = document.getElementById("qrcodeBox");
+  box.innerHTML = "";
+  try {
+    new QRCode(box, { text: link, width: 176, height: 176, correctLevel: QRCode.CorrectLevel.M });
+  } catch(e) { box.textContent = "QR unavailable — use the link/copy option below."; }
+}
+
+document.getElementById("syncBtn").addEventListener("click", () => {
+  const panel = document.getElementById("syncPanel");
+  panel.classList.toggle("open");
+  if (panel.classList.contains("open")) renderSyncPanel();
+});
+
+document.getElementById("copyLinkBtn").addEventListener("click", () => {
+  const input = document.getElementById("syncLinkInput");
+  input.select();
+  input.setSelectionRange(0, 99999);
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(input.value).then(() => alert("Link copied.")).catch(() => document.execCommand("copy"));
+  } else {
+    document.execCommand("copy");
+  }
+});
+
+document.getElementById("applyPasteBtn").addEventListener("click", () => {
+  const raw = document.getElementById("pasteCodeInput").value;
+  if (!raw.trim()) return;
+  try {
+    const code = extractCodeFromInput(raw);
+    const incoming = decodeCodeToState(code);
+    applyIncomingState(incoming);
+    document.getElementById("pasteCodeInput").value = "";
+    alert("Progress applied.");
+  } catch (e) {
+    alert("Could not read that — make sure it's a sync link or code from this same roadmap.");
+  }
+});
+
+(function checkIncomingHash(){
+  const hash = location.hash;
+  if (hash && hash.indexOf("sync=") !== -1) {
+    try {
+      const code = hash.slice(hash.indexOf("sync=") + 5);
+      const incoming = decodeCodeToState(code);
+      applyIncomingState(incoming);
+    } catch(e) { /* ignore malformed hash */ }
+    history.replaceState(null, "", location.pathname + location.search);
+  }
+})();
+
+render();
+restoreOpenStages();
+</script>
+</body>
+</html>
