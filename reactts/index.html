@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Professional Frontend Developer — React + TypeScript</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  :root{
+    --bg: #101418;
+    --panel: #171C22;
+    --panel-2: #1D232B;
+    --line: #2B333C;
+    --ink: #ECF1F5;
+    --ink-dim: #9AA7B2;
+    --ink-faint: #647079;
+    --gold: #F472B6;
+    --gold-dim: #7A2E50;
+    --teal: #22D3EE;
+    --teal-dim: #0E4550;
+    --green: #34D399;
+    --green-dim: #144A38;
+    --danger: #FF6B6B;
+    --radius: 10px;
+    --maxw: 880px;
+  }
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  body{
+    margin:0;
+    background:
+      radial-gradient(1200px 600px at 15% -10%, rgba(34,211,238,0.10), transparent 60%),
+      radial-gradient(900px 500px at 100% 0%, rgba(244,114,182,0.08), transparent 55%),
+      var(--bg);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", system-ui, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .mono{ font-family: "IBM Plex Mono", monospace; }
+
+  header.hero{
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 48px 20px 28px;
+  }
+  .eyebrow{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 13px;
+    color: var(--teal);
+    letter-spacing: 0.02em;
+  }
+  h1{
+    font-size: clamp(28px, 5vw, 42px);
+    line-height: 1.15;
+    margin: 10px 0 14px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .hero p{
+    color: var(--ink-dim);
+    font-size: 16px;
+    max-width: 62ch;
+  }
+
+  .trailbar{
+    max-width: var(--maxw);
+    margin: 0 auto 8px;
+    padding: 0 20px;
+  }
+  .progress-shell{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .progress-stat{
+    display:flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .progress-stat .num{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--gold);
+  }
+  .progress-stat .lbl{
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+  .progress-track{
+    flex: 1 1 240px;
+    height: 8px;
+    background: var(--panel-2);
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+  }
+  .progress-fill{
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal), var(--green));
+    width: 0%;
+    transition: width 0.4s ease;
+  }
+  .reset-btn{
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--ink-faint);
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .reset-btn:hover{ border-color: var(--danger); color: var(--danger); }
+
+  main{
+    max-width: var(--maxw);
+    margin: 28px auto 80px;
+    padding: 0 20px;
+  }
+
+  .stage{
+    position: relative;
+    border-left: 2px solid var(--line);
+    margin-left: 14px;
+    padding-left: 26px;
+    margin-bottom: 6px;
+  }
+  .stage:last-child{ border-left-color: transparent; }
+
+  .stage-marker{
+    position: absolute;
+    left: -9px;
+    top: 4px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--panel-2);
+    border: 2px solid var(--line);
+    transition: all 0.2s ease;
+  }
+  .stage.complete .stage-marker{
+    background: var(--green);
+    border-color: var(--green);
+  }
+
+  .stage-head{
+    cursor: pointer;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 0;
+    user-select: none;
+  }
+  .stage-title-wrap{ flex: 1; }
+  .stage-num{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    color: var(--ink-faint);
+    display:block;
+    margin-bottom: 2px;
+  }
+  .stage-title{
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+  }
+  .stage-blurb{
+    color: var(--ink-dim);
+    font-size: 13.5px;
+    margin: 6px 0 0;
+    max-width: 60ch;
+  }
+  .stage-meta{
+    display:flex;
+    align-items:center;
+    gap: 10px;
+    white-space: nowrap;
+  }
+  .stage-count{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    color: var(--ink-faint);
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    padding: 3px 8px;
+    border-radius: 999px;
+  }
+  .chevron{
+    width: 18px; height: 18px;
+    color: var(--ink-faint);
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+  }
+  .stage.open .chevron{ transform: rotate(90deg); }
+
+  .stage-body{
+    display: none;
+    padding: 2px 0 22px;
+  }
+  .stage.open .stage-body{ display: block; }
+
+  .item{
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 12px 10px 14px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--teal-dim);
+  }
+  .item.cert{
+    border-color: var(--gold-dim);
+    border-left: 3px solid var(--gold);
+    background: linear-gradient(180deg, rgba(244,114,182,0.10), rgba(244,114,182,0.03));
+  }
+  .item.done{
+    opacity: 0.6;
+    border-left: 3px solid var(--green);
+    background: linear-gradient(180deg, rgba(52,211,153,0.08), rgba(52,211,153,0.02));
+  }
+  .item.done.cert{
+    border-left: 3px solid var(--green);
+  }
+  .flag-btn{
+    flex-shrink: 0;
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    cursor: pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 0;
+    margin-top: 1px;
+  }
+  .flag-btn svg{ width: 15px; height: 15px; }
+  .flag-btn .flag-outline{ color: var(--ink-faint); }
+  .flag-btn .flag-filled{ color: var(--green); display:none; }
+  .item.done .flag-btn{ background: var(--green-dim); border-color: var(--green); }
+  .item.done .flag-outline{ display:none; }
+  .item.done .flag-filled{ display:block; }
+
+  .item-text{
+    flex: 1;
+    font-size: 14.5px;
+  }
+  .item.done .item-text{ text-decoration: line-through; text-decoration-color: var(--ink-faint); }
+
+  .cert-badge{
+    display:inline-flex;
+    align-items:center;
+    gap: 5px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    color: var(--gold);
+    background: rgba(232,179,75,0.1);
+    border: 1px solid var(--gold-dim);
+    padding: 2px 7px;
+    border-radius: 999px;
+    margin-top: 6px;
+  }
+
+  footer{
+    max-width: var(--maxw);
+    margin: 0 auto 60px;
+    padding: 24px 20px;
+    color: var(--ink-faint);
+    font-size: 12.5px;
+    border-top: 1px solid var(--line);
+  }
+
+  .sync-panel{
+    display: none;
+    max-width: var(--maxw);
+    margin: 10px auto 0;
+    padding: 0 20px;
+  }
+  .sync-panel.open{ display: block; }
+  .sync-panel .sync-note{
+    color: var(--ink-dim);
+    font-size: 13px;
+    margin: 10px 0 8px;
+  }
+  #qrcodeBox{
+    display: inline-block;
+    padding: 10px;
+    background: #fff;
+    border-radius: 8px;
+    margin: 4px 0 12px;
+  }
+  .sync-row{
+    display: flex;
+    gap: 8px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+  }
+  .sync-input{
+    flex: 1 1 220px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    min-width: 0;
+  }
+
+  @media (max-width: 520px){
+    .stage{ margin-left: 6px; padding-left: 18px; }
+    .stage-title{ font-size: 16.5px; }
+    .progress-shell{ padding: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <span class="eyebrow mono">// LEARNING ROADMAP</span>
+  <h1>Professional Frontend Developer</h1>
+  <p>A complete path to professional frontend engineering on a React + TypeScript stack: HTML/CSS and JavaScript foundations first, then TypeScript, React, state, testing, performance, accessibility, architecture, and the professional practices expected on a real team.</p>
+</header>
+
+<div class="trailbar">
+  <div class="progress-shell">
+    <div class="progress-stat">
+      <span class="num" id="statDone">0</span>
+      <span class="lbl">completed</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-stat">
+      <span class="num" id="statPct">0%</span>
+      <span class="lbl">of trail</span>
+    </div>
+    <button class="reset-btn mono" id="syncBtn">SYNC ACROSS DEVICES</button>
+    <button class="reset-btn mono" id="resetBtn">RESET PROGRESS</button>
+  </div>
+
+  <div class="sync-panel" id="syncPanel">
+    <p class="sync-note">Scan this code with a camera app, or open the link, to load this progress.</p>
+    <div id="qrcodeBox"></div>
+    <div class="sync-row">
+      <input type="text" id="syncLinkInput" class="sync-input mono" readonly>
+      <button class="reset-btn mono" id="copyLinkBtn">COPY LINK</button>
+    </div>
+    <p class="sync-note">Have a link or code to load instead? Paste it below.</p>
+    <div class="sync-row">
+      <input type="text" id="pasteCodeInput" class="sync-input mono" placeholder="paste sync link or code here">
+      <button class="reset-btn mono" id="applyPasteBtn">APPLY</button>
+    </div>
+  </div>
+</div>
+
+<main id="trail"></main>
+
+<footer>
+  Progress is saved automatically in this browser as items are completed.
+</footer>
+
+<script>
+const DATA = [
+{
+  title: "HTML Foundations",
+  blurb: "The structure every frontend, no matter the framework, ultimately renders down to.",
+  items: [
+    "Semantic HTML: using the right element for the job (nav, article, section, button vs div)",
+    "Forms: inputs, labels, and native form validation attributes",
+    "The document structure and how the browser parses it",
+    "Meta tags: viewport, SEO basics, Open Graph",
+  ]
+},
+{
+  title: "CSS Foundations",
+  blurb: "Layout fluency here saves hours of fighting styles later.",
+  items: [
+    "The box model: margin, border, padding, content",
+    "Flexbox: the mental model, not just the properties",
+    "CSS Grid: when it beats Flexbox and how to reason about it",
+    "Responsive design: media queries and mobile-first thinking",
+    "CSS specificity and the cascade — why a style 'isn't applying'",
+    "CSS variables (custom properties) for theming",
+  ]
+},
+{
+  title: "JavaScript Fundamentals (ES6+)",
+  blurb: "React is JavaScript with a UI model on top — this needs to be fluent, not just familiar.",
+  items: [
+    "let/const, arrow functions, template literals",
+    "Array methods: map, filter, reduce, find, some/every",
+    "Destructuring, spread/rest operators",
+    "Promises, async/await, and the event loop",
+    "Optional chaining (?.) and nullish coalescing (??)",
+    "ES Modules: import/export",
+    "The DOM and why manipulating it directly gets messy at scale",
+  ]
+},
+{
+  title: "TypeScript Fundamentals",
+  blurb: "In a professional codebase, this is the default, not an add-on — worth learning properly.",
+  items: [
+    "Why static typing matters in a team codebase",
+    "Basic types, interfaces vs type aliases",
+    "Union types, literal types, and optional properties",
+    "Typing functions: parameters, return types, generics (the intuition first)",
+    "Utility types: Partial, Pick, Omit, Record",
+    "Type narrowing and custom type guards",
+    "Strict mode in tsconfig.json and why teams turn it on",
+  ]
+},
+{
+  title: "Git & Developer Workflow",
+  blurb: "The collaboration layer that makes you employable on a team, not just capable solo.",
+  items: [
+    "Git basics: commits, branches, merges, rebasing at a conceptual level",
+    "Writing clear commit messages and PR descriptions",
+    "Code review etiquette: giving and receiving feedback well",
+    "Working with issue trackers (Jira/Linear/GitHub Issues) in a team flow",
+  ]
+},
+{
+  title: "React Fundamentals",
+  blurb: "The core mental model: UI as a function of state.",
+  items: [
+    "Components, JSX, and how it compiles to JS",
+    "Props, typed with interfaces",
+    "useState and controlled state updates",
+    "Handling events with properly typed handlers",
+    "Conditional rendering and rendering lists with correct 'key' usage",
+    "Composition: children props and splitting UI deliberately",
+  ]
+},
+{
+  title: "React Hooks & Patterns",
+  blurb: "Where most real-world React bugs and performance issues actually live.",
+  items: [
+    "useEffect: dependency arrays, cleanup, and common pitfalls",
+    "useRef, useMemo, useCallback — what each actually optimizes",
+    "useContext for shared state without prop drilling",
+    "useReducer for complex, predictable state transitions",
+    "Writing custom hooks to extract and share logic",
+    "The Rules of Hooks and why they exist",
+  ]
+},
+{
+  title: "TypeScript with React",
+  blurb: "This is the specific, high-value skill overlap for your target stack.",
+  items: [
+    "Typing props, including optional props and children (React.ReactNode)",
+    "Typing event handlers (React.MouseEvent, React.ChangeEvent, etc.)",
+    "Typing hooks correctly (useState generics, useRef with DOM nodes)",
+    "Typing API responses and using them safely in components",
+    "Generic components: writing a reusable, properly typed component",
+  ]
+},
+{
+  title: "State Management at Scale",
+  blurb: "Once Context and prop drilling stop being enough for a growing app.",
+  items: [
+    "Recognizing when local state truly isn't sufficient anymore",
+    "Lightweight global state: Zustand or Jotai, typed",
+    "Redux Toolkit fundamentals, with TypeScript",
+    "Separating server state from client state as a design decision",
+    "React Query / TanStack Query: caching, refetching, and typed queries",
+  ]
+},
+{
+  title: "Routing",
+  blurb: "Turning a single-page app into something that feels like a real site.",
+  items: [
+    "Client-side routing with React Router: routes, nested routes, layouts",
+    "Dynamic route params, typed",
+    "Protected/authenticated routes",
+    "File-based routing in Next.js, if the team's stack uses it",
+  ]
+},
+{
+  title: "Forms & Validation",
+  blurb: "Deceptively fiddly, and a near-guaranteed part of any real product.",
+  items: [
+    "Controlled forms, typed correctly",
+    "React Hook Form fundamentals",
+    "Schema validation with Zod, and deriving TypeScript types from schemas",
+    "Handling submission states: loading, error, success",
+  ]
+},
+{
+  title: "API Integration & Data Fetching",
+  blurb: "Most frontend tickets ultimately come down to this.",
+  items: [
+    "Fetching data with fetch/axios and typing responses end-to-end",
+    "Handling loading/error states without duplicating logic everywhere",
+    "Optimistic updates for a snappier UI",
+    "Handling pagination and infinite scroll patterns",
+    "Real-time updates: WebSockets or Server-Sent Events, conceptually",
+  ]
+},
+{
+  title: "Styling Systems & Design Systems",
+  blurb: "Professional frontend work usually means working within a system, not inventing one per page.",
+  items: [
+    "Utility-first CSS with Tailwind CSS",
+    "Component libraries: shadcn/ui, Radix, or Material UI — tradeoffs",
+    "Working within an existing design system and component library",
+    "Theming and dark mode implementation patterns",
+  ]
+},
+{
+  title: "Testing",
+  blurb: "Confidence to change code without breaking it silently — expected on any professional team.",
+  items: [
+    "Unit testing with Vitest or Jest",
+    "Component testing with React Testing Library — testing behavior, not implementation",
+    "Mocking API calls and modules in tests",
+    "End-to-end testing basics with Playwright or Cypress",
+    "Visual regression testing at a conceptual level (Chromatic/Percy)",
+  ]
+},
+{
+  title: "Performance Optimization",
+  blurb: "What separates 'it works' from 'it feels fast'.",
+  items: [
+    "Identifying unnecessary re-renders with React DevTools Profiler",
+    "React.memo, useMemo, useCallback — used deliberately, not everywhere",
+    "Code splitting and lazy loading routes/components",
+    "Bundle analysis and reducing shipped JavaScript",
+    "Core Web Vitals: LCP, CLS, INP, and what affects each",
+  ]
+},
+{
+  title: "Accessibility (a11y)",
+  blurb: "A genuine professional differentiator, and often a compliance requirement.",
+  items: [
+    "Semantic HTML as the foundation of accessibility",
+    "ARIA roles and attributes — and when NOT to use them",
+    "Keyboard navigation and focus management",
+    "Color contrast and screen-reader basics",
+    "Testing with axe or Lighthouse accessibility audits",
+  ]
+},
+{
+  title: "Build Tools & the Web Platform",
+  blurb: "Understanding what's happening beneath 'npm run dev'.",
+  items: [
+    "Vite fundamentals: dev server, bundling",
+    "The Virtual DOM and reconciliation, explained plainly",
+    "Browser rendering pipeline: parse, style, layout, paint, composite",
+    "HTTP caching basics and how it affects load performance",
+    "Package management and understanding a lockfile",
+  ]
+},
+{
+  title: "Frontend Architecture",
+  blurb: "The patterns that show up once you're responsible for a codebase, not just a feature.",
+  items: [
+    "Folder structure and module boundaries for a scaling app",
+    "Feature-based vs layer-based project organization",
+    "Shared component libraries and design tokens across teams",
+    "Micro-frontends — the concept, and when it's actually justified",
+    "Monorepo basics (Turborepo/Nx) for multi-app codebases",
+  ]
+},
+{
+  title: "CI/CD, Deployment & Monitoring",
+  blurb: "Shipping changes safely and knowing when something breaks in production.",
+  items: [
+    "CI pipelines: lint, typecheck, test, build as merge gates",
+    "Deploying to Vercel/Netlify, or a self-hosted setup",
+    "Environment-based configuration for staging vs production",
+    "Error tracking (Sentry) and basic frontend monitoring",
+    "Feature flags for safer, gradual rollouts",
+  ]
+},
+{
+  title: "Professional Practices",
+  blurb: "The soft-but-essential skills that determine how you're perceived on a team.",
+  items: [
+    "Estimating and breaking down frontend tickets realistically",
+    "Writing clear technical documentation for components/features",
+    "Pairing and asking for help effectively when stuck",
+    "Handling design handoff (Figma) and clarifying ambiguous specs",
+    { text: "Certification milestone: Meta Front-End Developer Professional Certificate (Coursera)", cert: true },
+  ]
+},
+{
+  title: "Portfolio, Interviews & Career Growth",
+  blurb: "Turning the roadmap into a job and continued growth.",
+  items: [
+    "Build 2–3 polished projects: one with auth+API integration, one focused on a design system/UI kit",
+    "Practice explaining architectural decisions and tradeoffs out loud",
+    "Frontend-specific interview practice: JS fundamentals, React behavior questions, small coding challenges",
+    "Contribute to one open-source React/TypeScript project or component library",
+    "Specialize deliberately over time: performance, design systems, or accessibility are strong senior-track niches",
+  ]
+},
+];
+
+const STORAGE_KEY = "professional-frontend-progress-v1";
+
+function loadState(){
+  try{
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+  }catch(e){ return {}; }
+}
+function saveState(state){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+let state = loadState();
+let totalItems = 0;
+
+function itemId(si, ii){ return `s${si}-i${ii}`; }
+
+function flagSVGOutline(){
+  return `<svg class="flag-outline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22V4"/><path d="M4 4c2-1.5 4-1.5 6 0s4 1.5 6 0v10c-2 1.5-4 1.5-6 0s-4-1.5-6 0"/></svg>`;
+}
+function flagSVGFilled(){
+  return `<svg class="flag-filled" viewBox="0 0 24 24" fill="currentColor"><path d="M5 21a1 1 0 0 1-1-1V4c2-1.3 4-1.3 6 0s4 1.3 6 0a1 1 0 0 1 1.4.9v9.6a1 1 0 0 1-.5.87c-2.2 1.3-4.4 1.3-6.4-.02-2-1.3-4-1.3-5.5-.35V20a1 1 0 0 1-1 1Z"/></svg>`;
+}
+
+function render(){
+  const trail = document.getElementById("trail");
+  trail.innerHTML = "";
+  totalItems = 0;
+
+  DATA.forEach((stage, si) => {
+    const stageEl = document.createElement("div");
+    stageEl.className = "stage";
+    stageEl.dataset.stageIndex = si;
+
+    const items = stage.items.map((it, ii) => {
+      totalItems++;
+      const obj = typeof it === "string" ? { text: it, cert: false } : it;
+      obj.id = itemId(si, ii);
+      return obj;
+    });
+
+    const doneCount = items.filter(it => state[it.id]).length;
+    if (doneCount === items.length) stageEl.classList.add("complete");
+
+    stageEl.innerHTML = `
+      <div class="stage-marker"></div>
+      <div class="stage-head">
+        <div class="stage-title-wrap">
+          <span class="stage-num mono">STAGE ${String(si+1).padStart(2,"0")}</span>
+          <h2 class="stage-title">${stage.title}</h2>
+          <p class="stage-blurb">${stage.blurb}</p>
+        </div>
+        <div class="stage-meta">
+          <span class="stage-count mono">${doneCount}/${items.length}</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+        </div>
+      </div>
+      <div class="stage-body"></div>
+    `;
+
+    const body = stageEl.querySelector(".stage-body");
+    items.forEach(it => {
+      const itemEl = document.createElement("div");
+      itemEl.className = "item" + (it.cert ? " cert" : "") + (state[it.id] ? " done" : "");
+      itemEl.dataset.id = it.id;
+      itemEl.innerHTML = `
+        <button class="flag-btn" aria-label="Toggle complete">
+          ${flagSVGOutline()}
+          ${flagSVGFilled()}
+        </button>
+        <div class="item-text">
+          ${it.text}
+          ${it.cert ? `<div class="cert-badge">CERTIFICATION</div>` : ``}
+        </div>
+      `;
+      itemEl.querySelector(".flag-btn").addEventListener("click", () => {
+        state[it.id] = !state[it.id];
+        saveState(state);
+        render();
+        restoreOpenStages();
+      });
+      body.appendChild(itemEl);
+    });
+
+    stageEl.querySelector(".stage-head").addEventListener("click", () => {
+      stageEl.classList.toggle("open");
+    });
+
+    trail.appendChild(stageEl);
+  });
+
+  updateProgress();
+}
+
+function updateProgress(){
+  const doneCount = Object.values(state).filter(Boolean).length;
+  const pct = totalItems ? Math.round((doneCount / totalItems) * 100) : 0;
+  document.getElementById("statDone").textContent = doneCount;
+  document.getElementById("statPct").textContent = pct + "%";
+  document.getElementById("progressFill").style.width = pct + "%";
+}
+
+let openStageIndexes = new Set([0]);
+function restoreOpenStages(){
+  document.querySelectorAll(".stage").forEach(el => {
+    if (openStageIndexes.has(Number(el.dataset.stageIndex))) el.classList.add("open");
+  });
+}
+document.addEventListener("click", (e) => {
+  const head = e.target.closest(".stage-head");
+  if (!head) return;
+  const stageEl = head.closest(".stage");
+  const idx = Number(stageEl.dataset.stageIndex);
+  if (openStageIndexes.has(idx)) openStageIndexes.delete(idx);
+  else openStageIndexes.add(idx);
+});
+
+document.getElementById("resetBtn").addEventListener("click", () => {
+  if (confirm("Reset all progress on this device? This can't be undone.")) {
+    state = {};
+    saveState(state);
+    render();
+    restoreOpenStages();
+  }
+});
+
+function encodeStateToCode(obj){
+  return btoa(encodeURIComponent(JSON.stringify(obj))).replace(/=+$/,"");
+}
+function decodeCodeToState(code){
+  const padded = code + "=".repeat((4 - code.length % 4) % 4);
+  return JSON.parse(decodeURIComponent(atob(padded)));
+}
+function buildSyncLink(){
+  const code = encodeStateToCode(state);
+  const base = location.origin + location.pathname;
+  return base + "#sync=" + code;
+}
+function extractCodeFromInput(value){
+  const trimmed = value.trim();
+  const hashIdx = trimmed.indexOf("#sync=");
+  if (hashIdx !== -1) return trimmed.slice(hashIdx + 6);
+  const qIdx = trimmed.indexOf("sync=");
+  if (qIdx !== -1) return trimmed.slice(qIdx + 5);
+  return trimmed;
+}
+function applyIncomingState(incoming){
+  if (typeof incoming !== "object" || incoming === null) throw new Error("bad format");
+  const mergeChoice = confirm(
+    "Click OK to MERGE this with what's already flagged on this device.\nClick Cancel to REPLACE this device's progress entirely with the incoming data."
+  );
+  state = mergeChoice ? Object.assign({}, state, incoming) : Object.assign({}, incoming);
+  saveState(state);
+  render();
+  restoreOpenStages();
+}
+
+let qrRendered = false;
+function renderSyncPanel(){
+  const link = buildSyncLink();
+  document.getElementById("syncLinkInput").value = link;
+  const box = document.getElementById("qrcodeBox");
+  box.innerHTML = "";
+  try {
+    new QRCode(box, { text: link, width: 176, height: 176, correctLevel: QRCode.CorrectLevel.M });
+  } catch(e) { box.textContent = "QR unavailable — use the link/copy option below."; }
+}
+
+document.getElementById("syncBtn").addEventListener("click", () => {
+  const panel = document.getElementById("syncPanel");
+  panel.classList.toggle("open");
+  if (panel.classList.contains("open")) renderSyncPanel();
+});
+
+document.getElementById("copyLinkBtn").addEventListener("click", () => {
+  const input = document.getElementById("syncLinkInput");
+  input.select();
+  input.setSelectionRange(0, 99999);
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(input.value).then(() => alert("Link copied.")).catch(() => document.execCommand("copy"));
+  } else {
+    document.execCommand("copy");
+  }
+});
+
+document.getElementById("applyPasteBtn").addEventListener("click", () => {
+  const raw = document.getElementById("pasteCodeInput").value;
+  if (!raw.trim()) return;
+  try {
+    const code = extractCodeFromInput(raw);
+    const incoming = decodeCodeToState(code);
+    applyIncomingState(incoming);
+    document.getElementById("pasteCodeInput").value = "";
+    alert("Progress applied.");
+  } catch (e) {
+    alert("Could not read that — make sure it's a sync link or code from this same roadmap.");
+  }
+});
+
+(function checkIncomingHash(){
+  const hash = location.hash;
+  if (hash && hash.indexOf("sync=") !== -1) {
+    try {
+      const code = hash.slice(hash.indexOf("sync=") + 5);
+      const incoming = decodeCodeToState(code);
+      applyIncomingState(incoming);
+    } catch(e) { /* ignore malformed hash */ }
+    history.replaceState(null, "", location.pathname + location.search);
+  }
+})();
+
+render();
+restoreOpenStages();
+</script>
+</body>
+</html>
