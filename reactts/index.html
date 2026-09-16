@@ -432,6 +432,16 @@ const DATA = [
   ]
 },
 {
+  title: "Developer Environment & Tooling",
+  blurb: "The unglamorous setup work that makes everything else faster.",
+  items: [
+    "Terminal/command-line basics: navigating, running scripts, chaining commands",
+    "Editor setup: VS Code extensions, workspace settings, and useful snippets",
+    "npm/yarn/pnpm scripts and understanding package.json",
+    "Cross-browser testing: manually checking a matrix of browsers, or using BrowserStack",
+  ]
+},
+{
   title: "React Fundamentals",
   blurb: "The core mental model: UI as a function of state.",
   items: [
@@ -441,6 +451,20 @@ const DATA = [
     "Handling events with properly typed handlers",
     "Conditional rendering and rendering lists with correct 'key' usage",
     "Composition: children props and splitting UI deliberately",
+  ]
+},
+{
+  title: "Browser DevTools & Debugging",
+  blurb: "The single most-used skill in real frontend work — most bugs get solved here, not by reading code.",
+  items: [
+    "Elements panel: inspecting and live-editing the DOM and computed CSS",
+    "Console: logging effectively, and using $0/$1 to reference inspected elements",
+    "Network tab: inspecting requests/responses, status codes, headers, and payloads",
+    "Sources tab: setting breakpoints and stepping through JavaScript line by line",
+    "Application tab: inspecting localStorage, sessionStorage, cookies, and cached data",
+    "Performance tab: recording a session to spot slow renders or layout thrashing",
+    "Using React DevTools alongside the browser's own tools to inspect props/state",
+    "Debugging CORS and failed API call errors using Network + Console together",
   ]
 },
 {
@@ -506,6 +530,7 @@ const DATA = [
     "Optimistic updates for a snappier UI",
     "Handling pagination and infinite scroll patterns",
     "Real-time updates: WebSockets or Server-Sent Events, conceptually",
+    "GraphQL as an alternative to REST: queries, mutations, and a client like Apollo or urql",
   ]
 },
 {
@@ -530,6 +555,16 @@ const DATA = [
   ]
 },
 {
+  title: "Documentation & Design Collaboration",
+  blurb: "How professional teams keep components understandable and designs faithfully implemented.",
+  items: [
+    "Storybook: documenting and testing components in isolation",
+    "Writing component-level docs: props, usage examples, edge cases",
+    "Figma-to-code handoff: reading specs, design tokens, and redlines accurately",
+    "Working with a shared design system as a source of truth, not a suggestion",
+  ]
+},
+{
   title: "Performance Optimization",
   blurb: "What separates 'it works' from 'it feels fast'.",
   items: [
@@ -541,6 +576,16 @@ const DATA = [
   ]
 },
 {
+  title: "SEO & Discoverability",
+  blurb: "How a frontend's technical choices affect whether anyone finds the page at all.",
+  items: [
+    "Meta tags in depth: title, description, canonical URLs, Open Graph, Twitter cards",
+    "Structured data (JSON-LD) for rich search results",
+    "Sitemaps and robots.txt basics",
+    "How rendering strategy affects SEO: CSR vs SSR vs SSG and what crawlers actually see",
+  ]
+},
+{
   title: "Accessibility (a11y)",
   blurb: "A genuine professional differentiator, and often a compliance requirement.",
   items: [
@@ -549,6 +594,17 @@ const DATA = [
     "Keyboard navigation and focus management",
     "Color contrast and screen-reader basics",
     "Testing with axe or Lighthouse accessibility audits",
+  ]
+},
+{
+  title: "Frontend Security",
+  blurb: "The security responsibilities that specifically belong to the frontend, not just the backend.",
+  items: [
+    "Cross-Site Scripting (XSS): how it happens in a frontend app and how frameworks help prevent it",
+    "Cross-Site Request Forgery (CSRF) basics and same-site cookie protections",
+    "Where to store auth tokens safely: httpOnly cookies vs localStorage tradeoffs",
+    "Content Security Policy (CSP) basics",
+    "Dependency vulnerability scanning with npm audit / Dependabot",
   ]
 },
 {
@@ -574,6 +630,16 @@ const DATA = [
   ]
 },
 {
+  title: "Advanced Web Platform Features",
+  blurb: "Capabilities that come up once a product needs to feel more like a native app.",
+  items: [
+    "Progressive Web Apps: service workers, offline caching strategies, and the web app manifest",
+    "Web Components and Shadow DOM — framework-agnostic reusable UI, conceptually",
+    "Internationalization (i18n): multi-language content, date/number/currency formatting",
+    "Animation: CSS transitions/keyframes properly, then a library like Framer Motion for complex cases",
+  ]
+},
+{
   title: "CI/CD, Deployment & Monitoring",
   blurb: "Shipping changes safely and knowing when something breaks in production.",
   items: [
@@ -593,6 +659,16 @@ const DATA = [
     "Pairing and asking for help effectively when stuck",
     "Handling design handoff (Figma) and clarifying ambiguous specs",
     { text: "Certification milestone: Meta Front-End Developer Professional Certificate (Coursera)", cert: true },
+  ]
+},
+{
+  title: "Adjacent Context & Broader Awareness",
+  blurb: "Not core frontend skills, but the context that makes you a sharper collaborator.",
+  items: [
+    "Basic UX/UI literacy: contrast, spacing, visual hierarchy — enough to push back on a bad design intelligently",
+    "React Native awareness: knowing what it shares with React and where it diverges, without needing to build in it",
+    "Agile ceremonies from a contributor's seat: standups, sprint planning, retros",
+    "Basic product analytics awareness: what tools like Google Analytics/Mixpanel tell a team and why",
   ]
 },
 {
