@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learning Roadmaps</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0B0D10;
+    --panel: #14171B;
+    --panel-2: #191D22;
+    --line: #262B31;
+    --ink: #ECEFF3;
+    --ink-dim: #9AA3AC;
+    --ink-faint: #626B73;
+    --radius: 12px;
+    --maxw: 1080px;
+  }
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  body{
+    margin:0;
+    background:
+      radial-gradient(1100px 550px at 10% -10%, rgba(79,209,197,0.06), transparent 60%),
+      radial-gradient(900px 500px at 100% 0%, rgba(244,114,182,0.05), transparent 55%),
+      var(--bg);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", system-ui, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .mono{ font-family: "IBM Plex Mono", monospace; }
+
+  header.hero{
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 56px 20px 20px;
+  }
+  .eyebrow{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 13px;
+    color: #4FD1C5;
+    letter-spacing: 0.02em;
+  }
+  h1{
+    font-size: clamp(28px, 5vw, 44px);
+    line-height: 1.15;
+    margin: 10px 0 14px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .hero p{
+    color: var(--ink-dim);
+    font-size: 16px;
+    max-width: 64ch;
+    margin: 0;
+  }
+
+  .overall{
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 20px 20px 0;
+  }
+  .overall-shell{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 18px 22px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .overall-stat .num{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 24px;
+    font-weight: 600;
+    color: #ECEFF3;
+  }
+  .overall-stat .lbl{
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+  .overall-track{
+    flex: 1 1 260px;
+    height: 8px;
+    background: var(--panel-2);
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+  }
+  .overall-fill{
+    height: 100%;
+    background: linear-gradient(90deg, #4FD1C5, #34D399);
+    width: 0%;
+    transition: width 0.4s ease;
+  }
+
+  main{
+    max-width: var(--maxw);
+    margin: 26px auto 60px;
+    padding: 0 20px;
+  }
+
+  .grid{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 720px){
+    .grid{ grid-template-columns: 1fr; }
+  }
+
+  .card{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 20px;
+    text-decoration: none;
+    color: inherit;
+    overflow: hidden;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+  }
+  .card:hover{
+    transform: translateY(-2px);
+    border-color: var(--card-accent, #4FD1C5);
+  }
+  .card::before{
+    content: "";
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    background: var(--card-accent, #4FD1C5);
+  }
+  .card-top{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .card-title{
+    font-size: 17px;
+    font-weight: 600;
+    margin: 0;
+    padding-left: 8px;
+  }
+  .card-tag{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10.5px;
+    color: var(--card-accent, #4FD1C5);
+    background: color-mix(in srgb, var(--card-accent, #4FD1C5) 14%, transparent);
+    border: 1px solid color-mix(in srgb, var(--card-accent, #4FD1C5) 40%, transparent);
+    padding: 2px 8px;
+    border-radius: 999px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .card-desc{
+    color: var(--ink-dim);
+    font-size: 13.5px;
+    margin: 0 0 16px;
+    padding-left: 8px;
+    flex: 1;
+  }
+  .card-meta{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11.5px;
+    color: var(--ink-faint);
+    margin-bottom: 8px;
+    padding-left: 8px;
+  }
+  .card-track{
+    height: 6px;
+    background: var(--panel-2);
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    margin: 0 0 4px 8px;
+  }
+  .card-fill{
+    height: 100%;
+    background: var(--card-accent, #4FD1C5);
+    width: 0%;
+    transition: width 0.4s ease;
+  }
+  .card-unmanaged{
+    padding-left: 8px;
+    font-size: 12px;
+    color: var(--ink-faint);
+    font-style: italic;
+  }
+
+  footer{
+    max-width: var(--maxw);
+    margin: 0 auto 60px;
+    padding: 24px 20px;
+    color: var(--ink-faint);
+    font-size: 12.5px;
+    border-top: 1px solid var(--line);
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <span class="eyebrow mono">// LEARNING ROADMAPS</span>
+  <h1>All Roadmaps</h1>
+  <p>A single hub for every concept-by-concept learning trail. Each one tracks its own progress automatically — open a roadmap, work through it, and the progress shown here updates the next time this page loads.</p>
+</header>
+
+<div class="overall">
+  <div class="overall-shell">
+    <div class="overall-stat">
+      <span class="num mono" id="overallDone">0</span>
+      <span class="lbl">concepts completed</span>
+    </div>
+    <div class="overall-track"><div class="overall-fill" id="overallFill"></div></div>
+    <div class="overall-stat">
+      <span class="num mono" id="overallPct">0%</span>
+      <span class="lbl">across tracked roadmaps</span>
+    </div>
+  </div>
+</div>
+
+<main>
+  <div class="grid" id="cardGrid"></div>
+</main>
+
+<footer>
+  Progress is read directly from this browser's storage for each roadmap — nothing is uploaded anywhere. Each roadmap page also has its own sync option for moving progress to another device.
+</footer>
+
+<script>
+// Roadmaps with progress tracked on this hub (storageKey + total known).
+const ROADMAPS = [
+  {
+    href: "BackendFastAPI/",
+    title: "FastAPI Backend Development",
+    tag: "BACKEND",
+    desc: "Basics through advanced backend engineering built around FastAPI — databases, auth, async, caching, and deployment.",
+    storageKey: "backend-fastapi-progress-v1",
+    total: 128,
+    accent: "#4FD1C5",
+  },
+  {
+    href: "python/",
+    title: "Python — Beginner to Advanced",
+    tag: "LANGUAGE",
+    desc: "Core Python from first script to advanced internals — OOP, standard library, testing, concurrency, and packaging.",
+    storageKey: "python-progress-v1",
+    total: 108,
+    accent: "#FFD43B",
+  },
+  {
+    href: "react/",
+    title: "React.js — Beginner to Advanced",
+    tag: "FRONTEND",
+    desc: "Plain JavaScript React from JSX and components through hooks, state management, testing, performance, and deployment.",
+    storageKey: "reactjs-progress-v1",
+    total: 93,
+    accent: "#A78BFA",
+  },
+];
+
+// Roadmap(s) not managed here — linked, but progress isn't read since the content/storage key is yours.
+const UNMANAGED = [
+  {
+    href: "reactts/",
+    title: "React + TypeScript",
+    tag: "FRONTEND",
+    desc: "Your own React + TypeScript roadmap.",
+    accent: "#3B9EFF",
+  },
+];
+
+function getDoneCount(storageKey){
+  try{
+    const raw = localStorage.getItem(storageKey);
+    if (!raw) return 0;
+    const state = JSON.parse(raw);
+    return Object.values(state).filter(Boolean).length;
+  }catch(e){ return 0; }
+}
+
+function render(){
+  const grid = document.getElementById("cardGrid");
+  grid.innerHTML = "";
+  let grandDone = 0;
+  let grandTotal = 0;
+
+  ROADMAPS.forEach(r => {
+    const done = Math.min(getDoneCount(r.storageKey), r.total);
+    const pct = r.total ? Math.round((done / r.total) * 100) : 0;
+    grandDone += done;
+    grandTotal += r.total;
+
+    const card = document.createElement("a");
+    card.className = "card";
+    card.href = r.href;
+    card.style.setProperty("--card-accent", r.accent);
+    card.innerHTML = `
+      <div class="card-top">
+        <h2 class="card-title">${r.title}</h2>
+        <span class="card-tag mono">${r.tag}</span>
+      </div>
+      <p class="card-desc">${r.desc}</p>
+      <div class="card-meta">
+        <span>${done} / ${r.total} completed</span>
+        <span>${pct}%</span>
+      </div>
+      <div class="card-track"><div class="card-fill" style="width:${pct}%"></div></div>
+    `;
+    grid.appendChild(card);
+  });
+
+  UNMANAGED.forEach(r => {
+    const card = document.createElement("a");
+    card.className = "card";
+    card.href = r.href;
+    card.style.setProperty("--card-accent", r.accent);
+    card.innerHTML = `
+      <div class="card-top">
+        <h2 class="card-title">${r.title}</h2>
+        <span class="card-tag mono">${r.tag}</span>
+      </div>
+      <p class="card-desc">${r.desc}</p>
+      <p class="card-unmanaged">Progress tracked on that page directly.</p>
+    `;
+    grid.appendChild(card);
+  });
+
+  const grandPct = grandTotal ? Math.round((grandDone / grandTotal) * 100) : 0;
+  document.getElementById("overallDone").textContent = grandDone;
+  document.getElementById("overallPct").textContent = grandPct + "%";
+  document.getElementById("overallFill").style.width = grandPct + "%";
+}
+
+render();
+</script>
+</body>
+</html>

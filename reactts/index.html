@@ -320,6 +320,89 @@
     min-width: 0;
   }
 
+  .item.project{
+    border-left: 3px solid var(--teal);
+    background: linear-gradient(180deg, rgba(34,211,238,0.09), rgba(34,211,238,0.03));
+  }
+  .item.project.done{
+    border-left: 3px solid var(--green);
+  }
+  .project-badge{
+    display:inline-flex;
+    align-items:center;
+    gap: 5px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    color: var(--teal);
+    background: rgba(34,211,238,0.10);
+    border: 1px solid var(--teal-dim);
+    padding: 2px 7px;
+    border-radius: 999px;
+    margin-top: 6px;
+  }
+  .item.cert .item-text{ cursor: pointer; }
+  .item.cert .item-text:hover .cert-badge{ text-decoration: underline; }
+  .modal-overlay{
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 50;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.open{ display: flex; }
+  .modal-card{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    max-width: 440px;
+    width: 100%;
+    padding: 22px;
+    position: relative;
+  }
+  .modal-close{
+    position: absolute;
+    top: 14px; right: 14px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    color: var(--ink-faint);
+    width: 26px; height: 26px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+  }
+  .modal-title{
+    font-size: 17px;
+    font-weight: 600;
+    margin: 0 0 4px;
+    padding-right: 24px;
+  }
+  .modal-provider{
+    color: var(--gold);
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    margin: 0 0 16px;
+  }
+  .modal-row{
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 9px 0;
+    border-top: 1px solid var(--line);
+    font-size: 13.5px;
+  }
+  .modal-row .k{ color: var(--ink-faint); }
+  .modal-row .v{ color: var(--ink); text-align: right; }
+  .modal-note{
+    margin-top: 14px;
+    font-size: 12px;
+    color: var(--ink-faint);
+    line-height: 1.5;
+  }
+
   @media (max-width: 520px){
     .stage{ margin-left: 6px; padding-left: 18px; }
     .stage-title{ font-size: 16.5px; }
@@ -371,123 +454,208 @@
   Progress is saved automatically in this browser as items are completed.
 </footer>
 
+<div class="modal-overlay" id="certModalOverlay">
+  <div class="modal-card">
+    <button class="modal-close" id="certModalClose">&times;</button>
+    <h3 class="modal-title" id="certModalTitle"></h3>
+    <p class="modal-provider mono" id="certModalProvider"></p>
+    <div id="certModalRows"></div>
+    <p class="modal-note" id="certModalNote"></p>
+  </div>
+</div>
 <script>
 const DATA = [
+{
+  title: "How the Web Works",
+  blurb: "The plumbing underneath every website — worth knowing explicitly before writing a single line of UI code.",
+  items: [
+    "Client-server model: what a request and a response actually are",
+    "DNS: how a domain name resolves to a server",
+    "HTTP fundamentals: methods (GET/POST/PUT/DELETE), status codes, headers",
+    "HTTPS and TLS at a conceptual level: why it matters and what a certificate does",
+    "URL anatomy: protocol, host, port, path, query string, fragment",
+    "What a browser engine does: parsing HTML/CSS, running JS, rendering pixels",
+    "The difference between a web page, a web app, and a single-page application",
+  ]
+},
 {
   title: "HTML Foundations",
   blurb: "The structure every frontend, no matter the framework, ultimately renders down to.",
   items: [
-    "Semantic HTML: using the right element for the job (nav, article, section, button vs div)",
-    "Forms: inputs, labels, and native form validation attributes",
-    "The document structure and how the browser parses it",
-    "Meta tags: viewport, SEO basics, Open Graph",
+    "Document structure: doctype, html/head/body, and how the browser parses it",
+    "Semantic elements: header, nav, main, article, section, aside, footer",
+    "Text and content elements: headings, paragraphs, lists, links, images",
+    "Forms: input types, labels, select/textarea, and native validation attributes",
+    "Tables: correct use for tabular data (not layout)",
+    "Attributes: id, class, data-* attributes, and their purposes",
+    "The accessibility tree: how semantic HTML maps to what assistive tech sees",
+    "Meta tags basics: charset, viewport, title, description",
   ]
 },
 {
   title: "CSS Foundations",
-  blurb: "Layout fluency here saves hours of fighting styles later.",
+  blurb: "Layout fluency here saves hours of fighting styles later — this deserves real depth, not a skim.",
   items: [
-    "The box model: margin, border, padding, content",
-    "Flexbox: the mental model, not just the properties",
-    "CSS Grid: when it beats Flexbox and how to reason about it",
-    "Responsive design: media queries and mobile-first thinking",
-    "CSS specificity and the cascade — why a style 'isn't applying'",
+    "The box model: content, padding, border, margin, and box-sizing",
+    "Selectors: type, class, id, attribute, pseudo-class, pseudo-element, combinators",
+    "Specificity and the cascade: why a style 'isn't applying'",
+    "Positioning schemes: static, relative, absolute, fixed, sticky",
+    "Display values: block, inline, inline-block, none, and their behaviors",
+    "Flexbox: the mental model (main/cross axis), not just individual properties",
+    "CSS Grid: template rows/columns, areas, and when it beats Flexbox",
+    "Responsive design: media queries, mobile-first thinking, fluid units (%, vw/vh, rem/em)",
+    "Transitions and keyframe animations",
     "CSS variables (custom properties) for theming",
+    "z-index and stacking contexts, explained plainly",
+    { text: "Certification milestone: freeCodeCamp Responsive Web Design Certification", cert: true, certInfo: {
+        name: "Responsive Web Design Certification",
+        provider: "freeCodeCamp",
+        cost: "Free",
+        format: "Self-paced, browser-based curriculum + projects",
+        duration: "~15–20 hours",
+        note: "Covers HTML, CSS, Flexbox, Grid, and accessibility basics through five required projects. Good early proof-of-work, not industry-required."
+    }},
+    { text: "Capstone Mini-Project: build a static, fully responsive personal profile page using only HTML and CSS (no JS)", project: true },
   ]
 },
 {
-  title: "JavaScript Fundamentals (ES6+)",
-  blurb: "React is JavaScript with a UI model on top — this needs to be fluent, not just familiar.",
+  title: "JavaScript Fundamentals (Deep)",
+  blurb: "React is just JavaScript with a UI model layered on — this needs to be genuinely fluent, every corner of it.",
   items: [
-    "let/const, arrow functions, template literals",
-    "Array methods: map, filter, reduce, find, some/every",
-    "Destructuring, spread/rest operators",
-    "Promises, async/await, and the event loop",
-    "Optional chaining (?.) and nullish coalescing (??)",
-    "ES Modules: import/export",
-    "The DOM and why manipulating it directly gets messy at scale",
+    "Variables: var vs let vs const, and hoisting behavior for each",
+    "Data types: primitives vs objects, and type coercion pitfalls",
+    "Scope: global, function, block scope, and the scope chain",
+    "Closures: what they are and why they matter in real code",
+    "The 'this' keyword: how it's determined in different contexts",
+    "Functions: declarations vs expressions vs arrow functions, and their differences",
+    "Prototypal inheritance: how objects actually inherit in JS",
+    "Array methods: map, filter, reduce, find, some/every, forEach",
+    "Object methods: Object.keys/values/entries, destructuring, spread/rest",
+    "The event loop: call stack, task queue, microtasks vs macrotasks",
+    "Promises: creation, chaining, Promise.all/race/allSettled",
+    "async/await: how it desugars to promises under the hood",
+    "Template literals and tagged templates",
+    "Modules: ES Modules import/export vs CommonJS require",
+    "Error handling: try/catch/finally, custom Error classes",
+    "Immutability practices: why mutating state directly causes bugs in UI frameworks",
+    { text: "Certification milestone: freeCodeCamp JavaScript Algorithms and Data Structures Certification", cert: true, certInfo: {
+        name: "JavaScript Algorithms and Data Structures Certification",
+        provider: "freeCodeCamp",
+        cost: "Free",
+        format: "Self-paced, browser-based curriculum + projects",
+        duration: "~30–40 hours",
+        note: "Solid proof of core JS fluency before moving into React. Widely recognized as a legitimate free credential, though not equivalent to a paid industry certificate."
+    }},
+    { text: "Capstone Mini-Project: build a vanilla JS interactive app (calculator, quiz, or to-do list) using only the DOM APIs — no framework", project: true },
   ]
 },
 {
-  title: "TypeScript Fundamentals",
-  blurb: "In a professional codebase, this is the default, not an add-on — worth learning properly.",
+  title: "Browser DevTools & Debugging",
+  blurb: "The single most-used skill in real frontend work — placed right after JS since that's what makes it useful.",
   items: [
-    "Why static typing matters in a team codebase",
-    "Basic types, interfaces vs type aliases",
-    "Union types, literal types, and optional properties",
-    "Typing functions: parameters, return types, generics (the intuition first)",
-    "Utility types: Partial, Pick, Omit, Record",
-    "Type narrowing and custom type guards",
-    "Strict mode in tsconfig.json and why teams turn it on",
-  ]
-},
-{
-  title: "Git & Developer Workflow",
-  blurb: "The collaboration layer that makes you employable on a team, not just capable solo.",
-  items: [
-    "Git basics: commits, branches, merges, rebasing at a conceptual level",
-    "Writing clear commit messages and PR descriptions",
-    "Code review etiquette: giving and receiving feedback well",
-    "Working with issue trackers (Jira/Linear/GitHub Issues) in a team flow",
+    "Elements panel: inspecting and live-editing the DOM and computed CSS",
+    "Console: logging effectively, console.table, and using $0/$1 to reference inspected elements",
+    "Sources tab: setting breakpoints, stepping through code, watch expressions",
+    "Network tab: inspecting requests/responses, status codes, headers, payloads, timing",
+    "Application tab: inspecting localStorage, sessionStorage, cookies, cache storage",
+    "Performance tab: recording a session to spot slow renders or layout thrashing",
+    "Lighthouse panel: running audits for performance, accessibility, SEO, best practices",
+    "Debugging CORS and failed API calls using Network + Console together",
+    "Mobile device emulation and responsive design mode",
   ]
 },
 {
   title: "Developer Environment & Tooling",
   blurb: "The unglamorous setup work that makes everything else faster.",
   items: [
-    "Terminal/command-line basics: navigating, running scripts, chaining commands",
-    "Editor setup: VS Code extensions, workspace settings, and useful snippets",
-    "npm/yarn/pnpm scripts and understanding package.json",
-    "Cross-browser testing: manually checking a matrix of browsers, or using BrowserStack",
+    "Terminal/command-line basics: navigating directories, running scripts, chaining commands",
+    "Editor setup: VS Code extensions, workspace settings, useful snippets",
+    "Node.js and npm: what they are and how a JS runtime differs from a browser environment",
+    "npm/yarn/pnpm: installing packages, understanding package.json and lockfiles",
+    "Running and writing npm scripts",
+    "Cross-browser testing: manually checking a browser matrix, or using BrowserStack",
+  ]
+},
+{
+  title: "Git & Developer Workflow",
+  blurb: "The collaboration layer that makes you employable on a team, not just capable solo.",
+  items: [
+    "Git basics: init, add, commit, status, log",
+    "Branching and merging, and resolving merge conflicts",
+    "Rebasing at a conceptual level, and when teams prefer it over merging",
+    "Remotes: push, pull, fetch, and working with GitHub/GitLab",
+    "Writing clear commit messages and pull request descriptions",
+    "Code review etiquette: giving and receiving feedback well",
+    "Working with issue trackers (Jira/Linear/GitHub Issues) in a team flow",
+  ]
+},
+{
+  title: "TypeScript Fundamentals",
+  blurb: "In a professional codebase this is the default, not an add-on — worth learning to real depth.",
+  items: [
+    "Why static typing matters in a team codebase",
+    "Basic types: string, number, boolean, arrays, tuples",
+    "Interfaces vs type aliases: differences and when to use each",
+    "Union types, intersection types, and literal types",
+    "Optional (?) and readonly properties",
+    "Functions: typing parameters, return types, optional/default/rest params",
+    "Generics: the intuition first, then generic functions and generic components",
+    "Utility types: Partial, Pick, Omit, Record, Required, Readonly",
+    "Type narrowing: typeof, instanceof, custom type guards, discriminated unions",
+    "The 'any' vs 'unknown' distinction, and why to avoid 'any'",
+    "Enums vs union string literals — tradeoffs",
+    "Declaration files (.d.ts) at a conceptual level",
+    "tsconfig.json: strict mode and the flags worth turning on early",
   ]
 },
 {
   title: "React Fundamentals",
   blurb: "The core mental model: UI as a function of state.",
   items: [
-    "Components, JSX, and how it compiles to JS",
-    "Props, typed with interfaces",
-    "useState and controlled state updates",
-    "Handling events with properly typed handlers",
-    "Conditional rendering and rendering lists with correct 'key' usage",
-    "Composition: children props and splitting UI deliberately",
-  ]
-},
-{
-  title: "Browser DevTools & Debugging",
-  blurb: "The single most-used skill in real frontend work — most bugs get solved here, not by reading code.",
-  items: [
-    "Elements panel: inspecting and live-editing the DOM and computed CSS",
-    "Console: logging effectively, and using $0/$1 to reference inspected elements",
-    "Network tab: inspecting requests/responses, status codes, headers, and payloads",
-    "Sources tab: setting breakpoints and stepping through JavaScript line by line",
-    "Application tab: inspecting localStorage, sessionStorage, cookies, and cached data",
-    "Performance tab: recording a session to spot slow renders or layout thrashing",
-    "Using React DevTools alongside the browser's own tools to inspect props/state",
-    "Debugging CORS and failed API call errors using Network + Console together",
+    "What a component is, and how JSX compiles to JS (React.createElement)",
+    "Rendering an app: createRoot and mounting to the DOM",
+    "Props: passing data down, and typing them with an interface",
+    "useState: reading and updating state, and why updates trigger re-renders",
+    "Handling events: onClick, onChange, onSubmit, and the synthetic event system",
+    "Conditional rendering: ternaries, &&, early returns",
+    "Rendering lists and why the 'key' prop matters for reconciliation",
+    "Fragments (<>...</>) and why a component can't return multiple roots without one",
+    "Controlled vs uncontrolled inputs",
+    "Composition: children props, and splitting UI into components deliberately",
+    { text: "Capstone Mini-Project: rebuild the to-do list app in React with typed props and local component state", project: true },
   ]
 },
 {
   title: "React Hooks & Patterns",
   blurb: "Where most real-world React bugs and performance issues actually live.",
   items: [
-    "useEffect: dependency arrays, cleanup, and common pitfalls",
-    "useRef, useMemo, useCallback — what each actually optimizes",
-    "useContext for shared state without prop drilling",
-    "useReducer for complex, predictable state transitions",
-    "Writing custom hooks to extract and share logic",
+    "useEffect: dependency arrays, cleanup functions, and common pitfalls",
+    "Fetching data in useEffect, and why this pattern has limits at scale",
+    "useRef: DOM refs vs holding mutable values across renders without re-rendering",
+    "useMemo: memoizing expensive calculations, and when it's not worth it",
+    "useCallback: memoizing functions to prevent unnecessary child re-renders",
+    "useContext: sharing state without prop drilling",
+    "useReducer: managing complex, predictable state transitions",
     "The Rules of Hooks and why they exist",
+    "Writing custom hooks to extract and share logic",
+    "Error boundaries for catching render-time errors gracefully",
+    "Portals: rendering outside the normal component tree (modals, tooltips)",
+    "Suspense and lazy loading components with React.lazy",
+    { text: "Capstone Mini-Project: build a weather app that fetches from a public API using useEffect and a custom hook", project: true },
   ]
 },
 {
   title: "TypeScript with React",
-  blurb: "This is the specific, high-value skill overlap for your target stack.",
+  blurb: "This is the specific, high-value skill overlap for a React + TypeScript role.",
   items: [
-    "Typing props, including optional props and children (React.ReactNode)",
-    "Typing event handlers (React.MouseEvent, React.ChangeEvent, etc.)",
-    "Typing hooks correctly (useState generics, useRef with DOM nodes)",
-    "Typing API responses and using them safely in components",
-    "Generic components: writing a reusable, properly typed component",
+    "Typing props with an interface, including optional props and default values",
+    "Typing children (React.ReactNode) and typing component return types",
+    "Typing event handlers (React.MouseEvent, React.ChangeEvent, React.FormEvent)",
+    "Typing useState with a generic when the initial value doesn't infer correctly",
+    "Typing useRef for DOM nodes vs mutable values",
+    "Typing custom hooks: parameters and return tuples/objects",
+    "Typing API response data and using it safely in components",
+    "Writing generic, reusable, properly typed components",
   ]
 },
 {
@@ -495,30 +663,48 @@ const DATA = [
   blurb: "Once Context and prop drilling stop being enough for a growing app.",
   items: [
     "Recognizing when local state truly isn't sufficient anymore",
+    "Context API performance limits, and how to mitigate them",
     "Lightweight global state: Zustand or Jotai, typed",
-    "Redux Toolkit fundamentals, with TypeScript",
+    "Redux Toolkit fundamentals: store, slices, reducers, actions — with TypeScript",
     "Separating server state from client state as a design decision",
-    "React Query / TanStack Query: caching, refetching, and typed queries",
+    "React Query / TanStack Query: caching, refetching, background updates, typed queries",
+    { text: "Capstone Mini-Project: build a shopping cart app with global state (Zustand or Redux Toolkit), fully typed", project: true },
   ]
 },
 {
   title: "Routing",
-  blurb: "Turning a single-page app into something that feels like a real site.",
+  blurb: "Turning a single-page app into something that feels like a real, navigable site.",
   items: [
-    "Client-side routing with React Router: routes, nested routes, layouts",
-    "Dynamic route params, typed",
+    "Client-side routing with React Router: defining routes, nested routes, layouts",
+    "Dynamic route params, typed, and reading them in a component",
+    "Programmatic navigation: Link vs useNavigate vs redirects",
     "Protected/authenticated routes",
     "File-based routing in Next.js, if the team's stack uses it",
+    { text: "Capstone Mini-Project: build a multi-page blog app with React Router, dynamic post routes, and a shared layout", project: true },
   ]
 },
 {
   title: "Forms & Validation",
   blurb: "Deceptively fiddly, and a near-guaranteed part of any real product.",
   items: [
-    "Controlled forms, typed correctly",
-    "React Hook Form fundamentals",
+    "Building controlled forms by hand with useState",
+    "React Hook Form fundamentals: register, handleSubmit, formState",
     "Schema validation with Zod, and deriving TypeScript types from schemas",
-    "Handling submission states: loading, error, success",
+    "Handling submission states: loading, error, success, and disabling double-submits",
+    "Multi-step forms and cross-field validation",
+    { text: "Capstone Mini-Project: build a multi-step signup form with React Hook Form + Zod validation and clear error states", project: true },
+  ]
+},
+{
+  title: "Authentication & Authorization (Frontend Side)",
+  blurb: "Nearly every real app needs this, and the frontend has specific responsibilities here.",
+  items: [
+    "Session-based vs token-based (JWT) auth from the frontend's perspective",
+    "Implementing a login/signup flow and storing the authenticated user in state",
+    "OAuth2 flows conceptually (authorization code, implicit) and third-party login buttons",
+    "Refresh token flow: silently renewing a session without logging the user out",
+    "Role-based UI: showing/hiding features based on permissions",
+    { text: "Capstone Mini-Project: build an auth-protected dashboard — login, logout, protected routes, and role-based UI", project: true },
   ]
 },
 {
@@ -526,32 +712,40 @@ const DATA = [
   blurb: "Most frontend tickets ultimately come down to this.",
   items: [
     "Fetching data with fetch/axios and typing responses end-to-end",
-    "Handling loading/error states without duplicating logic everywhere",
+    "Handling loading/error/empty states without duplicating logic everywhere",
     "Optimistic updates for a snappier UI",
-    "Handling pagination and infinite scroll patterns",
+    "Pagination and infinite scroll patterns",
     "Real-time updates: WebSockets or Server-Sent Events, conceptually",
     "GraphQL as an alternative to REST: queries, mutations, and a client like Apollo or urql",
+    "Mocking APIs during development with tools like MSW (Mock Service Worker)",
+    { text: "Capstone Mini-Project: build a full CRUD app (create/read/update/delete) against a REST or GraphQL API, with loading, error, and empty states handled", project: true },
   ]
 },
 {
   title: "Styling Systems & Design Systems",
   blurb: "Professional frontend work usually means working within a system, not inventing one per page.",
   items: [
+    "CSS Modules for scoped, conflict-free styles",
     "Utility-first CSS with Tailwind CSS",
     "Component libraries: shadcn/ui, Radix, or Material UI — tradeoffs",
-    "Working within an existing design system and component library",
+    "Working within an existing design system and shared component library",
+    "Design tokens: colors, spacing, typography as reusable values",
     "Theming and dark mode implementation patterns",
+    "CSS-in-JS (styled-components/Emotion): what it offers and its costs",
   ]
 },
 {
   title: "Testing",
   blurb: "Confidence to change code without breaking it silently — expected on any professional team.",
   items: [
-    "Unit testing with Vitest or Jest",
+    "Unit testing with Vitest or Jest: assertions, mocking, test structure",
     "Component testing with React Testing Library — testing behavior, not implementation",
+    "Testing custom hooks",
     "Mocking API calls and modules in tests",
+    "Snapshot testing: what it's good for and its known pitfalls",
     "End-to-end testing basics with Playwright or Cypress",
     "Visual regression testing at a conceptual level (Chromatic/Percy)",
+    { text: "Capstone Mini-Project: go back to an earlier project and add unit + component tests until core flows are meaningfully covered", project: true },
   ]
 },
 {
@@ -572,7 +766,10 @@ const DATA = [
     "React.memo, useMemo, useCallback — used deliberately, not everywhere",
     "Code splitting and lazy loading routes/components",
     "Bundle analysis and reducing shipped JavaScript",
-    "Core Web Vitals: LCP, CLS, INP, and what affects each",
+    "Image optimization: formats, lazy loading, responsive images",
+    "Resource hints: preload, prefetch, preconnect",
+    "Core Web Vitals individually: LCP, CLS, INP, and what affects each",
+    { text: "Capstone Mini-Project: audit an earlier project with Lighthouse, then optimize bundle size and Core Web Vitals scores", project: true },
   ]
 },
 {
@@ -590,10 +787,14 @@ const DATA = [
   blurb: "A genuine professional differentiator, and often a compliance requirement.",
   items: [
     "Semantic HTML as the foundation of accessibility",
-    "ARIA roles and attributes — and when NOT to use them",
-    "Keyboard navigation and focus management",
-    "Color contrast and screen-reader basics",
+    "WCAG conformance levels (A, AA, AAA) and what they mean in practice",
+    "ARIA roles and attributes — and when NOT to use them (native HTML first)",
+    "Keyboard navigation and focus management, including focus traps in modals",
+    "Color contrast requirements and testing for them",
+    "Screen reader basics: how content is actually announced",
+    "Accessible forms: labels, error messaging, and required-field conventions",
     "Testing with axe or Lighthouse accessibility audits",
+    { text: "Capstone Mini-Project: run an accessibility audit on an earlier project and fix every flagged issue (contrast, keyboard nav, ARIA)", project: true },
   ]
 },
 {
@@ -601,9 +802,11 @@ const DATA = [
   blurb: "The security responsibilities that specifically belong to the frontend, not just the backend.",
   items: [
     "Cross-Site Scripting (XSS): how it happens in a frontend app and how frameworks help prevent it",
+    "Sanitizing user-generated HTML safely (e.g. DOMPurify) when it must be rendered",
     "Cross-Site Request Forgery (CSRF) basics and same-site cookie protections",
     "Where to store auth tokens safely: httpOnly cookies vs localStorage tradeoffs",
     "Content Security Policy (CSP) basics",
+    "Subresource Integrity (SRI) for third-party scripts",
     "Dependency vulnerability scanning with npm audit / Dependabot",
   ]
 },
@@ -611,11 +814,14 @@ const DATA = [
   title: "Build Tools & the Web Platform",
   blurb: "Understanding what's happening beneath 'npm run dev'.",
   items: [
-    "Vite fundamentals: dev server, bundling",
+    "Vite fundamentals: dev server, bundling, and why it replaced older tooling",
+    "Webpack basics at a conceptual level, for reading legacy configs",
     "The Virtual DOM and reconciliation, explained plainly",
     "Browser rendering pipeline: parse, style, layout, paint, composite",
+    "Tree-shaking and dead code elimination",
+    "Source maps: what they are and why they matter for debugging production issues",
     "HTTP caching basics and how it affects load performance",
-    "Package management and understanding a lockfile",
+    "Environment variables: handling secrets/config safely in a frontend build",
   ]
 },
 {
@@ -624,8 +830,10 @@ const DATA = [
   items: [
     "Folder structure and module boundaries for a scaling app",
     "Feature-based vs layer-based project organization",
+    "Atomic design or similar component hierarchy conventions",
     "Shared component libraries and design tokens across teams",
-    "Micro-frontends — the concept, and when it's actually justified",
+    "Backend-for-Frontend (BFF) pattern, conceptually",
+    "Micro-frontends: the concept, and when it's actually justified",
     "Monorepo basics (Turborepo/Nx) for multi-app codebases",
   ]
 },
@@ -648,6 +856,8 @@ const DATA = [
     "Environment-based configuration for staging vs production",
     "Error tracking (Sentry) and basic frontend monitoring",
     "Feature flags for safer, gradual rollouts",
+    "Rollback strategies when a deploy breaks something",
+    { text: "Capstone Mini-Project: set up a CI pipeline (lint, typecheck, test, build) and deploy an earlier project live on Vercel or Netlify", project: true },
   ]
 },
 {
@@ -657,8 +867,15 @@ const DATA = [
     "Estimating and breaking down frontend tickets realistically",
     "Writing clear technical documentation for components/features",
     "Pairing and asking for help effectively when stuck",
-    "Handling design handoff (Figma) and clarifying ambiguous specs",
-    { text: "Certification milestone: Meta Front-End Developer Professional Certificate (Coursera)", cert: true },
+    "Handling design handoff and clarifying ambiguous specs",
+    { text: "Certification milestone: Meta Front-End Developer Professional Certificate (Coursera)", cert: true, certInfo: {
+        name: "Meta Front-End Developer Professional Certificate",
+        provider: "Meta, via Coursera",
+        cost: "~$49/month Coursera subscription (varies by region; financial aid available)",
+        format: "9 self-paced online courses, hands-on projects, graded assignments",
+        duration: "~7 months at ~10 hrs/week (faster if accelerated)",
+        note: "Widely recognized entry-level credential covering HTML/CSS/JS/React and a capstone project. Pricing is subscription-based, so total cost depends on how quickly it's completed."
+    }},
   ]
 },
 {
@@ -666,7 +883,7 @@ const DATA = [
   blurb: "Not core frontend skills, but the context that makes you a sharper collaborator.",
   items: [
     "Basic UX/UI literacy: contrast, spacing, visual hierarchy — enough to push back on a bad design intelligently",
-    "React Native awareness: knowing what it shares with React and where it diverges, without needing to build in it",
+    "React Native awareness: knowing what it shares with React and where it diverges",
     "Agile ceremonies from a contributor's seat: standups, sprint planning, retros",
     "Basic product analytics awareness: what tools like Google Analytics/Mixpanel tell a team and why",
   ]
@@ -675,6 +892,7 @@ const DATA = [
   title: "Portfolio, Interviews & Career Growth",
   blurb: "Turning the roadmap into a job and continued growth.",
   items: [
+    { text: "Final Capstone Project: a full production-grade app — auth, real API integration, tests, CI/CD, deployed live, and properly documented", project: true },
     "Build 2–3 polished projects: one with auth+API integration, one focused on a design system/UI kit",
     "Practice explaining architectural decisions and tradeoffs out loud",
     "Frontend-specific interview practice: JS fundamentals, React behavior questions, small coding challenges",
@@ -746,7 +964,10 @@ function render(){
     const body = stageEl.querySelector(".stage-body");
     items.forEach(it => {
       const itemEl = document.createElement("div");
-      itemEl.className = "item" + (it.cert ? " cert" : "") + (state[it.id] ? " done" : "");
+      itemEl.className = "item"
+        + (it.cert ? " cert" : "")
+        + (it.project ? " project" : "")
+        + (state[it.id] ? " done" : "");
       itemEl.dataset.id = it.id;
       itemEl.innerHTML = `
         <button class="flag-btn" aria-label="Toggle complete">
@@ -755,7 +976,8 @@ function render(){
         </button>
         <div class="item-text">
           ${it.text}
-          ${it.cert ? `<div class="cert-badge">CERTIFICATION</div>` : ``}
+          ${it.cert ? `<div class="cert-badge">CERTIFICATION — tap for details</div>` : ``}
+          ${it.project ? `<div class="project-badge">CAPSTONE PROJECT</div>` : ``}
         </div>
       `;
       itemEl.querySelector(".flag-btn").addEventListener("click", () => {
@@ -764,6 +986,11 @@ function render(){
         render();
         restoreOpenStages();
       });
+      if (it.cert && it.certInfo) {
+        itemEl.querySelector(".item-text").addEventListener("click", () => {
+          openCertModal(it.certInfo);
+        });
+      }
       body.appendChild(itemEl);
     });
 
@@ -893,6 +1120,27 @@ document.getElementById("applyPasteBtn").addEventListener("click", () => {
     history.replaceState(null, "", location.pathname + location.search);
   }
 })();
+
+function openCertModal(info){
+  document.getElementById("certModalTitle").textContent = info.name || "Certification";
+  document.getElementById("certModalProvider").textContent = info.provider || "";
+  const rows = [
+    ["Cost", info.cost],
+    ["Format", info.format],
+    ["Typical duration", info.duration],
+  ].filter(r => r[1]);
+  document.getElementById("certModalRows").innerHTML = rows.map(
+    r => `<div class="modal-row"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`
+  ).join("");
+  document.getElementById("certModalNote").textContent = info.note || "Pricing and format can change — verify current details on the provider's site before enrolling.";
+  document.getElementById("certModalOverlay").classList.add("open");
+}
+document.getElementById("certModalClose").addEventListener("click", () => {
+  document.getElementById("certModalOverlay").classList.remove("open");
+});
+document.getElementById("certModalOverlay").addEventListener("click", (e) => {
+  if (e.target.id === "certModalOverlay") e.target.classList.remove("open");
+});
 
 render();
 restoreOpenStages();
