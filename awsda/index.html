@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AWS Certified Developer — Associate — Learning Trail</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  :root{
+    --bg: #0E1621;
+    --panel: #142130;
+    --panel-2: #182B3D;
+    --line: #274158;
+    --ink: #ECF2F8;
+    --ink-dim: #9BB0C2;
+    --ink-faint: #63798D;
+    --gold: #FF9900;
+    --gold-dim: #7A4B00;
+    --teal: #2F9BF7;
+    --teal-dim: #123456;
+    --green: #34D399;
+    --green-dim: #144A38;
+    --danger: #FF6B6B;
+    --check: #C084FC;
+    --check-dim: #3B2A5C;
+    --radius: 10px;
+    --maxw: 900px;
+  }
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  body{
+    margin:0;
+    background:
+      radial-gradient(1200px 600px at 15% -10%, rgba(47,155,247,0.10), transparent 60%),
+      radial-gradient(900px 500px at 100% 0%, rgba(255,153,0,0.08), transparent 55%),
+      var(--bg);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", system-ui, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .mono{ font-family: "IBM Plex Mono", monospace; }
+
+  header.hero{
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 48px 20px 28px;
+  }
+  .eyebrow{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 13px;
+    color: var(--teal);
+    letter-spacing: 0.02em;
+  }
+  h1{
+    font-size: clamp(28px, 5vw, 42px);
+    line-height: 1.15;
+    margin: 10px 0 14px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .hero p{
+    color: var(--ink-dim);
+    font-size: 16px;
+    max-width: 62ch;
+  }
+
+  .trailbar{
+    max-width: var(--maxw);
+    margin: 0 auto 8px;
+    padding: 0 20px;
+  }
+  .progress-shell{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .progress-stat{
+    display:flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .progress-stat .num{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--gold);
+  }
+  .progress-stat .lbl{
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+  .progress-track{
+    flex: 1 1 240px;
+    height: 8px;
+    background: var(--panel-2);
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+  }
+  .progress-fill{
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal), var(--green));
+    width: 0%;
+    transition: width 0.4s ease;
+  }
+  .reset-btn{
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--ink-faint);
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .reset-btn:hover{ border-color: var(--danger); color: var(--danger); }
+
+  main{
+    max-width: var(--maxw);
+    margin: 28px auto 80px;
+    padding: 0 20px;
+  }
+
+  .stage{
+    position: relative;
+    border-left: 2px solid var(--line);
+    margin-left: 14px;
+    padding-left: 26px;
+    margin-bottom: 6px;
+  }
+  .stage:last-child{ border-left-color: transparent; }
+
+  .stage-marker{
+    position: absolute;
+    left: -9px;
+    top: 4px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--panel-2);
+    border: 2px solid var(--line);
+    transition: all 0.2s ease;
+  }
+  .stage.complete .stage-marker{
+    background: var(--green);
+    border-color: var(--green);
+  }
+
+  .stage-head{
+    cursor: pointer;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 0;
+    user-select: none;
+  }
+  .stage-title-wrap{ flex: 1; }
+  .stage-num{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    color: var(--ink-faint);
+    display:block;
+    margin-bottom: 2px;
+  }
+  .stage-title{
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+  }
+  .stage-blurb{
+    color: var(--ink-dim);
+    font-size: 13.5px;
+    margin: 6px 0 0;
+    max-width: 60ch;
+  }
+  .stage-meta{
+    display:flex;
+    align-items:center;
+    gap: 10px;
+    white-space: nowrap;
+  }
+  .stage-count{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    color: var(--ink-faint);
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    padding: 3px 8px;
+    border-radius: 999px;
+  }
+  .chevron{
+    width: 18px; height: 18px;
+    color: var(--ink-faint);
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+  }
+  .stage.open .chevron{ transform: rotate(90deg); }
+
+  .stage-body{
+    display: none;
+    padding: 2px 0 22px;
+  }
+  .stage.open .stage-body{ display: block; }
+
+  .item{
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 12px 10px 14px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--teal-dim);
+  }
+  .item.cert{
+    border-color: var(--gold-dim);
+    border-left: 3px solid var(--gold);
+    background: linear-gradient(180deg, rgba(255,153,0,0.10), rgba(255,153,0,0.03));
+  }
+  .item.done{
+    opacity: 0.6;
+    border-left: 3px solid var(--green);
+    background: linear-gradient(180deg, rgba(52,211,153,0.08), rgba(52,211,153,0.02));
+  }
+  .item.done.cert{
+    border-left: 3px solid var(--green);
+  }
+  .flag-btn{
+    flex-shrink: 0;
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    cursor: pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 0;
+    margin-top: 1px;
+  }
+  .flag-btn svg{ width: 15px; height: 15px; }
+  .flag-btn .flag-outline{ color: var(--ink-faint); }
+  .flag-btn .flag-filled{ color: var(--green); display:none; }
+  .item.done .flag-btn{ background: var(--green-dim); border-color: var(--green); }
+  .item.done .flag-outline{ display:none; }
+  .item.done .flag-filled{ display:block; }
+
+  .item-text{
+    flex: 1;
+    font-size: 14.5px;
+  }
+  .item.done .item-text{ text-decoration: line-through; text-decoration-color: var(--ink-faint); }
+
+  .cert-badge{
+    display:inline-flex;
+    align-items:center;
+    gap: 5px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    color: var(--gold);
+    background: rgba(232,179,75,0.1);
+    border: 1px solid var(--gold-dim);
+    padding: 2px 7px;
+    border-radius: 999px;
+    margin-top: 6px;
+  }
+
+  footer{
+    max-width: var(--maxw);
+    margin: 0 auto 60px;
+    padding: 24px 20px;
+    color: var(--ink-faint);
+    font-size: 12.5px;
+    border-top: 1px solid var(--line);
+  }
+
+  .sync-panel{
+    display: none;
+    max-width: var(--maxw);
+    margin: 10px auto 0;
+    padding: 0 20px;
+  }
+  .sync-panel.open{ display: block; }
+  .sync-panel .sync-note{
+    color: var(--ink-dim);
+    font-size: 13px;
+    margin: 10px 0 8px;
+  }
+  #qrcodeBox{
+    display: inline-block;
+    padding: 10px;
+    background: #fff;
+    border-radius: 8px;
+    margin: 4px 0 12px;
+  }
+  .sync-row{
+    display: flex;
+    gap: 8px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+  }
+  .sync-input{
+    flex: 1 1 220px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    min-width: 0;
+  }
+
+  .item.project{
+    border-left: 3px solid var(--teal);
+    background: linear-gradient(180deg, rgba(34,211,238,0.09), rgba(34,211,238,0.03));
+  }
+  .item.project.done{
+    border-left: 3px solid var(--green);
+  }
+  .project-badge{
+    display:inline-flex;
+    align-items:center;
+    gap: 5px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    color: var(--teal);
+    background: rgba(47,155,247,0.10);
+    border: 1px solid var(--teal-dim);
+    padding: 2px 7px;
+    border-radius: 999px;
+    margin-top: 6px;
+  }
+  .item.cert .item-text{ cursor: pointer; }
+  .item.cert .item-text:hover .cert-badge{ text-decoration: underline; }
+  .item.check{
+    border-left: 3px solid var(--check);
+    background: linear-gradient(180deg, rgba(192,132,252,0.09), rgba(192,132,252,0.03));
+  }
+  .item.check.done{
+    border-left: 3px solid var(--green);
+  }
+  .check-badge{
+    display:inline-flex;
+    align-items:center;
+    gap: 5px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    color: var(--check);
+    background: rgba(192,132,252,0.10);
+    border: 1px solid var(--check-dim);
+    padding: 2px 7px;
+    border-radius: 999px;
+    margin-top: 6px;
+  }
+  .item.check .item-text{ cursor: pointer; }
+  .stage-resources{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 4px 0 14px;
+    padding-left: 2px;
+  }
+  .resource-chip{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    color: var(--ink-dim);
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    padding: 4px 9px;
+    border-radius: 999px;
+    text-decoration: none;
+  }
+  .resource-chip:hover{
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+  .exam-callout{
+    max-width: var(--maxw);
+    margin: 0 auto 8px;
+    padding: 0 20px;
+  }
+  .exam-callout-inner{
+    background: var(--panel);
+    border: 1px solid var(--gold-dim);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    font-size: 13px;
+    color: var(--ink-dim);
+    line-height: 1.6;
+  }
+  .exam-callout-inner strong{ color: var(--gold); }
+  .modal-overlay{
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 50;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.open{ display: flex; }
+  .modal-card{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    max-width: 440px;
+    width: 100%;
+    padding: 22px;
+    position: relative;
+  }
+  .modal-close{
+    position: absolute;
+    top: 14px; right: 14px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    color: var(--ink-faint);
+    width: 26px; height: 26px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+  }
+  .modal-title{
+    font-size: 17px;
+    font-weight: 600;
+    margin: 0 0 4px;
+    padding-right: 24px;
+  }
+  .modal-provider{
+    color: var(--gold);
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    margin: 0 0 16px;
+  }
+  .modal-row{
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 9px 0;
+    border-top: 1px solid var(--line);
+    font-size: 13.5px;
+  }
+  .modal-row .k{ color: var(--ink-faint); }
+  .modal-row .v{ color: var(--ink); text-align: right; }
+  .modal-note{
+    margin-top: 14px;
+    font-size: 12px;
+    color: var(--ink-faint);
+    line-height: 1.5;
+  }
+
+  @media (max-width: 520px){
+    .stage{ margin-left: 6px; padding-left: 18px; }
+    .stage-title{ font-size: 16.5px; }
+    .progress-shell{ padding: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <span class="eyebrow mono">// LEARNING ROADMAP</span>
+  <h1>AWS Certified Developer — Associate</h1>
+  <p>A ground-up path from Cloud Practitioner fundamentals through every domain of the Developer Associate exam: development, security, deployment, and troubleshooting — with hands-on capstones, knowledge checks, and curated resources at each stage.</p>
+</header>
+
+<div class="exam-callout">
+  <div class="exam-callout-inner">
+    <strong>Exam currency note:</strong> this roadmap targets <strong>DVA-C02</strong> — 65 questions (50 scored), 130 minutes, $150 USD, minimum passing score 720/1000, valid 3 years. As of writing, AWS has announced <strong>DVA-C03</strong> registration opens October 27, 2026, with the last day to sit DVA-C02 being around November 30–December 1, 2026. If your exam date falls after that window, verify the current exam guide before relying on this content, since domain weightings can shift between versions.
+  </div>
+</div>
+
+<div class="trailbar">
+  <div class="progress-shell">
+    <div class="progress-stat">
+      <span class="num" id="statDone">0</span>
+      <span class="lbl">completed</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-stat">
+      <span class="num" id="statPct">0%</span>
+      <span class="lbl">of trail</span>
+    </div>
+    <button class="reset-btn mono" id="syncBtn">SYNC ACROSS DEVICES</button>
+    <button class="reset-btn mono" id="resetBtn">RESET PROGRESS</button>
+  </div>
+
+  <div class="sync-panel" id="syncPanel">
+    <p class="sync-note">Scan this code with a camera app, or open the link, to load this progress.</p>
+    <div id="qrcodeBox"></div>
+    <div class="sync-row">
+      <input type="text" id="syncLinkInput" class="sync-input mono" readonly>
+      <button class="reset-btn mono" id="copyLinkBtn">COPY LINK</button>
+    </div>
+    <p class="sync-note">Have a link or code to load instead? Paste it below.</p>
+    <div class="sync-row">
+      <input type="text" id="pasteCodeInput" class="sync-input mono" placeholder="paste sync link or code here">
+      <button class="reset-btn mono" id="applyPasteBtn">APPLY</button>
+    </div>
+  </div>
+</div>
+
+<main id="trail"></main>
+
+<footer>
+  Progress is saved automatically in this browser as items are completed.
+</footer>
+
+<div class="modal-overlay" id="certModalOverlay">
+  <div class="modal-card">
+    <button class="modal-close" id="certModalClose">&times;</button>
+    <h3 class="modal-title" id="certModalTitle"></h3>
+    <p class="modal-provider mono" id="certModalProvider"></p>
+    <div id="certModalRows"></div>
+    <p class="modal-note" id="certModalNote"></p>
+  </div>
+</div>
+<script>
+const DATA = [
+{
+  title: "Before You Start",
+  blurb: "Exam logistics and mindset — know what you're actually walking into before opening a single service page.",
+  resources: [
+    { label: "Official DVA-C02 Exam Guide", url: "https://docs.aws.amazon.com/aws-certification/latest/developer-associate-02/developer-associate-02.html" },
+    { label: "AWS Skill Builder (free account)", url: "https://skillbuilder.aws/" },
+  ],
+  items: [
+    "Exam format: 65 questions (50 scored, 15 unscored), 130 minutes, multiple choice + multiple response",
+    "Passing score: scaled 720 out of 1000 — you don't need to pass each domain individually, only the exam overall",
+    "Cost: $150 USD (varies by country), delivered via Pearson VUE (test center or online proctored)",
+    "Prerequisite assumption: AWS recommends 1+ year hands-on experience developing and maintaining applications on AWS",
+    "What's explicitly OUT of scope: designing architectures, designing CI/CD pipelines from scratch, administering IAM users/groups, administering servers/OS, designing VPC networking — this exam tests using services as a developer, not architecting them",
+    "Domain weightings to plan study time around: Development with AWS Services 32%, Security 26%, Deployment 24%, Troubleshooting and Optimization 18%",
+  ]
+},
+{
+  title: "Cloud Practitioner Foundations Refresher",
+  blurb: "You already hold this cert — this stage is a fast, deliberate recall pass, not a first-time learn. Don't skip it; DVA-C02 assumes this is second nature.",
+  resources: [
+    { label: "AWS Well-Architected Framework", url: "https://aws.amazon.com/architecture/well-architected/" },
+    { label: "AWS Cloud Practitioner Essentials (free)", url: "https://skillbuilder.aws/learn/7NDCT4CV6D/aws-cloud-practitioner-essentials/GVX1JXWTBE" },
+  ],
+  items: [
+    "Core cloud concepts: on-demand, pay-as-you-go, elasticity vs scalability, agility",
+    "AWS Global Infrastructure: Regions, Availability Zones, Edge Locations — and why service choice affects latency/resilience",
+    "The Shared Responsibility Model: what AWS secures vs what you're responsible for",
+    "AWS Well-Architected Framework's six pillars, at least by name and one-line meaning each",
+    "Core service categories refresher: compute (EC2/Lambda), storage (S3/EBS), database (RDS/DynamoDB), networking (VPC) — just enough to place new detail into",
+    "IAM basics: users, groups, roles, policies — the conceptual model, not policy syntax yet",
+    "Billing and cost management basics: AWS Budgets, Cost Explorer, support plan tiers",
+    { text: "Knowledge Check: take 10–15 free Cloud Practitioner-level review questions to confirm recall before moving on", check: true, checkInfo: {
+        name: "Cloud Practitioner Recall Check",
+        provider: "Suggested: ExamTopics or Tutorials Dojo free questions",
+        format: "10–15 mixed questions, untimed",
+        note: "The goal here isn't scoring — it's noticing which foundational concepts feel shaky before you build Developer-level material on top of them."
+    }},
+  ]
+},
+{
+  title: "Developer Prerequisites",
+  blurb: "The exam assumes real development skills going in — this is the non-AWS-specific groundwork.",
+  resources: [
+    { label: "AWS CLI install guide", url: "https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html" },
+    { label: "Boto3 (Python SDK) docs", url: "https://boto3.amazonaws.com/v1/documentation/api/latest/index.html" },
+  ],
+  items: [
+    "Proficiency in at least one high-level language used with AWS SDKs (Python and JavaScript/Node are the most common choices for this exam's examples)",
+    "JSON and YAML fluency — reading and writing both without a reference open",
+    "REST API concepts: methods, status codes, headers, request/response bodies",
+    "Git basics: clone, commit, branch, push/pull — needed for the Deployment domain later",
+    "Installing and configuring the AWS CLI, including named profiles",
+    "Installing and using an AWS SDK (boto3 for Python, or the JS SDK) to make a basic API call",
+  ]
+},
+{
+  title: "AWS Account & Environment Setup",
+  blurb: "Get a safe, correctly configured sandbox before touching real services — this avoids both surprise bills and bad security habits.",
+  resources: [
+    { label: "AWS Free Tier", url: "https://aws.amazon.com/free/" },
+    { label: "AWS Budgets docs", url: "https://docs.aws.amazon.com/cost-management/latest/userguide/budgets-managing-costs.html" },
+  ],
+  items: [
+    "Creating an AWS Free Tier account, and understanding what's actually free vs what starts billing",
+    "Root account vs IAM user: securing the root account and creating a personal IAM admin user for daily work",
+    "Setting up a billing alarm/budget immediately, before doing anything else",
+    "Setting up MFA on the root account and your IAM user",
+    "Choosing a working environment: AWS Cloud9, local IDE with CLI configured, or CloudShell",
+  ]
+},
+{
+  title: "Domain 1 · Architectural Patterns & Resilient Code",
+  blurb: "Domain 1 is 32% of the exam — the single largest domain. This stage covers the conceptual vocabulary the rest of Domain 1 builds on.",
+  resources: [
+    { label: "Domain 1 official skills (AWS docs)", url: "https://docs.aws.amazon.com/aws-certification/latest/developer-associate-02/developer-associate-02-domain1.html" },
+    { label: "freeCodeCamp: AWS Developer Associate full course (Andrew Brown)", url: "https://www.freecodecamp.org/news/ultimate-aws-certified-developer-associate-dva-c02-course-from-andrew-brown/" },
+  ],
+  items: [
+    "Architectural patterns: event-driven, microservices, monolithic, choreography, orchestration, fanout — know the difference in plain terms",
+    "Stateful vs stateless components, and why stateless scales more easily",
+    "Tightly coupled vs loosely coupled components",
+    "Synchronous vs asynchronous communication patterns",
+    "Writing fault-tolerant, resilient application code in your chosen language",
+    "Creating, extending, and maintaining APIs: request/response transformations, validation rules, overriding status codes",
+    "Writing and running unit tests locally using AWS SAM",
+    "Implementing resilient code for third-party integrations: retry logic, circuit breakers, error handling patterns",
+  ]
+},
+{
+  title: "Domain 1 · AWS Lambda Development",
+  blurb: "Lambda is the single most-tested service on this exam — worth real hands-on depth, not just reading about it.",
+  resources: [
+    { label: "AWS Lambda Developer Guide", url: "https://docs.aws.amazon.com/lambda/latest/dg/welcome.html" },
+    { label: "Lambda best practices", url: "https://docs.aws.amazon.com/lambda/latest/dg/best-practices.html" },
+  ],
+  items: [
+    "How Lambda accesses private resources inside a VPC",
+    "Configuring Lambda: environment variables, memory, concurrency, timeout, runtime, handler, layers, extensions, triggers, destinations",
+    "Handling the event lifecycle and errors: Lambda Destinations vs dead-letter queues (DLQs)",
+    "Writing and running Lambda test code using AWS services and tools",
+    "Integrating Lambda with other AWS services as both a producer and consumer",
+    "Tuning Lambda for performance: memory/CPU tradeoff, provisioned concurrency, cold starts",
+    "Using Lambda to process and transform near-real-time streaming data",
+    { text: "Hands-on Project: write, deploy, and test a Lambda function (via SAM) with an environment variable, a layer, and a DLQ configured", project: true },
+  ]
+},
+{
+  title: "Domain 1 · APIs & Messaging",
+  blurb: "How a developer actually exposes and connects services on AWS.",
+  resources: [
+    { label: "Amazon API Gateway Developer Guide", url: "https://docs.aws.amazon.com/apigateway/latest/developerguide/welcome.html" },
+    { label: "Amazon EventBridge docs", url: "https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-what-is.html" },
+  ],
+  items: [
+    "API Gateway fundamentals: REST APIs vs WebSocket APIs vs HTTP APIs",
+    "Request/response transformations and mapping templates",
+    "Enforcing request validation rules and overriding status codes",
+    "Writing code that interacts with AWS services via APIs and SDKs correctly (pagination, retries, waiters)",
+    "Writing code to use messaging services: Amazon SQS (standard vs FIFO queues) and Amazon SNS (topics, filtering)",
+    "Implementing event-driven patterns with Amazon EventBridge: rules, event buses, schema registry",
+    "Handling streaming data with Amazon Kinesis Data Streams at a developer level",
+  ]
+},
+{
+  title: "Domain 1 · Data Stores for Application Development",
+  blurb: "DynamoDB is a heavily tested service here — invest real time understanding partition keys and consistency, not just CRUD calls.",
+  resources: [
+    { label: "Amazon DynamoDB Developer Guide", url: "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html" },
+    { label: "DynamoDB core concepts deep dive", url: "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.html" },
+  ],
+  items: [
+    "High-cardinality partition keys and why balanced partition access matters",
+    "Database consistency models: strongly consistent vs eventually consistent reads",
+    "Query vs Scan operations in DynamoDB — cost and performance implications of each",
+    "DynamoDB keys and indexing: partition key, sort key, Global Secondary Index, Local Secondary Index",
+    "Serializing and deserializing data for persistence to a data store",
+    "Using, managing, and maintaining data stores day-to-day as a developer",
+    "Managing data lifecycles: TTL in DynamoDB, S3 lifecycle rules",
+    "Data caching services: Amazon ElastiCache (Redis/Memcached) fundamentals",
+    "Specialized data stores based on access pattern, e.g. Amazon OpenSearch Service for search/analytics workloads",
+    { text: "Hands-on Project: build a small CRUD API using API Gateway + Lambda + DynamoDB, including a Global Secondary Index query", project: true },
+  ]
+},
+{
+  title: "Domain 1 · AI-Assisted Development (Emerging Topic)",
+  blurb: "AWS explicitly added this as an emerging exam topic — it won't be a huge share of questions yet, but it's real and growing.",
+  resources: [
+    { label: "Amazon Q Developer docs", url: "https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/what-is.html" },
+  ],
+  items: [
+    "Using Amazon Q Developer to assist with day-to-day development tasks",
+    "Using AI-assisted tools for code generation, automated code review, and refactoring suggestions",
+    "Awareness of security risks from integrating AI services: data privacy controls, access management, controlling model inputs/outputs",
+  ]
+},
+{
+  title: "Domain 1 Knowledge Check",
+  blurb: "Pause here — Domain 1 is nearly a third of the exam. Confirm it's solid before moving to Security.",
+  items: [
+    { text: "Knowledge Check: complete a Domain 1-focused practice set (Development with AWS Services) and review every wrong answer's explanation", check: true, checkInfo: {
+        name: "Domain 1 Practice Set",
+        provider: "Suggested: Tutorials Dojo DVA-C02 practice exams (domain-filtered) or Stephane Maarek's Udemy course quizzes",
+        cost: "Tutorials Dojo: ~$15–20 one-time; Stephane Maarek Udemy course: ~$15–20 on sale (frequent)",
+        format: "Timed or untimed, domain-filtered question sets with explanations",
+        note: "Don't just check the score — read why each wrong answer was wrong. That's where the actual learning happens at this stage."
+    }},
+  ]
+},
+{
+  title: "Domain 2 · Authentication & Authorization",
+  blurb: "Security is 26% of the exam — the second-largest domain, and one candidates consistently under-study relative to its weight.",
+  resources: [
+    { label: "Domain 2 official skills (AWS docs)", url: "https://docs.aws.amazon.com/aws-certification/latest/developer-associate-02/developer-associate-02-domain2.html" },
+    { label: "IAM User Guide", url: "https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html" },
+  ],
+  items: [
+    "Using an identity provider for federated access: Amazon Cognito and IAM Identity Center at a conceptual level",
+    "Securing applications with bearer tokens (JWTs from Cognito or a third-party IdP)",
+    "Configuring programmatic access to AWS: access keys, credential chains, named profiles",
+    "Making authenticated calls to AWS services from application code",
+    "Assuming an IAM role, and why role assumption beats long-lived credentials",
+    "Defining permissions for IAM principals: policies, least privilege, policy evaluation logic (explicit deny always wins)",
+    "Cognito user pools (authentication) vs identity pools (authorization/temporary AWS credentials) — a very commonly confused pair on this exam",
+    "Implementing application-level authorization for fine-grained access control",
+    "Handling cross-service authentication in microservice architectures",
+  ]
+},
+{
+  title: "Domain 2 · Encryption",
+  blurb: "Know the difference between every encryption concept here cold — this is where vague understanding gets punished on exam day.",
+  resources: [
+    { label: "AWS KMS Developer Guide", url: "https://docs.aws.amazon.com/kms/latest/developerguide/overview.html" },
+    { label: "AWS Certificate Manager docs", url: "https://docs.aws.amazon.com/acm/latest/userguide/acm-overview.html" },
+  ],
+  items: [
+    "Encryption at rest vs encryption in transit — where each applies",
+    "Certificate management with AWS Certificate Manager (ACM) and AWS Private CA",
+    "Client-side encryption vs server-side encryption — who holds the keys in each case",
+    "Using AWS KMS keys to encrypt/decrypt data programmatically",
+    "Generating certificates and SSH keys for development purposes",
+    "Using encryption across account boundaries (KMS key policies and grants)",
+    "Enabling and disabling automatic key rotation in KMS",
+  ]
+},
+{
+  title: "Domain 2 · Managing Sensitive Data",
+  blurb: "The practical, code-level responsibility for protecting data — not just infrastructure config.",
+  resources: [
+    { label: "AWS Secrets Manager docs", url: "https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html" },
+    { label: "Systems Manager Parameter Store docs", url: "https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html" },
+  ],
+  items: [
+    "Data classification concepts: PII, PHI, and why classification drives handling requirements",
+    "Encrypting environment variables that contain sensitive data (Lambda env var encryption)",
+    "Secrets Manager vs Parameter Store: automatic rotation, cost, and when to use which",
+    "Sanitizing sensitive data before logging or returning it in responses",
+    "Application-level data masking and sanitization patterns",
+    "Data access patterns for multi-tenant applications: isolating tenant data safely",
+    { text: "Hands-on Project: rebuild the earlier CRUD API with Cognito-authenticated requests and secrets pulled from Secrets Manager instead of hardcoded values", project: true },
+  ]
+},
+{
+  title: "Domain 2 Knowledge Check",
+  blurb: "Security concepts blur together easily under exam pressure — a dedicated check here pays off.",
+  items: [
+    { text: "Knowledge Check: complete a Domain 2-focused practice set (Security), paying special attention to IAM policy evaluation and Cognito user pools vs identity pools questions", check: true, checkInfo: {
+        name: "Domain 2 Practice Set",
+        provider: "Suggested: Tutorials Dojo DVA-C02 practice exams (domain-filtered)",
+        cost: "~$15–20 one-time for the full practice exam bundle",
+        format: "Domain-filtered questions with detailed explanations",
+        note: "If IAM policy evaluation or Cognito's two pool types still feel fuzzy after this, go back to Domain 2 before continuing — this is a recurring exam trap."
+    }},
+  ]
+},
+{
+  title: "Domain 3 · Preparing Application Artifacts",
+  blurb: "Deployment is 24% of the exam — this stage is about getting code into a shippable shape.",
+  resources: [
+    { label: "Domain 3 official skills (AWS docs)", url: "https://docs.aws.amazon.com/aws-certification/latest/developer-associate-02/developer-associate-02-domain3.html" },
+    { label: "AWS SAM Developer Guide", url: "https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html" },
+  ],
+  items: [
+    "Managing code module dependencies within a deployment package: environment variables, config files, container images",
+    "Organizing files and directory structure for application deployment",
+    "Using code repositories (CodeCommit, GitHub, GitLab) in a deployment workflow",
+    "Applying application resource requirements: memory, cores, and how they map to service limits",
+    "Preparing environment-specific configuration, including with AWS AppConfig",
+  ]
+},
+{
+  title: "Domain 3 · Testing in Development Environments",
+  blurb: "Testing before deployment, specifically in an AWS context — not general software testing theory.",
+  resources: [
+    { label: "AWS SAM local testing", url: "https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/using-sam-cli-local.html" },
+  ],
+  items: [
+    "Testing deployed code using AWS services and tools",
+    "Writing integration tests and mocking APIs for external dependencies",
+    "Testing applications using development endpoints, e.g. configuring stages in API Gateway",
+    "Deploying application stack updates to existing environments (e.g. a SAM template to a staging environment)",
+    "Testing event-driven applications specifically — simulating triggers and verifying downstream effects",
+  ]
+},
+{
+  title: "Domain 3 · Automating Deployment Testing",
+  blurb: "Where infrastructure-as-code and environment management actually meet.",
+  resources: [
+    { label: "AWS CloudFormation User Guide", url: "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/Welcome.html" },
+    { label: "AWS Amplify docs", url: "https://docs.aws.amazon.com/amplify/latest/userguide/welcome.html" },
+  ],
+  items: [
+    "Creating application test events: JSON payloads for testing Lambda, API Gateway, SAM resources",
+    "Deploying API resources to various environments",
+    "Creating environments that use approved versions for integration testing: Lambda aliases, container image tags, Amplify branches, Copilot environments",
+    "Implementing and deploying Infrastructure as Code templates: SAM templates and CloudFormation templates",
+    "Managing environments in individual services (dev/test/prod stages in API Gateway, for example)",
+    "Using Amazon Q Developer to generate automated tests",
+  ]
+},
+{
+  title: "Domain 3 · CI/CD & Deployment Strategies",
+  blurb: "How code actually gets from a commit to running in production on AWS.",
+  resources: [
+    { label: "AWS CodePipeline docs", url: "https://docs.aws.amazon.com/codepipeline/latest/userguide/welcome.html" },
+    { label: "Lambda deployment strategies (blue/green, canary)", url: "https://docs.aws.amazon.com/lambda/latest/dg/lambda-traffic-shifting-using-aliases.html" },
+  ],
+  items: [
+    "Lambda deployment packaging options: .zip archives vs container images",
+    "API Gateway stages and custom domain mapping",
+    "Updating existing IaC templates (SAM/CloudFormation) as an application evolves",
+    "Managing application environments using AWS services end-to-end",
+    "Deploying an application version using a deployment strategy",
+    "Committing code to a repository to trigger build, test, and deployment actions (CodePipeline/CodeBuild/CodeDeploy)",
+    "Using orchestrated workflows to deploy code across different environments",
+    "Performing application rollbacks using existing deployment strategies",
+    "Using labels and branches for version and release management",
+    "Using runtime configuration for dynamic deployments, e.g. API Gateway staging variables feeding Lambda",
+    "Configuring deployment strategies: blue/green, canary, and rolling — know exactly how each differs and when each is preferred",
+    { text: "Hands-on Project: set up a CodePipeline (CodeCommit/GitHub → CodeBuild → CodeDeploy) that deploys the earlier Lambda project with a canary deployment", project: true },
+  ]
+},
+{
+  title: "Domain 3 Knowledge Check",
+  blurb: "Deployment strategy questions (blue/green vs canary vs rolling) are a classic exam trap — worth a dedicated pass.",
+  items: [
+    { text: "Knowledge Check: complete a Domain 3-focused practice set (Deployment), and be able to explain blue/green vs canary vs rolling deployments out loud without notes", check: true, checkInfo: {
+        name: "Domain 3 Practice Set",
+        provider: "Suggested: Tutorials Dojo DVA-C02 practice exams (domain-filtered)",
+        format: "Domain-filtered questions with explanations",
+        note: "If you can't explain the three deployment strategies' tradeoffs from memory, that's a signal to revisit this stage before the next one."
+    }},
+  ]
+},
+{
+  title: "Domain 4 · Observability Fundamentals",
+  blurb: "Troubleshooting and Optimization is 18% of the exam — smaller, but full of very specific service-detail questions.",
+  resources: [
+    { label: "Domain 4 official skills (AWS docs)", url: "https://docs.aws.amazon.com/aws-certification/latest/developer-associate-02/developer-associate-02-domain4.html" },
+    { label: "Amazon CloudWatch User Guide", url: "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html" },
+    { label: "AWS X-Ray Developer Guide", url: "https://docs.aws.amazon.com/xray/latest/devguide/aws-xray.html" },
+  ],
+  items: [
+    "The difference between logging, monitoring, and observability — a genuinely tested distinction, not just semantics",
+    "CloudWatch fundamentals: metrics, logs, alarms, dashboards",
+    "Implementing an effective logging strategy to record application behavior and state",
+    "Implementing code that emits custom metrics, including CloudWatch Embedded Metric Format (EMF)",
+    "Adding annotations for tracing with AWS X-Ray",
+    "Implementing notification alerts for specific actions: quota limits, deployment completions",
+    "Implementing tracing using AWS services and tools",
+    "Implementing structured logging for application events and user actions",
+    "Configuring application health checks and readiness probes",
+  ]
+},
+{
+  title: "Domain 4 · Debugging & Root Cause Analysis",
+  blurb: "Turning raw logs and traces into an actual answer to 'why did this break'.",
+  resources: [
+    { label: "CloudWatch Logs Insights query syntax", url: "https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_QuerySyntax.html" },
+  ],
+  items: [
+    "Debugging code to identify defects using logs, traces, and local reproduction",
+    "Interpreting application metrics, logs, and traces together, not in isolation",
+    "Querying logs with CloudWatch Logs Insights to find relevant data quickly",
+    "Reviewing application health using dashboards and CloudWatch Insights",
+    "Troubleshooting deployment failures using service output logs (CodeBuild/CodeDeploy/CloudFormation events)",
+    "Debugging service integration issues between multiple AWS services in one application",
+  ]
+},
+{
+  title: "Domain 4 · Performance & Cost Optimization",
+  blurb: "The final piece — making something that already works, work efficiently.",
+  resources: [
+    { label: "Lambda performance optimization guide", url: "https://docs.aws.amazon.com/lambda/latest/dg/best-practices.html#function-configuration" },
+    { label: "Amazon CloudFront caching docs", url: "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html" },
+  ],
+  items: [
+    "Defining concurrency in the context of Lambda and other AWS compute",
+    "Profiling application performance to find real bottlenecks rather than guessing",
+    "Determining minimum memory and compute power needed for an application (and why over-provisioning wastes money)",
+    "Using subscription filter policies to optimize messaging (SNS filter policies, EventBridge rule patterns)",
+    "Caching content based on request headers (CloudFront, API Gateway caching)",
+    "Implementing application-level caching to improve performance (ElastiCache, in-memory caching)",
+    "Optimizing application resource usage generally",
+    "Analyzing application performance issues from logs and metrics together",
+    { text: "Hands-on Project: add CloudWatch custom metrics, X-Ray tracing, and an alarm to the full pipeline built across earlier stages, then intentionally break something and debug it using only the observability tools set up", project: true },
+  ]
+},
+{
+  title: "Domain 4 Knowledge Check",
+  blurb: "The last domain check before moving to full practice exams.",
+  items: [
+    { text: "Knowledge Check: complete a Domain 4-focused practice set (Troubleshooting and Optimization)", check: true, checkInfo: {
+        name: "Domain 4 Practice Set",
+        provider: "Suggested: Tutorials Dojo DVA-C02 practice exams (domain-filtered)",
+        format: "Domain-filtered questions with explanations",
+        note: "This domain is smaller but detail-heavy — expect very specific service-behavior questions rather than broad conceptual ones."
+    }},
+  ]
+},
+{
+  title: "Full-Length Practice Exams & Exam Strategy",
+  blurb: "The bridge between 'I understand the material' and 'I can pass a 130-minute exam under pressure'.",
+  resources: [
+    { label: "Tutorials Dojo DVA-C02 Practice Exams", url: "https://portal.tutorialsdojo.com/courses/aws-certified-developer-associate-practice-exams/" },
+    { label: "freeCodeCamp full DVA-C02 course", url: "https://www.freecodecamp.org/news/ultimate-aws-certified-developer-associate-dva-c02-course-from-andrew-brown/" },
+  ],
+  items: [
+    "Take a full-length, timed practice exam under real exam conditions (130 minutes, no pausing)",
+    "Review every single wrong answer's explanation — this is where most of the remaining learning happens",
+    "Track weak domains across multiple practice exams to spot a real pattern, not a one-off bad day",
+    "Re-study only the domains that keep showing up as weak, rather than re-reading everything evenly",
+    "Repeat full-length practice exams until consistently scoring meaningfully above the 720/1000 passing bar",
+    { text: "Knowledge Check: score 80%+ on two consecutive full-length timed practice exams before booking the real exam", check: true, checkInfo: {
+        name: "Final Readiness Check",
+        provider: "Your choice of practice exam provider (Tutorials Dojo recommended for explanation quality)",
+        format: "Full 65-question timed simulation",
+        note: "Consistency across two attempts matters more than one lucky high score — it filters out a single easy question set."
+    }},
+  ]
+},
+{
+  title: "Exam Day & Certification",
+  blurb: "The logistics that trip people up on the day, and the credential itself.",
+  resources: [
+    { label: "AWS Certification exam policies", url: "https://aws.amazon.com/certification/policies/before-testing/" },
+  ],
+  items: [
+    "Scheduling the exam via Pearson VUE: test center vs online proctored, and ID requirements",
+    "Online proctoring specifics if chosen: room scan, no notes/phone, system check beforehand",
+    "Time management on exam day: flagging uncertain questions and returning to them rather than stalling",
+    "Reading questions for the actual constraint being tested (cost, security, performance, simplicity — AWS exams often want the 'best' answer, not just a valid one)",
+    { text: "Certification: AWS Certified Developer – Associate (DVA-C02)", cert: true, certInfo: {
+        name: "AWS Certified Developer – Associate (DVA-C02)",
+        provider: "Amazon Web Services, via Pearson VUE",
+        cost: "$150 USD (varies by country); 50% discount voucher available after any AWS certification pass",
+        format: "65 questions (50 scored, 15 unscored), multiple choice + multiple response",
+        duration: "130 minutes; valid for 3 years from pass date",
+        note: "DVA-C02 is being succeeded by DVA-C03: registration for DVA-C03 opens October 27, 2026, and the last day to sit DVA-C02 is around November 30–December 1, 2026. Verify current dates on AWS's certification page before scheduling if you're close to that window."
+    }},
+  ]
+},
+{
+  title: "After Certifying: Where This Goes Next",
+  blurb: "The credential isn't the finish line — here's how to actually use it and what's a sensible next step.",
+  items: [
+    "Apply what you learned on a real or personal project, not just exam scenarios — the retention gap between the two is large",
+    "Keep the AWS Free Tier sandbox running for continued hands-on practice post-exam",
+    "Consider AWS Certified Solutions Architect – Associate (SAA-C03) next if you want to broaden into architecture decisions, not just implementation",
+    "Consider AWS Certified DevOps Engineer – Professional later as a natural extension of the Deployment domain covered here",
+    "Join AWS re:Post or a local AWS user group for ongoing exposure to how these services get used in practice",
+  ]
+},
+];
+
+const STORAGE_KEY = "aws-dva-progress-v1";
+
+function loadState(){
+  try{
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+  }catch(e){ return {}; }
+}
+function saveState(state){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+let state = loadState();
+let totalItems = 0;
+
+function itemId(si, ii){ return `s${si}-i${ii}`; }
+
+function flagSVGOutline(){
+  return `<svg class="flag-outline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22V4"/><path d="M4 4c2-1.5 4-1.5 6 0s4 1.5 6 0v10c-2 1.5-4 1.5-6 0s-4-1.5-6 0"/></svg>`;
+}
+function flagSVGFilled(){
+  return `<svg class="flag-filled" viewBox="0 0 24 24" fill="currentColor"><path d="M5 21a1 1 0 0 1-1-1V4c2-1.3 4-1.3 6 0s4 1.3 6 0a1 1 0 0 1 1.4.9v9.6a1 1 0 0 1-.5.87c-2.2 1.3-4.4 1.3-6.4-.02-2-1.3-4-1.3-5.5-.35V20a1 1 0 0 1-1 1Z"/></svg>`;
+}
+
+function render(){
+  const trail = document.getElementById("trail");
+  trail.innerHTML = "";
+  totalItems = 0;
+
+  DATA.forEach((stage, si) => {
+    const stageEl = document.createElement("div");
+    stageEl.className = "stage";
+    stageEl.dataset.stageIndex = si;
+
+    const items = stage.items.map((it, ii) => {
+      totalItems++;
+      const obj = typeof it === "string" ? { text: it, cert: false } : it;
+      obj.id = itemId(si, ii);
+      return obj;
+    });
+
+    const doneCount = items.filter(it => state[it.id]).length;
+    if (doneCount === items.length) stageEl.classList.add("complete");
+
+    stageEl.innerHTML = `
+      <div class="stage-marker"></div>
+      <div class="stage-head">
+        <div class="stage-title-wrap">
+          <span class="stage-num mono">STAGE ${String(si+1).padStart(2,"0")}</span>
+          <h2 class="stage-title">${stage.title}</h2>
+          <p class="stage-blurb">${stage.blurb}</p>
+        </div>
+        <div class="stage-meta">
+          <span class="stage-count mono">${doneCount}/${items.length}</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+        </div>
+      </div>
+      <div class="stage-body"></div>
+    `;
+
+    if (stage.resources && stage.resources.length) {
+      const resRow = document.createElement("div");
+      resRow.className = "stage-resources";
+      resRow.innerHTML = stage.resources.map(
+        r => `<a class="resource-chip mono" href="${r.url}" target="_blank" rel="noopener">${r.label}</a>`
+      ).join("");
+      stageEl.querySelector(".stage-body").before(resRow);
+    }
+
+    const body = stageEl.querySelector(".stage-body");
+    items.forEach(it => {
+      const itemEl = document.createElement("div");
+      itemEl.className = "item"
+        + (it.cert ? " cert" : "")
+        + (it.project ? " project" : "")
+        + (it.check ? " check" : "")
+        + (state[it.id] ? " done" : "");
+      itemEl.dataset.id = it.id;
+      itemEl.innerHTML = `
+        <button class="flag-btn" aria-label="Toggle complete">
+          ${flagSVGOutline()}
+          ${flagSVGFilled()}
+        </button>
+        <div class="item-text">
+          ${it.text}
+          ${it.cert ? `<div class="cert-badge">CERTIFICATION — tap for details</div>` : ``}
+          ${it.project ? `<div class="project-badge">HANDS-ON PROJECT</div>` : ``}
+          ${it.check ? `<div class="check-badge">KNOWLEDGE CHECK — tap for practice resources</div>` : ``}
+        </div>
+      `;
+      itemEl.querySelector(".flag-btn").addEventListener("click", () => {
+        state[it.id] = !state[it.id];
+        saveState(state);
+        render();
+        restoreOpenStages();
+      });
+      if (it.cert && it.certInfo) {
+        itemEl.querySelector(".item-text").addEventListener("click", () => {
+          openCertModal(it.certInfo);
+        });
+      }
+      if (it.check && it.checkInfo) {
+        itemEl.querySelector(".item-text").addEventListener("click", () => {
+          openCertModal(it.checkInfo);
+        });
+      }
+      body.appendChild(itemEl);
+    });
+
+    stageEl.querySelector(".stage-head").addEventListener("click", () => {
+      stageEl.classList.toggle("open");
+    });
+
+    trail.appendChild(stageEl);
+  });
+
+  updateProgress();
+}
+
+function updateProgress(){
+  const doneCount = Object.values(state).filter(Boolean).length;
+  const pct = totalItems ? Math.round((doneCount / totalItems) * 100) : 0;
+  document.getElementById("statDone").textContent = doneCount;
+  document.getElementById("statPct").textContent = pct + "%";
+  document.getElementById("progressFill").style.width = pct + "%";
+}
+
+let openStageIndexes = new Set([0]);
+function restoreOpenStages(){
+  document.querySelectorAll(".stage").forEach(el => {
+    if (openStageIndexes.has(Number(el.dataset.stageIndex))) el.classList.add("open");
+  });
+}
+document.addEventListener("click", (e) => {
+  const head = e.target.closest(".stage-head");
+  if (!head) return;
+  const stageEl = head.closest(".stage");
+  const idx = Number(stageEl.dataset.stageIndex);
+  if (openStageIndexes.has(idx)) openStageIndexes.delete(idx);
+  else openStageIndexes.add(idx);
+});
+
+document.getElementById("resetBtn").addEventListener("click", () => {
+  if (confirm("Reset all progress on this device? This can't be undone.")) {
+    state = {};
+    saveState(state);
+    render();
+    restoreOpenStages();
+  }
+});
+
+function encodeStateToCode(obj){
+  return btoa(encodeURIComponent(JSON.stringify(obj))).replace(/=+$/,"");
+}
+function decodeCodeToState(code){
+  const padded = code + "=".repeat((4 - code.length % 4) % 4);
+  return JSON.parse(decodeURIComponent(atob(padded)));
+}
+function buildSyncLink(){
+  const code = encodeStateToCode(state);
+  const base = location.origin + location.pathname;
+  return base + "#sync=" + code;
+}
+function extractCodeFromInput(value){
+  const trimmed = value.trim();
+  const hashIdx = trimmed.indexOf("#sync=");
+  if (hashIdx !== -1) return trimmed.slice(hashIdx + 6);
+  const qIdx = trimmed.indexOf("sync=");
+  if (qIdx !== -1) return trimmed.slice(qIdx + 5);
+  return trimmed;
+}
+function applyIncomingState(incoming){
+  if (typeof incoming !== "object" || incoming === null) throw new Error("bad format");
+  const mergeChoice = confirm(
+    "Click OK to MERGE this with what's already flagged on this device.\nClick Cancel to REPLACE this device's progress entirely with the incoming data."
+  );
+  state = mergeChoice ? Object.assign({}, state, incoming) : Object.assign({}, incoming);
+  saveState(state);
+  render();
+  restoreOpenStages();
+}
+
+let qrRendered = false;
+function renderSyncPanel(){
+  const link = buildSyncLink();
+  document.getElementById("syncLinkInput").value = link;
+  const box = document.getElementById("qrcodeBox");
+  box.innerHTML = "";
+  try {
+    new QRCode(box, { text: link, width: 176, height: 176, correctLevel: QRCode.CorrectLevel.M });
+  } catch(e) { box.textContent = "QR unavailable — use the link/copy option below."; }
+}
+
+document.getElementById("syncBtn").addEventListener("click", () => {
+  const panel = document.getElementById("syncPanel");
+  panel.classList.toggle("open");
+  if (panel.classList.contains("open")) renderSyncPanel();
+});
+
+document.getElementById("copyLinkBtn").addEventListener("click", () => {
+  const input = document.getElementById("syncLinkInput");
+  input.select();
+  input.setSelectionRange(0, 99999);
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(input.value).then(() => alert("Link copied.")).catch(() => document.execCommand("copy"));
+  } else {
+    document.execCommand("copy");
+  }
+});
+
+document.getElementById("applyPasteBtn").addEventListener("click", () => {
+  const raw = document.getElementById("pasteCodeInput").value;
+  if (!raw.trim()) return;
+  try {
+    const code = extractCodeFromInput(raw);
+    const incoming = decodeCodeToState(code);
+    applyIncomingState(incoming);
+    document.getElementById("pasteCodeInput").value = "";
+    alert("Progress applied.");
+  } catch (e) {
+    alert("Could not read that — make sure it's a sync link or code from this same roadmap.");
+  }
+});
+
+(function checkIncomingHash(){
+  const hash = location.hash;
+  if (hash && hash.indexOf("sync=") !== -1) {
+    try {
+      const code = hash.slice(hash.indexOf("sync=") + 5);
+      const incoming = decodeCodeToState(code);
+      applyIncomingState(incoming);
+    } catch(e) { /* ignore malformed hash */ }
+    history.replaceState(null, "", location.pathname + location.search);
+  }
+})();
+
+function openCertModal(info){
+  document.getElementById("certModalTitle").textContent = info.name || "Certification";
+  document.getElementById("certModalProvider").textContent = info.provider || "";
+  const rows = [
+    ["Cost", info.cost],
+    ["Format", info.format],
+    ["Typical duration", info.duration],
+  ].filter(r => r[1]);
+  document.getElementById("certModalRows").innerHTML = rows.map(
+    r => `<div class="modal-row"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`
+  ).join("");
+  document.getElementById("certModalNote").textContent = info.note || "Pricing and format can change — verify current details on the provider's site before enrolling.";
+  document.getElementById("certModalOverlay").classList.add("open");
+}
+document.getElementById("certModalClose").addEventListener("click", () => {
+  document.getElementById("certModalOverlay").classList.remove("open");
+});
+document.getElementById("certModalOverlay").addEventListener("click", (e) => {
+  if (e.target.id === "certModalOverlay") e.target.classList.remove("open");
+});
+
+render();
+restoreOpenStages();
+</script>
+</body>
+</html>
