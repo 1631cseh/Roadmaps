@@ -732,6 +732,50 @@ const DATA = [
     "Design tokens: colors, spacing, typography as reusable values",
     "Theming and dark mode implementation patterns",
     "CSS-in-JS (styled-components/Emotion): what it offers and its costs",
+    "CSS preprocessors: Sass/Less — nesting, variables, mixins, and why utility-first CSS has reduced their use",
+    "PostCSS: autoprefixing and plugin-based CSS transforms",
+    "Traditional component-based CSS frameworks (Bootstrap) — recognizing the pattern even if the team uses Tailwind",
+  ]
+},
+{
+  title: "Essential Frontend Libraries",
+  blurb: "The small, unglamorous libraries that show up in almost every real codebase.",
+  items: [
+    "Date/time handling: date-fns or Day.js instead of hand-rolling date logic",
+    "Utility functions: lodash or a few native alternatives, and knowing when you actually need them",
+    "Conditional class names: clsx or classnames for readable dynamic styling",
+    "Icon libraries: lucide-react or react-icons instead of manually importing SVGs",
+    "Drag-and-drop interactions: dnd-kit or react-beautiful-dnd, conceptually",
+    "Toast/notification libraries (e.g. sonner, react-hot-toast) instead of building your own",
+    "Virtualization libraries for long lists (react-window/react-virtualized) — noting overlap with the Performance stage",
+  ]
+},
+{
+  title: "Clean Code & Best Practices",
+  blurb: "The principles that separate code that works from code a team can actually maintain.",
+  items: [
+    "Naming things clearly: components, variables, and functions that describe intent",
+    "Single-responsibility components: splitting a component when it does too much",
+    "Avoiding prop drilling and overly deep component nesting",
+    "DRY without over-abstracting too early — recognizing premature abstraction",
+    "Consistent file and folder naming conventions across a codebase",
+    "Writing self-documenting code vs relying on comments",
+    "Code smells specific to React: giant useEffect blocks, derived state stored redundantly, inline object/function props causing re-renders",
+    "Linting and formatting as enforced standards, not personal preference (ESLint + Prettier configured for the team)",
+  ]
+},
+{
+  title: "AI-Assisted Frontend Development",
+  blurb: "A genuinely current skill now — using AI tools well, and knowing exactly when not to trust them.",
+  items: [
+    "Using an AI coding assistant (GitHub Copilot, Cursor, Claude Code) inside the actual workflow, not just chat",
+    "Writing effective prompts for code generation: giving context, constraints, and examples rather than vague asks",
+    "Using AI to scaffold components/boilerplate quickly, then reviewing and correcting the output line by line",
+    "Using AI to generate test cases and edge cases you might not think of yourself",
+    "Using AI for debugging: pasting errors/stack traces with enough context to get a precise answer",
+    "Design-to-code AI tools (e.g. v0) for rapid prototyping — and their current limits for production-quality output",
+    "Critically reviewing AI-generated code for security issues, outdated patterns, and silent bugs — never merging unreviewed",
+    "Knowing what NOT to hand to AI: architectural decisions, security-sensitive logic, and anything requiring real system context",
   ]
 },
 {
