@@ -1,0 +1,1459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Applied AI and Generative AI Engineering — Zero to Pro — Learning Trail</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  :root{
+    --bg: #06141A;
+    --panel: #0C1E26;
+    --panel-2: #11262F;
+    --line: #1E3F4C;
+    --ink: #EAF6F8;
+    --ink-dim: #9DBCC4;
+    --ink-faint: #5F8590;
+    --gold: #FACC15;
+    --gold-dim: #6B570A;
+    --teal: #2DD4BF;
+    --teal-dim: #0F4D47;
+    --green: #34D399;
+    --green-dim: #144A38;
+    --danger: #FF6B6B;
+    --check: #C084FC;
+    --check-dim: #3B2A5C;
+    --radius: 10px;
+    --maxw: 900px;
+  }
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  body{
+    margin:0;
+    background:
+      radial-gradient(1200px 600px at 15% -10%, rgba(45,212,191,0.10), transparent 60%),
+      radial-gradient(900px 500px at 100% 0%, rgba(250,204,21,0.08), transparent 55%),
+      var(--bg);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", system-ui, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .mono{ font-family: "IBM Plex Mono", monospace; }
+
+  header.hero{
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 48px 20px 28px;
+  }
+  .eyebrow{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 13px;
+    color: var(--teal);
+    letter-spacing: 0.02em;
+  }
+  h1{
+    font-size: clamp(28px, 5vw, 42px);
+    line-height: 1.15;
+    margin: 10px 0 14px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .hero p{
+    color: var(--ink-dim);
+    font-size: 16px;
+    max-width: 62ch;
+  }
+
+  .trailbar{
+    max-width: var(--maxw);
+    margin: 0 auto 8px;
+    padding: 0 20px;
+  }
+  .progress-shell{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .progress-stat{
+    display:flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .progress-stat .num{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--gold);
+  }
+  .progress-stat .lbl{
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+  .progress-track{
+    flex: 1 1 240px;
+    height: 8px;
+    background: var(--panel-2);
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+  }
+  .progress-fill{
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal), var(--green));
+    width: 0%;
+    transition: width 0.4s ease;
+  }
+  .reset-btn{
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--ink-faint);
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .reset-btn:hover{ border-color: var(--danger); color: var(--danger); }
+
+  main{
+    max-width: var(--maxw);
+    margin: 28px auto 80px;
+    padding: 0 20px;
+  }
+
+  .stage{
+    position: relative;
+    border-left: 2px solid var(--line);
+    margin-left: 14px;
+    padding-left: 26px;
+    margin-bottom: 6px;
+  }
+  .stage:last-child{ border-left-color: transparent; }
+
+  .stage-marker{
+    position: absolute;
+    left: -9px;
+    top: 4px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--panel-2);
+    border: 2px solid var(--line);
+    transition: all 0.2s ease;
+  }
+  .stage.complete .stage-marker{
+    background: var(--green);
+    border-color: var(--green);
+  }
+
+  .stage-head{
+    cursor: pointer;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 0;
+    user-select: none;
+  }
+  .stage-title-wrap{ flex: 1; }
+  .stage-num{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    color: var(--ink-faint);
+    display:block;
+    margin-bottom: 2px;
+  }
+  .stage-title{
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+  }
+  .stage-blurb{
+    color: var(--ink-dim);
+    font-size: 13.5px;
+    margin: 6px 0 0;
+    max-width: 60ch;
+  }
+  .stage-meta{
+    display:flex;
+    align-items:center;
+    gap: 10px;
+    white-space: nowrap;
+  }
+  .stage-count{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    color: var(--ink-faint);
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    padding: 3px 8px;
+    border-radius: 999px;
+  }
+  .chevron{
+    width: 18px; height: 18px;
+    color: var(--ink-faint);
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+  }
+  .stage.open .chevron{ transform: rotate(90deg); }
+
+  .stage-body{
+    display: none;
+    padding: 2px 0 22px;
+  }
+  .stage.open .stage-body{ display: block; }
+
+  .item{
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 12px 10px 14px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--teal-dim);
+  }
+  .item.cert{
+    border-color: var(--gold-dim);
+    border-left: 3px solid var(--gold);
+    background: linear-gradient(180deg, rgba(250,204,21,0.10), rgba(250,204,21,0.03));
+  }
+  .item.done{
+    opacity: 0.6;
+    border-left: 3px solid var(--green);
+    background: linear-gradient(180deg, rgba(52,211,153,0.08), rgba(52,211,153,0.02));
+  }
+  .item.done.cert{
+    border-left: 3px solid var(--green);
+  }
+  .flag-btn{
+    flex-shrink: 0;
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    cursor: pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 0;
+    margin-top: 1px;
+  }
+  .flag-btn svg{ width: 15px; height: 15px; }
+  .flag-btn .flag-outline{ color: var(--ink-faint); }
+  .flag-btn .flag-filled{ color: var(--green); display:none; }
+  .item.done .flag-btn{ background: var(--green-dim); border-color: var(--green); }
+  .item.done .flag-outline{ display:none; }
+  .item.done .flag-filled{ display:block; }
+
+  .item-text{
+    flex: 1;
+    font-size: 14.5px;
+  }
+  .item.done .item-text{ text-decoration: line-through; text-decoration-color: var(--ink-faint); }
+
+  .cert-badge{
+    display:inline-flex;
+    align-items:center;
+    gap: 5px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    color: var(--gold);
+    background: rgba(232,179,75,0.1);
+    border: 1px solid var(--gold-dim);
+    padding: 2px 7px;
+    border-radius: 999px;
+    margin-top: 6px;
+  }
+
+  footer{
+    max-width: var(--maxw);
+    margin: 0 auto 60px;
+    padding: 24px 20px;
+    color: var(--ink-faint);
+    font-size: 12.5px;
+    border-top: 1px solid var(--line);
+  }
+
+  .sync-panel{
+    display: none;
+    max-width: var(--maxw);
+    margin: 10px auto 0;
+    padding: 0 20px;
+  }
+  .sync-panel.open{ display: block; }
+  .sync-panel .sync-note{
+    color: var(--ink-dim);
+    font-size: 13px;
+    margin: 10px 0 8px;
+  }
+  #qrcodeBox{
+    display: inline-block;
+    padding: 10px;
+    background: #fff;
+    border-radius: 8px;
+    margin: 4px 0 12px;
+  }
+  .sync-row{
+    display: flex;
+    gap: 8px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+  }
+  .sync-input{
+    flex: 1 1 220px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    min-width: 0;
+  }
+
+  .item.project{
+    border-left: 3px solid var(--teal);
+    background: linear-gradient(180deg, rgba(34,211,238,0.09), rgba(34,211,238,0.03));
+  }
+  .item.project.done{
+    border-left: 3px solid var(--green);
+  }
+  .project-badge{
+    display:inline-flex;
+    align-items:center;
+    gap: 5px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    color: var(--teal);
+    background: rgba(45,212,191,0.10);
+    border: 1px solid var(--teal-dim);
+    padding: 2px 7px;
+    border-radius: 999px;
+    margin-top: 6px;
+  }
+  .item.cert .item-text{ cursor: pointer; }
+  .item.cert .item-text:hover .cert-badge{ text-decoration: underline; }
+  .item.check{
+    border-left: 3px solid var(--check);
+    background: linear-gradient(180deg, rgba(192,132,252,0.09), rgba(192,132,252,0.03));
+  }
+  .item.check.done{
+    border-left: 3px solid var(--green);
+  }
+  .check-badge{
+    display:inline-flex;
+    align-items:center;
+    gap: 5px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    color: var(--check);
+    background: rgba(192,132,252,0.10);
+    border: 1px solid var(--check-dim);
+    padding: 2px 7px;
+    border-radius: 999px;
+    margin-top: 6px;
+  }
+  .item.check .item-text{ cursor: pointer; }
+  .stage-resources{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 4px 0 14px;
+    padding-left: 2px;
+  }
+  .resource-chip{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    color: var(--ink-dim);
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    padding: 4px 9px;
+    border-radius: 999px;
+    text-decoration: none;
+  }
+  .resource-chip:hover{
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+  .exam-callout{
+    max-width: var(--maxw);
+    margin: 0 auto 8px;
+    padding: 0 20px;
+  }
+  .exam-callout-inner{
+    background: var(--panel);
+    border: 1px solid var(--gold-dim);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    font-size: 13px;
+    color: var(--ink-dim);
+    line-height: 1.6;
+  }
+  .exam-callout-inner strong{ color: var(--gold); }
+  .modal-overlay{
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 50;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.open{ display: flex; }
+  .modal-card{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    max-width: 440px;
+    width: 100%;
+    padding: 22px;
+    position: relative;
+  }
+  .modal-close{
+    position: absolute;
+    top: 14px; right: 14px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    color: var(--ink-faint);
+    width: 26px; height: 26px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+  }
+  .modal-title{
+    font-size: 17px;
+    font-weight: 600;
+    margin: 0 0 4px;
+    padding-right: 24px;
+  }
+  .modal-provider{
+    color: var(--gold);
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    margin: 0 0 16px;
+  }
+  .modal-row{
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 9px 0;
+    border-top: 1px solid var(--line);
+    font-size: 13.5px;
+  }
+  .modal-row .k{ color: var(--ink-faint); }
+  .modal-row .v{ color: var(--ink); text-align: right; }
+  .modal-note{
+    margin-top: 14px;
+    font-size: 12px;
+    color: var(--ink-faint);
+    line-height: 1.5;
+  }
+
+  @media (max-width: 520px){
+    .stage{ margin-left: 6px; padding-left: 18px; }
+    .stage-title{ font-size: 16.5px; }
+    .progress-shell{ padding: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <span class="eyebrow mono">// LEARNING ROADMAP</span>
+  <h1>Applied AI Engineering — Zero to Pro</h1>
+  <p>A complete path to becoming an AI engineer starting from no knowledge: a plain-language glossary, Python from scratch, how LLMs work, APIs, prompting, context engineering, RAG, evaluation, agents, MCP, fine-tuning, multimodal, production, security, and certifications, with deployed capstone projects.</p>
+</header>
+
+<div class="exam-callout">
+  <div class="exam-callout-inner">
+    <strong>Heads up:</strong> this field changes monthly. Concepts here are durable, but model names, prices, libraries, and certification exam codes are not. Always verify current details before relying on them. The roadmap is for building products on top of existing models. For training models from scratch and the math behind them, use the AI and Machine Learning roadmap alongside this one.
+  </div>
+</div>
+
+<div class="trailbar">
+  <div class="progress-shell">
+    <div class="progress-stat">
+      <span class="num" id="statDone">0</span>
+      <span class="lbl">completed</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-stat">
+      <span class="num" id="statPct">0%</span>
+      <span class="lbl">of trail</span>
+    </div>
+    <button class="reset-btn mono" id="syncBtn">SYNC ACROSS DEVICES</button>
+    <button class="reset-btn mono" id="resetBtn">RESET PROGRESS</button>
+  </div>
+
+  <div class="sync-panel" id="syncPanel">
+    <p class="sync-note">Scan this code with a camera app, or open the link, to load this progress.</p>
+    <div id="qrcodeBox"></div>
+    <div class="sync-row">
+      <input type="text" id="syncLinkInput" class="sync-input mono" readonly>
+      <button class="reset-btn mono" id="copyLinkBtn">COPY LINK</button>
+    </div>
+    <p class="sync-note">Have a link or code to load instead? Paste it below.</p>
+    <div class="sync-row">
+      <input type="text" id="pasteCodeInput" class="sync-input mono" placeholder="paste sync link or code here">
+      <button class="reset-btn mono" id="applyPasteBtn">APPLY</button>
+    </div>
+  </div>
+</div>
+
+<main id="trail"></main>
+
+<footer>
+  Progress is saved automatically in this browser as items are completed.
+</footer>
+
+<div class="modal-overlay" id="certModalOverlay">
+  <div class="modal-card">
+    <button class="modal-close" id="certModalClose">&times;</button>
+    <h3 class="modal-title" id="certModalTitle"></h3>
+    <p class="modal-provider mono" id="certModalProvider"></p>
+    <div id="certModalRows"></div>
+    <p class="modal-note" id="certModalNote"></p>
+  </div>
+</div>
+<script>
+const DATA = [
+{
+  title: "Start Here: What 'Pure AI Engineering' Means",
+  blurb: "This roadmap is for building products with AI models, rather than researching or training models from scratch. You will still learn how the models work, just not the heavy math.",
+  resources: [
+    { label: "Anthropic: Building effective agents", url: "https://www.anthropic.com/engineering/building-effective-agents" },
+    { label: "Chip Huyen: AI Engineering (book, overview)", url: "https://huyenchip.com/books/" },
+  ],
+  items: [
+    "The difference between roles: ML Researcher (invents and trains models), ML Engineer (trains and deploys custom models), and AI Engineer (builds applications on top of existing foundation models). This roadmap targets the AI Engineer role.",
+    "Why this role exists: foundation models turned many hard ML problems into API calls, so the bottleneck moved to building reliable, safe, useful products around them.",
+    "What an AI Engineer actually does day to day: designs prompts and context, connects models to data and tools, builds evaluations, controls cost and latency, and keeps systems safe.",
+    "Honest expectation: this field changes monthly. Model names, prices, and libraries in any course go out of date fast, so this roadmap emphasizes durable concepts and tells you to verify current details.",
+    "Pacing: 8 to 14 months part-time from zero to a strong portfolio. The Python and software foundations take the first third.",
+    "Keep a project log from day one. Every stage has projects, and your repository history is your proof of skill.",
+  ]
+},
+{
+  title: "The Glossary: Every Term From Zero",
+  blurb: "Plain-language definitions of the words you will hear constantly. Flag each when you can explain it to a friend without looking.",
+  resources: [
+    { label: "Google ML Glossary", url: "https://developers.google.com/machine-learning/glossary" },
+    { label: "Elements of AI (free, non-technical intro)", url: "https://www.elementsofai.com/" },
+  ],
+  items: [
+    "AI, ML, deep learning, and generative AI: AI is the broad goal; ML is learning patterns from data; deep learning is ML with many-layered neural networks; generative AI creates new content such as text, images, audio, and code.",
+    "Model: a trained mathematical system that takes an input and produces an output. An LLM takes text in and produces text out.",
+    "Large Language Model (LLM): a huge neural network trained on enormous amounts of text to predict what comes next. It powers chat assistants and many AI features.",
+    "Foundation model: a large general-purpose model trained once and adapted to many tasks.",
+    "Parameters: the learned numbers inside a model. '70B' means 70 billion of them. More parameters usually means more capability but also more cost.",
+    "Training versus inference: training is the expensive process of teaching the model; inference is running the finished model to get an answer. You mostly do inference.",
+    "Token: a small chunk of text the model reads and writes. Pricing, limits, and speed are all measured in tokens, not words (roughly 1 token is 3 to 4 English characters).",
+    "Context window: the maximum number of tokens a model can consider at once, covering both your input and its reply.",
+    "Prompt, system prompt, and user message: the text you send. A system prompt sets the model's role and rules; the user message is the actual request.",
+    "Temperature and sampling: settings that control how random or predictable the model's word choices are.",
+    "Hallucination: confident-sounding output that is false or invented. It is a natural property of how LLMs generate text and must be designed around.",
+    "Embedding: a list of numbers capturing the meaning of text or images, so similar meanings land close together. The basis of semantic search.",
+    "Vector database: a database built to store embeddings and quickly find the most similar ones.",
+    "RAG (Retrieval-Augmented Generation): looking up relevant information from your own data and giving it to the model so it can answer using facts it was never trained on.",
+    "Fine-tuning: continuing a model's training on your own examples to change its behavior or style.",
+    "Agent: an AI system that uses a model to decide what actions to take, calls tools (search, code, APIs), looks at the results, and repeats until a task is done.",
+    "Tool use / function calling: letting a model request that your code run a specific function and return the result.",
+    "MCP (Model Context Protocol): an open standard for connecting AI applications to external tools and data sources in a uniform way.",
+    "Evals (evaluations): systematic tests that measure how well your AI system behaves, the AI equivalent of unit tests.",
+    "Guardrails: checks and rules around a model that block unsafe, off-topic, or malformed inputs and outputs.",
+    "Prompt injection: an attack where malicious text tricks a model into ignoring its instructions. The AI-era equivalent of SQL injection.",
+    "API and API key: a way for one program to call another over the internet; the key is a secret password identifying you. Never put one in public code.",
+    "JSON: a simple text format for structured data that APIs and AI tools use everywhere.",
+    "Latency and cost per token: how long the model takes and how much each call costs. Both shape product design.",
+    { text: "Knowledge Check: explain to a non-technical friend, using everyday analogies, what a token, a context window, an embedding, RAG, and an agent are, and why an LLM can hallucinate.", check: true, checkInfo: {
+        name: "Glossary Recall Check",
+        provider: "Self-assessment plus the Google ML Glossary",
+        format: "Explain out loud or in a short written paragraph",
+        note: "Every term here returns in depth later. If you cannot yet explain one, that is fine, but revisit it after the relevant stage."
+    }},
+  ]
+},
+{
+  title: "Computer and Developer Basics",
+  blurb: "The everyday tools of a software builder. If you have never coded, start here.",
+  resources: [
+    { label: "CS50x: Intro to Computer Science (Harvard, free)", url: "https://cs50.harvard.edu/x/" },
+    { label: "The Missing Semester of Your CS Education (MIT)", url: "https://missing.csail.mit.edu/" },
+    { label: "Pro Git book (free)", url: "https://git-scm.com/book/en/v2" },
+  ],
+  items: [
+    "Files, folders, and paths, plus how to organize a project directory.",
+    "The terminal: navigating, running programs, and environment variables. You will use it daily.",
+    "Install and use VS Code: open a folder, use the integrated terminal, install the Python extension, and use the debugger.",
+    "Git and GitHub: init, add, commit, branch, push, pull request, and a .gitignore so secrets never get committed.",
+    "How the internet works at a basic level: client and server, URLs, HTTP requests and responses, and status codes (200, 400, 401, 429, 500).",
+    "JSON and YAML: reading and writing both fluently.",
+    "Secrets handling: API keys live in environment variables or a .env file, never in code or in git history.",
+    "How to read documentation and error messages, and how to ask a good question.",
+  ]
+},
+{
+  title: "Python From Zero",
+  blurb: "Python is the main language of AI engineering. Type every example yourself.",
+  resources: [
+    { label: "CS50's Introduction to Programming with Python (free)", url: "https://cs50.harvard.edu/python/" },
+    { label: "Automate the Boring Stuff with Python (free)", url: "https://automatetheboringstuff.com/" },
+    { label: "Python official tutorial", url: "https://docs.python.org/3/tutorial/" },
+  ],
+  items: [
+    "Install Python 3, run scripts, and use the REPL.",
+    "Variables and types: integers, floats, strings, booleans, and f-strings for formatting.",
+    "Conditionals and loops: if/elif/else, for, while, break, and continue.",
+    "Lists, tuples, sets, and dictionaries, and when to use each. Dictionaries matter most because JSON maps onto them.",
+    "Functions: parameters, defaults, return values, and writing small reusable functions.",
+    "Comprehensions: compact list and dict creation.",
+    "Reading and writing files: text, CSV, and JSON using 'with'.",
+    "Errors and exceptions: try/except/finally and raising your own errors.",
+    "Modules, packages, virtual environments (venv or uv), and installing libraries with pip.",
+    "Classes and objects: attributes, methods, __init__, and dataclasses for simple data containers.",
+    "Type hints: annotating functions so code (and AI tools) understand intent.",
+    "Debugging with print statements, the VS Code debugger, and reading tracebacks.",
+    "Testing basics with pytest.",
+    { text: "Hands-on Project: build a command-line notes or to-do app that stores data in a JSON file, handles bad input, and has a few pytest tests.", project: true },
+  ]
+},
+{
+  title: "Python for AI Work: APIs, Async, and Data Handling",
+  blurb: "The specific Python skills AI applications lean on constantly.",
+  resources: [
+    { label: "Real Python: async IO in Python", url: "https://realpython.com/async-io-python/" },
+    { label: "Pydantic documentation", url: "https://docs.pydantic.dev/latest/" },
+    { label: "FastAPI tutorial", url: "https://fastapi.tiangolo.com/tutorial/" },
+  ],
+  items: [
+    "Calling web APIs with the requests or httpx library: GET and POST, headers, JSON bodies, timeouts, and status codes.",
+    "Handling API errors well: rate limits (429), retries with exponential backoff, and timeouts.",
+    "Async Python: async/await, event loops, and running many API calls concurrently with asyncio.",
+    "Streaming responses: reading data as it arrives, which is how chat answers appear word by word.",
+    "Pydantic: defining data models and validating JSON. The backbone of structured AI outputs.",
+    "Environment variables and configuration management with python-dotenv or pydantic-settings.",
+    "Logging properly instead of using print, including logging request IDs and token counts.",
+    "Building a small web API with FastAPI: routes, request bodies, and automatic docs.",
+    "Basic NumPy and Pandas so you can inspect and prepare data for AI tasks.",
+    "Working with text: regular expressions, Unicode, splitting, and cleaning text.",
+    { text: "Hands-on Project: build a small FastAPI service that calls a public API (for example, weather or a news API), validates the response with Pydantic, retries on failure, and exposes a clean endpoint of your own.", project: true },
+  ]
+},
+{
+  title: "Just-Enough Math and ML Intuition",
+  blurb: "AI engineers do not need to derive backpropagation, but they do need correct mental models. This stage gives you those, intuitively.",
+  resources: [
+    { label: "3Blue1Brown: Neural Networks (video)", url: "https://www.3blue1brown.com/topics/neural-networks" },
+    { label: "3Blue1Brown: Essence of Linear Algebra (video)", url: "https://www.3blue1brown.com/topics/linear-algebra" },
+    { label: "StatQuest (video, beginner friendly)", url: "https://statquest.org/" },
+    { label: "Google Machine Learning Crash Course", url: "https://developers.google.com/machine-learning/crash-course" },
+  ],
+  items: [
+    "Vectors as lists of numbers, and the idea that meaning can be represented as a point in space.",
+    "Dot product and cosine similarity: how 'closeness of meaning' is measured. This powers search, RAG, and recommendations.",
+    "Probability basics: a model outputs probabilities over possible next tokens, and sampling picks from them.",
+    "Mean, variance, and distributions, enough to read evaluation results and understand noise.",
+    "What 'training' means at a high level: adjusting parameters to reduce error, guided by the gradient (the direction of improvement).",
+    "Supervised versus unsupervised versus reinforcement learning, in plain terms.",
+    "Overfitting: memorizing training data instead of learning general patterns, and why test data must be separate.",
+    "Evaluation metrics intuition: accuracy, precision, recall, and why a high accuracy can still be useless on imbalanced data.",
+    "What a neural network is: layers of simple units whose connection strengths are learned.",
+    "Why data quality beats model cleverness in most practical problems.",
+    { text: "Knowledge Check: explain cosine similarity, why a model outputs probabilities, and what overfitting is, each in plain language with an example you invented.", check: true, checkInfo: {
+        name: "Intuition Check",
+        provider: "Self-assessment; compare your explanations with the 3Blue1Brown and StatQuest videos",
+        format: "Written explanations, no score",
+        note: "You are building mental models, not memorizing formulas. If an explanation feels shaky, rewatch the matching video."
+    }},
+  ]
+},
+{
+  title: "How LLMs Actually Work",
+  blurb: "You will build better, safer, cheaper systems if you understand the machine. This is the conceptual core of the roadmap.",
+  resources: [
+    { label: "Karpathy: Intro to Large Language Models (video)", url: "https://www.youtube.com/watch?v=zjkBMFhNj_g" },
+    { label: "The Illustrated Transformer (Jay Alammar)", url: "https://jalammar.github.io/illustrated-transformer/" },
+    { label: "Hugging Face LLM Course", url: "https://huggingface.co/learn/llm-course" },
+  ],
+  items: [
+    "Tokenization: text is chopped into tokens (BPE and similar). Learn why odd things happen, like models struggling to count letters or do arithmetic.",
+    "Embeddings: every token becomes a vector the model can compute with.",
+    "The transformer in one picture: attention lets every token look at the others and decide what matters, repeated across many layers.",
+    "Self-attention intuition with a concrete sentence example (who does 'it' refer to?).",
+    "Next-token prediction: an LLM generates text by repeatedly predicting the next token. Everything else is built on this single trick.",
+    "Pretraining: learning language, facts, and patterns from huge text corpora. Why the model has a knowledge cutoff date.",
+    "Post-training: instruction tuning and preference tuning (RLHF, DPO) turn a raw text predictor into a helpful assistant.",
+    "Context window and the KV cache: why longer context costs more memory and time, and why models can lose details in very long inputs.",
+    "Sampling parameters: temperature, top-p, top-k, max tokens, and stop sequences, and how to choose them for creative versus factual tasks.",
+    "Determinism: why identical prompts can give different answers and what you can and cannot control.",
+    "Reasoning models: models trained to produce a long internal chain of thought before answering, and when the extra cost and latency are worth it.",
+    "Mixture of Experts, and small versus large models: tradeoffs between capability, speed, and price.",
+    "Multimodal models: how images, audio, and video are turned into the same kind of tokens and fed in with text.",
+    "Why models hallucinate, why they are bad databases, and what they are good at (language, pattern use, transformation, reasoning over provided text).",
+    "Knowledge cutoff, training data, and why a model may not know recent events unless you give it tools or documents.",
+    "The model landscape: major closed providers and open-weight families, how to compare them on capability, price, speed, context length, and license. Always verify current options, because they change fast.",
+  ]
+},
+{
+  title: "Using LLM APIs",
+  blurb: "Your first real hands-on AI engineering. Learn the common patterns, which are shared across providers.",
+  resources: [
+    { label: "Anthropic API documentation", url: "https://docs.claude.com/en/api/overview" },
+    { label: "OpenAI API documentation", url: "https://platform.openai.com/docs" },
+    { label: "Google Gemini API documentation", url: "https://ai.google.dev/gemini-api/docs" },
+    { label: "OpenAI Cookbook (examples)", url: "https://cookbook.openai.com/" },
+  ],
+  items: [
+    "Create an account, get an API key, set a spending limit, and store the key safely in an environment variable.",
+    "Your first call: send a message and read the response using an official SDK in Python.",
+    "The message format: system, user, and assistant roles, and how conversation history is just a list you resend each turn.",
+    "Why the API is stateless: the model remembers nothing between calls except what you send it.",
+    "Key parameters: model name, max tokens, temperature, stop sequences, and how each affects results and cost.",
+    "Streaming responses to show output as it is generated, and handling partial output.",
+    "Understanding usage and pricing: input tokens versus output tokens, caching discounts, batch pricing, and estimating the cost of a feature before building it.",
+    "Rate limits, timeouts, and retries with backoff. Handling provider outages with fallbacks.",
+    "Prompt caching: reusing a long shared prefix cheaply, a major cost and latency lever.",
+    "Batch APIs for non-urgent bulk jobs at lower prices.",
+    "Provider-agnostic design: wrap model calls behind your own function so you can switch providers or models easily. Gateways like LiteLLM and OpenRouter exist for this.",
+    "Image and file inputs: sending images or documents to a multimodal model.",
+    { text: "Hands-on Project: build a CLI or web chatbot with conversation memory (resending history), streaming output, a system prompt personality, and a running token and cost counter.", project: true },
+  ]
+},
+{
+  title: "Prompt Engineering",
+  blurb: "The cheapest, fastest lever for improving any AI feature. Learn it as an engineering discipline: hypothesize, test, measure.",
+  resources: [
+    { label: "Anthropic prompt engineering overview", url: "https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview" },
+    { label: "Anthropic interactive prompt engineering tutorial", url: "https://github.com/anthropics/prompt-eng-interactive-tutorial" },
+    { label: "OpenAI prompt engineering guide", url: "https://platform.openai.com/docs/guides/prompt-engineering" },
+    { label: "DeepLearning.AI short courses", url: "https://www.deeplearning.ai/short-courses/" },
+  ],
+  items: [
+    "Be clear and direct: state the task, audience, constraints, and desired format explicitly, as if briefing a smart new colleague who has no context.",
+    "Provide context: background, definitions, and the 'why' behind the task all improve results.",
+    "Use structure: separate instructions from data with delimiters or XML-style tags so the model does not confuse them.",
+    "Few-shot prompting: give 2 to 5 good input and output examples. Often the single biggest quality jump.",
+    "Chain-of-thought: ask the model to reason step by step before the final answer for logic, math, and analysis tasks.",
+    "Role and persona prompting, and when it helps versus when it is just decoration.",
+    "Output formatting: request JSON, tables, or specific templates, and prefill the start of the answer to steer format.",
+    "Prompt chaining: split a complex task into several smaller prompts, passing outputs forward, instead of one giant prompt.",
+    "Handling uncertainty: tell the model it may say 'I don't know', ask for citations to the provided text, and ask it to quote evidence before concluding.",
+    "Negative examples and edge cases: describing what not to do and how to handle odd inputs.",
+    "Iterating methodically: change one thing at a time, keep a test set of inputs, and compare versions instead of trusting a single good-looking output.",
+    "Prompt versioning: store prompts in files under version control and treat them like code.",
+    "Using a model to improve your prompts (meta-prompting), and then verifying the result with tests.",
+    "Differences between model types: prompts for reasoning models are usually simpler and goal-focused rather than step-by-step instructions.",
+    { text: "Hands-on Project: pick a real task (such as extracting action items from meeting notes). Write 3 versions of a prompt, build a set of 20 test inputs, and compare versions on a scoring sheet. Document what improved quality and what did not.", project: true },
+  ]
+},
+{
+  title: "Context Engineering and Memory",
+  blurb: "In real systems, success depends less on clever wording and more on what information you put in front of the model, and when.",
+  resources: [
+    { label: "Anthropic: Effective context engineering for AI agents", url: "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents" },
+  ],
+  items: [
+    "Context is the model's entire working memory: instructions, history, retrieved documents, tool results, and examples. You are the one who curates it.",
+    "Context budgeting: every token costs money and attention, so include what is relevant and remove what is not.",
+    "Long-context pitfalls: models can miss details buried in the middle of very long input, and performance can degrade as context grows.",
+    "Ordering and placement: put long documents first and the question last, and repeat key constraints where they matter.",
+    "Conversation management: truncation, summarization, and compaction of older turns to stay within limits.",
+    "Short-term memory (the current conversation) versus long-term memory (facts stored in a database and retrieved when relevant).",
+    "Storing user preferences and facts safely, with consent, retention rules, and the ability to delete them.",
+    "Scratchpads and notes: letting an agent write intermediate results to storage instead of holding everything in context.",
+    "Context isolation: giving sub-tasks their own clean context so errors and clutter do not spread.",
+    { text: "Hands-on Project: add long-term memory to your chatbot. It extracts facts the user states, stores them, retrieves the relevant ones for each new conversation, and lets the user view and delete their stored memories.", project: true },
+  ]
+},
+{
+  title: "Structured Outputs, Function Calling, and Tool Use",
+  blurb: "How to make a model's output reliable enough to feed into normal software. This is where AI stops being a demo.",
+  resources: [
+    { label: "Anthropic tool use documentation", url: "https://docs.claude.com/en/docs/agents-and-tools/tool-use/overview" },
+    { label: "OpenAI function calling guide", url: "https://platform.openai.com/docs/guides/function-calling" },
+    { label: "Instructor library (structured outputs)", url: "https://python.useinstructor.com/" },
+  ],
+  items: [
+    "Why free-text output is hard to use in software, and why structured output is the fix.",
+    "JSON mode and schema-constrained outputs: getting guaranteed-valid JSON that matches your schema.",
+    "Defining schemas with Pydantic and validating model output, with a retry loop when validation fails.",
+    "Function calling: you describe tools with names, descriptions, and parameter schemas; the model asks to call one; your code runs it and returns the result.",
+    "The tool-use loop: model requests a tool, you execute, send the result back, and the model continues until it gives a final answer.",
+    "Writing good tool descriptions: clear names, precise parameter descriptions, and examples. Tool quality strongly affects agent quality.",
+    "Parallel tool calls and tool choice controls (force a specific tool, allow any, or none).",
+    "Handling tool errors gracefully so the model can recover instead of looping.",
+    "Safe tools: validate every argument the model sends, apply least privilege, and require confirmation for risky actions (deleting, paying, emailing).",
+    "Extraction patterns: turning messy text, PDFs, and emails into clean structured records.",
+    { text: "Hands-on Project: build an assistant with 3 to 4 real tools (for example, weather, a calculator, a database lookup, and a calendar read), and a Pydantic-validated structured final answer. Test it with ambiguous and malicious inputs.", project: true },
+  ]
+},
+{
+  title: "Embeddings and Semantic Search",
+  blurb: "The foundation of retrieval. Learn it as a standalone skill before using it in RAG.",
+  resources: [
+    { label: "Chroma documentation", url: "https://docs.trychroma.com/" },
+    { label: "pgvector (vector search in Postgres)", url: "https://github.com/pgvector/pgvector" },
+    { label: "Sentence-Transformers documentation", url: "https://www.sbert.net/" },
+  ],
+  items: [
+    "What an embedding model does and how to call one from an API or run an open one locally.",
+    "Similarity search: cosine similarity and dot product, and finding the top-k nearest items.",
+    "Keyword search versus semantic search: BM25 is strong on exact terms; embeddings are strong on meaning. Each fails where the other succeeds.",
+    "Hybrid search: combining keyword and semantic scores, a very strong practical default.",
+    "Approximate nearest neighbor search: why exact search is too slow at scale, and the idea behind HNSW and IVF indexes.",
+    "Vector databases and options: Chroma, FAISS, pgvector, Qdrant, Weaviate, Pinecone, and when a simple Postgres setup is enough.",
+    "Metadata filtering: restricting search by user, date, or document type.",
+    "Reranking: using a stronger model to reorder the top results for better precision.",
+    "Choosing an embedding model: quality, dimensions, cost, language support, and context length. Re-embed everything if you change models.",
+    "Other uses of embeddings: clustering, deduplication, classification, and recommendation.",
+    { text: "Hands-on Project: build a semantic search over a few hundred documents (your own notes or a public dataset), compare keyword, semantic, and hybrid search on 20 test questions, and report which wins for which kind of question.", project: true },
+  ]
+},
+{
+  title: "Retrieval-Augmented Generation (RAG)",
+  blurb: "The most common production AI pattern. Easy to demo, hard to make good, and a core skill for any AI engineer.",
+  resources: [
+    { label: "Anthropic: Contextual Retrieval", url: "https://www.anthropic.com/news/contextual-retrieval" },
+    { label: "LlamaIndex documentation", url: "https://docs.llamaindex.ai/" },
+    { label: "LangChain documentation", url: "https://python.langchain.com/docs/introduction/" },
+    { label: "DeepLearning.AI: RAG courses", url: "https://www.deeplearning.ai/short-courses/" },
+  ],
+  items: [
+    "The problem RAG solves: models lack your private and recent data, and fine-tuning is a poor way to teach facts.",
+    "The basic pipeline: load documents, split into chunks, embed, store, retrieve the top results for a question, and generate an answer grounded in them.",
+    "Document loading and parsing: PDFs, HTML, Word files, tables, and why messy parsing quietly ruins quality.",
+    "Chunking strategies: fixed size, by section or paragraph, overlap, and semantic chunking. Chunk size is a major quality lever.",
+    "Adding context to chunks (titles, section headers, document summaries) so a chunk makes sense on its own.",
+    "Query rewriting and expansion: turning a vague user question into a better search query, and handling follow-up questions in conversation.",
+    "Hybrid retrieval plus reranking to improve the quality of what reaches the model.",
+    "Prompting for grounded answers: answer only from the provided sources, say when the answer is missing, and cite sources.",
+    "Citations and source attribution so users can verify answers.",
+    "Failure modes: retrieval misses, irrelevant chunks, contradictory sources, lost-in-the-middle, and the model ignoring the context.",
+    "Advanced patterns: multi-step and agentic RAG, GraphRAG for relationship-heavy data, and RAG over tables, SQL databases, and images.",
+    "Keeping an index fresh: incremental updates, deletions, and permissions so users only retrieve what they are allowed to see.",
+    "When not to use RAG: if your data fits in the context window, or a simple database query would do.",
+    { text: "Hands-on Project: build a RAG assistant over a real document set (company policies, a textbook, or documentation), with citations, hybrid retrieval, a refusal when the answer is not in the sources, and a small test set of 30 questions to measure it.", project: true },
+  ]
+},
+{
+  title: "Evaluation: Knowing If Your AI Actually Works",
+  blurb: "The single biggest difference between hobby projects and professional AI engineering. Without evals you are guessing.",
+  resources: [
+    { label: "Hamel Husain: Your AI product needs evals", url: "https://hamel.dev/blog/posts/evals/" },
+    { label: "Ragas (RAG evaluation)", url: "https://docs.ragas.io/" },
+    { label: "Eugene Yan: LLM patterns", url: "https://eugeneyan.com/writing/llm-patterns/" },
+    { label: "Promptfoo (open-source eval tool)", url: "https://www.promptfoo.dev/docs/intro/" },
+  ],
+  items: [
+    "Why evals matter: model outputs vary, quality is subjective, and any prompt or model change can silently break things.",
+    "Build a golden dataset: real or realistic inputs with the ideal outputs or grading criteria. Start with 20 to 50 examples and grow it from real failures.",
+    "Error analysis first: read many real outputs, categorize how they fail, and let that guide what you measure.",
+    "Code-based graders: exact match, regex, schema validation, and unit tests for anything that can be checked automatically.",
+    "LLM-as-judge: using a model to grade outputs against a rubric. Write clear criteria, validate the judge against human labels, and beware of bias toward long or confident answers.",
+    "Human evaluation and annotation: where it is essential, and how to do it cheaply.",
+    "RAG-specific metrics: context relevance, faithfulness (is the answer supported by the sources), and answer correctness.",
+    "Agent evaluation: success rate, number of steps, tool-call correctness, cost, and recovery from errors.",
+    "Regression testing: run your eval set automatically on every prompt, model, or code change, and in CI.",
+    "Online evaluation: user feedback signals, A/B tests, and monitoring real traffic samples.",
+    "Understanding public benchmarks and why they are poor substitutes for evals on your own task.",
+    "Evaluation of safety: tests for refusals, jailbreaks, data leakage, and harmful output.",
+    { text: "Hands-on Project: build an eval harness for your RAG project: a 50-question golden set, automated graders (including an LLM judge you validated against 20 hand-labeled answers), a score report, and a before/after comparison from one change you made.", project: true },
+    { text: "Knowledge Check: explain how you would decide whether to switch your app from one model to another. Describe the evals you would run, the tradeoffs you would measure (quality, cost, latency), and how you would roll it out safely.", check: true, checkInfo: {
+        name: "Eval Thinking Check",
+        provider: "Self-assessment, or a mock interview with a peer",
+        format: "5-minute verbal or written answer",
+        note: "This is a very common AI engineering interview question. A strong answer mentions a golden set, error analysis, metrics beyond accuracy, and gradual rollout with monitoring."
+    }},
+  ]
+},
+{
+  title: "AI Agents",
+  blurb: "Systems where the model decides what to do next. Powerful and easy to get wrong, so learn when to use them and when not to.",
+  resources: [
+    { label: "Anthropic: Building effective agents", url: "https://www.anthropic.com/engineering/building-effective-agents" },
+    { label: "Model Context Protocol documentation", url: "https://modelcontextprotocol.io/" },
+    { label: "LangGraph documentation", url: "https://langchain-ai.github.io/langgraph/" },
+    { label: "Hugging Face Agents Course (free)", url: "https://huggingface.co/learn/agents-course" },
+    { label: "OpenAI Agents SDK", url: "https://openai.github.io/openai-agents-python/" },
+  ],
+  items: [
+    "Workflows versus agents: workflows follow code-defined steps; agents choose their own steps. Prefer the simplest design that works, and use an agent only when the path truly cannot be predetermined.",
+    "Common workflow patterns: prompt chaining, routing, parallelization, orchestrator-workers, and evaluator-optimizer loops.",
+    "The agent loop: think, act (call a tool), observe the result, repeat until done, with a stopping condition.",
+    "The ReAct pattern: interleaving reasoning and actions.",
+    "Planning: letting an agent make and revise a plan for multi-step goals, and when explicit plans help.",
+    "Tool design for agents: few, clear, well-described tools beat many overlapping ones. Return concise, useful results.",
+    "Agent memory and state: what to keep in context, what to write to files or a database, and how to resume long tasks.",
+    "Model Context Protocol (MCP): using existing MCP servers and building your own so any compatible application can use your tools and data.",
+    "Code execution and computer-use agents: running code in a sandbox, or controlling a browser, and why isolation matters.",
+    "Coding agents and how they use files, terminals, and tests as tools.",
+    "Multi-agent systems: when splitting work across several agents helps (parallel research, specialization) and when it only adds cost and confusion.",
+    "Human-in-the-loop: approval steps for risky actions and a way for the agent to ask for clarification.",
+    "Agent frameworks and when to use them: LangGraph, OpenAI Agents SDK, CrewAI, Pydantic AI, or plain code. Understand the loop yourself before adopting a framework.",
+    "Failure modes: infinite loops, wrong tool choice, compounding errors, hallucinated tool arguments, runaway cost. Add step limits and budgets.",
+    "Observability for agents: logging every step, tool call, and result so you can debug a run after the fact.",
+    "Interoperability protocols between agents and applications, at an awareness level, since standards here are still evolving.",
+    { text: "Hands-on Project: build a research agent that takes a question, searches the web through a tool, reads pages, takes notes to a file, and writes a cited report. Include a step limit, a cost budget, and a full run log.", project: true },
+    { text: "Hands-on Project: build your own MCP server exposing two or three tools (for example, a notes database or a personal calendar) and connect it to an MCP-compatible client.", project: true },
+  ]
+},
+{
+  title: "Fine-Tuning and Model Customization",
+  blurb: "Often unnecessary, sometimes decisive. Learn when it pays off and how to do it cheaply.",
+  resources: [
+    { label: "Hugging Face TRL (fine-tuning library)", url: "https://huggingface.co/docs/trl" },
+    { label: "Hugging Face PEFT (LoRA and adapters)", url: "https://huggingface.co/docs/peft" },
+    { label: "Unsloth documentation", url: "https://docs.unsloth.ai/" },
+    { label: "Hugging Face LLM Course: fine-tuning", url: "https://huggingface.co/learn/llm-course" },
+  ],
+  items: [
+    "The decision ladder: try better prompts first, then add examples, then RAG, then fine-tuning. Fine-tune only when the earlier steps are not enough.",
+    "What fine-tuning is good for: consistent style or format, narrow specialized tasks, shrinking cost and latency with a smaller model, and behaviors hard to prompt. What it is poor for: teaching new facts.",
+    "Supervised fine-tuning (SFT): training on input and output pairs. Data quality matters far more than quantity.",
+    "Preparing a fine-tuning dataset: collecting, cleaning, deduplicating, formatting as chat examples, and holding out a test set.",
+    "Parameter-efficient fine-tuning: LoRA and QLoRA explained plainly, training a small add-on instead of the whole model.",
+    "Preference tuning (DPO) at a conceptual level.",
+    "Distillation: using a strong model to generate training data for a smaller, cheaper one.",
+    "Hosted fine-tuning APIs versus fine-tuning open models yourself on a rented or free GPU.",
+    "Evaluating a tuned model against the base model and a well-prompted baseline on a held-out set.",
+    "Risks: overfitting, catastrophic forgetting, leaking private data into weights, and license terms.",
+    { text: "Hands-on Project: fine-tune a small open model with LoRA (on a free Colab GPU) for one narrow task such as turning messy support tickets into structured JSON. Compare it with the base model and with a well-prompted larger model on 50 held-out examples, and report quality, cost, and latency.", project: true },
+  ]
+},
+{
+  title: "Open Models and Local Inference",
+  blurb: "Running models yourself for privacy, cost control, and understanding.",
+  resources: [
+    { label: "Ollama", url: "https://ollama.com/" },
+    { label: "llama.cpp", url: "https://github.com/ggml-org/llama.cpp" },
+    { label: "vLLM documentation", url: "https://docs.vllm.ai/" },
+    { label: "Hugging Face Hub", url: "https://huggingface.co/models" },
+  ],
+  items: [
+    "Open-weight models: what the term means, licenses and their restrictions, and reading a model card.",
+    "Running a model locally with Ollama or LM Studio and calling it through an OpenAI-compatible API.",
+    "Hardware basics: why memory (VRAM) decides which models you can run, and rough memory needs for different model sizes.",
+    "Quantization: shrinking models to 8-bit or 4-bit to fit smaller hardware, and the quality tradeoff.",
+    "The GGUF format and llama.cpp for CPU and consumer-GPU inference.",
+    "Serving at scale: vLLM and similar engines, batching, and throughput versus latency.",
+    "When self-hosting makes sense (privacy, regulation, huge volume, offline use) and when a paid API is cheaper and better.",
+    "Small language models and on-device AI at an awareness level.",
+    { text: "Hands-on Project: run an open model locally with Ollama, point your earlier chatbot or RAG project at it, and compare answer quality, speed, and cost against a hosted API on the same test set.", project: true },
+  ]
+},
+{
+  title: "Multimodal AI: Vision, Voice, and Documents",
+  blurb: "Text is only one input. Most real products touch images, audio, or documents.",
+  resources: [
+    { label: "Hugging Face Audio course", url: "https://huggingface.co/learn/audio-course" },
+    { label: "OpenAI Realtime API guide", url: "https://platform.openai.com/docs/guides/realtime" },
+    { label: "Gradio documentation", url: "https://www.gradio.app/docs" },
+  ],
+  items: [
+    "Vision-language models: sending images to a model for description, question answering, and data extraction.",
+    "Document understanding: extracting structured data from invoices, forms, and scans, and when classic OCR plus an LLM beats a vision model.",
+    "Speech-to-text (transcription) and text-to-speech (voice synthesis), including accuracy and latency tradeoffs.",
+    "Realtime voice agents: streaming audio in and out, handling interruptions, and keeping latency low.",
+    "Image generation and editing with diffusion models via APIs, plus prompt techniques for images.",
+    "Video understanding and generation at an awareness level.",
+    "Building multimodal RAG: searching across text and images.",
+    "Safety for multimodal: harmful images, deepfake risks, and consent.",
+    { text: "Hands-on Project: build a document-intake app that accepts a photo or PDF of an invoice, extracts fields into validated JSON, flags low-confidence fields for human review, and stores results.", project: true },
+  ]
+},
+{
+  title: "Building and Shipping AI Applications",
+  blurb: "The software engineering that surrounds the model: what turns a prototype into a product people can rely on.",
+  resources: [
+    { label: "Vercel AI SDK documentation", url: "https://ai-sdk.dev/docs" },
+    { label: "FastAPI documentation", url: "https://fastapi.tiangolo.com/" },
+    { label: "Streamlit documentation", url: "https://docs.streamlit.io/" },
+  ],
+  items: [
+    "Rapid prototyping with Streamlit or Gradio to test ideas before investing in a full UI.",
+    "A production backend with FastAPI: endpoints, request validation, authentication, and streaming responses.",
+    "A frontend for AI: chat interfaces, streaming text, loading and error states, stop and retry buttons, and showing sources.",
+    "UX for uncertain systems: communicating limits, letting users correct the AI, and designing graceful fallbacks.",
+    "Databases for AI apps: storing conversations, users, documents, and embeddings (Postgres plus pgvector is a strong default).",
+    "Queues and background jobs for slow work (document ingestion, bulk processing) with tools like Celery or RQ.",
+    "Caching: response caching, prompt caching, and embedding caching to cut cost and latency.",
+    "Cost control: model routing (a cheap model for easy tasks, a strong one for hard ones), token budgets, and per-user limits.",
+    "Latency control: streaming, parallel calls, smaller models, and shortening prompts.",
+    "Reliability: retries, timeouts, circuit breakers, graceful degradation, and fallbacks to another model.",
+    "Authentication, authorization, and multi-tenant data isolation so one user can never see another's data.",
+    "Docker and deploying to a cloud platform, with secrets managed properly.",
+    { text: "Hands-on Project: take your RAG assistant and ship it: web UI with streaming and citations, user login, per-user document isolation, a cost cap per user, Docker packaging, and deployment to a public URL.", project: true },
+  ]
+},
+{
+  title: "AI-Assisted Development",
+  blurb: "Using AI coding tools well is now part of the job. Do it in a way that makes you a better engineer rather than a dependent one.",
+  resources: [
+    { label: "Claude Code documentation", url: "https://docs.claude.com/en/docs/claude-code/overview" },
+    { label: "GitHub Copilot documentation", url: "https://docs.github.com/en/copilot" },
+    { label: "Simon Willison's blog (practical AI coding notes)", url: "https://simonwillison.net/" },
+  ],
+  items: [
+    "The tool landscape: in-editor assistants, AI-native editors, and terminal-based coding agents, and how they differ.",
+    "Writing good requests for coding tools: give context, constraints, existing patterns, and what 'done' looks like.",
+    "Spec first: write a short plan or specification before generating code, then have the tool implement it in small steps.",
+    "Always review generated code: read it, run it, and test it. Never merge what you do not understand.",
+    "Using AI to write tests, explain unfamiliar code, refactor, and find bugs, and where it is weakest (subtle logic, security, and unfamiliar libraries).",
+    "Keeping a project instructions file with conventions, commands, and architecture notes so the tool works consistently.",
+    "Security of AI-written code: injection flaws, hard-coded secrets, outdated or non-existent packages, and unsafe defaults.",
+    "Avoid skill atrophy: keep writing core logic yourself regularly, and use AI as an accelerator and tutor rather than a crutch.",
+    "Privacy: what you should not paste into a tool (secrets, customer data, proprietary code without permission).",
+    { text: "Hands-on Project: build a small app from a written spec using an AI coding tool, then write down every bug and bad decision you caught in review. Fix them by hand and note what you learned.", project: true },
+  ]
+},
+{
+  title: "LLMOps: Running AI in Production",
+  blurb: "Keeping an AI system healthy, measurable, and affordable after launch.",
+  resources: [
+    { label: "Langfuse documentation (open-source observability)", url: "https://langfuse.com/docs" },
+    { label: "OpenTelemetry documentation", url: "https://opentelemetry.io/docs/" },
+    { label: "Full Stack Deep Learning: LLM Bootcamp", url: "https://fullstackdeeplearning.com/" },
+  ],
+  items: [
+    "Observability: tracing every request with the prompt, retrieved context, tool calls, output, latency, and cost.",
+    "Using tracing tools such as Langfuse, LangSmith, or OpenTelemetry-based setups.",
+    "Monitoring quality in production: sampling real traffic, running automated graders on samples, and watching user feedback.",
+    "Cost dashboards and alerts: spend per feature, per user, and per model, with budgets.",
+    "Prompt and model versioning, safe rollouts with feature flags, and rollback plans.",
+    "CI for AI: run your eval suite on every change and block regressions.",
+    "Handling model deprecations and provider updates: pin model versions and test before switching.",
+    "Incident response for AI failures: bad outputs reaching users, leaked data, or runaway costs.",
+    "Data flywheel: capturing failures and corrections to improve your eval set and prompts over time.",
+    "Privacy and data retention in logs: redact personal data and set retention periods.",
+  ]
+},
+{
+  title: "Security and Safety for AI Applications",
+  blurb: "AI systems introduce new attack surfaces. This is a major professional differentiator and increasingly expected.",
+  resources: [
+    { label: "OWASP Top 10 for LLM Applications", url: "https://genai.owasp.org/llm-top-10/" },
+    { label: "MITRE ATLAS (adversarial threats to AI)", url: "https://atlas.mitre.org/" },
+    { label: "NIST AI Risk Management Framework", url: "https://www.nist.gov/itl/ai-risk-management-framework" },
+  ],
+  items: [
+    "Prompt injection: direct attacks (a user tells the model to ignore its rules) and indirect attacks (malicious instructions hidden in a web page, email, or document the model reads).",
+    "Why prompt injection is not fully solvable, and how to design for damage limitation instead.",
+    "Excessive agency: limit what tools and permissions an agent has, use least privilege, and require human approval for high-impact actions.",
+    "Data leakage: system prompts, other users' data, and secrets must never be reachable through the model.",
+    "Insecure output handling: never execute or render model output without validation (it can contain scripts, SQL, or commands).",
+    "Jailbreaks and misuse: why safety behavior can be bypassed and how layered defenses help.",
+    "Guardrails: input and output filters, moderation APIs, topic restrictions, and schema validation.",
+    "Sandboxing code execution and browser agents so mistakes cannot touch your real systems.",
+    "MCP and tool-supply-chain risks: untrusted servers, malicious tool descriptions, and permission scopes.",
+    "Privacy: handling personal data, retention, and rules about sending data to third-party providers.",
+    "Red teaming your own system: write attack prompts, run them regularly, and fix what breaks.",
+    "Model and dependency supply chain: verify model sources and file formats and pin dependencies.",
+    { text: "Hands-on Project: red-team your own deployed assistant. Write 30 attack prompts across injection, data leakage, and tool abuse, record which succeed, add defenses, and re-test. Publish a short report.", project: true },
+  ]
+},
+{
+  title: "Responsible AI, Ethics, and Law",
+  blurb: "The non-technical context that shapes what you are allowed to build and how.",
+  resources: [
+    { label: "EU AI Act explorer", url: "https://artificialintelligenceact.eu/" },
+    { label: "Google PAIR People + AI Guidebook", url: "https://pair.withgoogle.com/guidebook/" },
+  ],
+  items: [
+    "Bias and fairness in model outputs, and testing behavior across different groups and languages.",
+    "Transparency: tell users when they are talking to AI, and document limitations clearly.",
+    "Copyright, licensing, and training-data questions for both inputs and generated outputs. Treat as context, not legal advice.",
+    "Regulation overview: the EU AI Act's risk-based approach and where common applications fall. Regulations change, so verify current rules.",
+    "Privacy laws such as GDPR and what they imply for storing user conversations.",
+    "Human oversight and accountability: who is responsible when the AI is wrong.",
+    "Misinformation, deepfakes, and misuse: your responsibilities as a builder.",
+    "Environmental and cost considerations of large models, and choosing the smallest model that does the job.",
+    "Write a one-page model and system card for one of your projects covering purpose, data, limits, risks, and monitoring.",
+  ]
+},
+{
+  title: "Cloud AI Platforms and Certifications",
+  blurb: "How companies actually run AI, and the credentials that help with hiring filters.",
+  resources: [
+    { label: "AWS Skill Builder", url: "https://skillbuilder.aws/" },
+    { label: "Amazon Bedrock documentation", url: "https://docs.aws.amazon.com/bedrock/" },
+    { label: "Google Cloud Skills Boost", url: "https://www.cloudskillsboost.google/" },
+    { label: "Microsoft Learn (certifications)", url: "https://learn.microsoft.com/en-us/credentials/browse/" },
+    { label: "DeepLearning.AI short courses", url: "https://www.deeplearning.ai/short-courses/" },
+  ],
+  items: [
+    "Managed model platforms: Amazon Bedrock, Google Vertex AI, and Microsoft Foundry on Azure, and what they add over calling a model provider directly (enterprise security, governance, multiple models).",
+    "Cloud basics for AI work: IAM, networking, secrets management, logging, and cost budgets.",
+    "Guardrails, knowledge bases, and agent features offered by managed platforms, and their tradeoffs against building your own.",
+    "Choosing a platform: existing company cloud, data residency, compliance, and model availability.",
+    { text: "Certification milestone: AWS Certified AI Practitioner (AIF-C01). A foundational cloud AI credential covering AI, ML, and generative AI concepts and AWS AI services.", cert: true, certInfo: {
+        name: "AWS Certified AI Practitioner (AIF-C01)",
+        provider: "Amazon Web Services, via Pearson VUE",
+        cost: "About $100 USD (varies by country)",
+        format: "Around 65 questions, multiple choice and multiple response",
+        duration: "About 90 minutes; valid 3 years",
+        note: "Foundational and non-coding, so it suits an early milestone. Verify the current price and exam guide on the AWS certification site."
+    }},
+    { text: "Certification milestone: Microsoft Azure AI App and Agent Developer Associate (exam AI-103). It replaced the retired AI-102 and focuses on generative AI apps and agents on Microsoft Foundry.", cert: true, certInfo: {
+        name: "Microsoft Certified: Azure AI App and Agent Developer Associate (AI-103)",
+        provider: "Microsoft, via Pearson VUE",
+        cost: "Typically about $165 USD for associate exams (varies by country)",
+        format: "Proctored exam covering generative AI apps, agents, multimodal processing, and responsible AI on Azure",
+        duration: "Associate credentials renew annually through a free online assessment",
+        note: "AI-102 retired on June 30, 2026 and AI-103 replaced it. Microsoft was still launching this exam in mid-2026, so confirm the current status, price, and skills outline on Microsoft Learn before studying."
+    }},
+    { text: "Certification milestone: Google Cloud Generative AI Leader. A business-and-concepts level certification about applying generative AI, suited to a broader or product-focused path.", cert: true, certInfo: {
+        name: "Google Cloud Generative AI Leader",
+        provider: "Google Cloud",
+        cost: "Around $99 USD (check current price)",
+        format: "Multiple choice and multiple select exam on generative AI concepts and Google Cloud offerings",
+        duration: "About 90 minutes",
+        note: "Non-coding and leadership oriented. It signals literacy rather than engineering depth, so pair it with projects. Verify current details on Google Cloud."
+    }},
+    { text: "Certification milestone (practical, free): complete a set of DeepLearning.AI short courses on RAG, agents, and evaluation, and keep the certificates alongside your project portfolio.", cert: true, certInfo: {
+        name: "DeepLearning.AI Short Course Certificates",
+        provider: "DeepLearning.AI",
+        cost: "Many short courses are free; some certificates require a paid plan",
+        format: "1 to 2 hour video courses with Jupyter notebook labs",
+        duration: "A few hours each",
+        note: "Not proctored credentials, but a quick, practical way to learn current patterns taught by practitioners. Projects carry more weight than certificates."
+    }},
+  ]
+},
+{
+  title: "Advanced Topics and Staying at the Frontier",
+  blurb: "Where to go after the core skills are solid. Treat these as ongoing learning, not a checklist to finish.",
+  resources: [
+    { label: "Hugging Face Daily Papers", url: "https://huggingface.co/papers" },
+    { label: "LMArena (human preference leaderboard)", url: "https://lmarena.ai/" },
+    { label: "Lilian Weng's blog", url: "https://lilianweng.github.io/" },
+  ],
+  items: [
+    "Reasoning models and test-time compute: how to prompt them, budget thinking effort, and decide when the extra cost is justified.",
+    "Synthetic data: using models to generate training and evaluation data, and its pitfalls (model collapse, narrow diversity).",
+    "Model routing and cascades: sending each request to the cheapest model that can handle it.",
+    "Long-horizon agents: tasks running for hours, checkpointing, and resumability.",
+    "Evaluation of open-ended agents and the limits of current benchmarks.",
+    "Interpretability and alignment research at an awareness level.",
+    "Following releases effectively: read changelogs and release notes, test new models on your own eval set, and ignore hype that has no measurements.",
+    "A weekly rhythm: one paper or release note, one small experiment, one short written note.",
+    "Reading a research paper well enough to implement its main idea in a day.",
+  ]
+},
+{
+  title: "Capstone Projects (Pick and Build)",
+  blurb: "Capstones are your proof. Build at least one from each tier, deploy them, and write a clear README with architecture, evals, costs, and limitations.",
+  resources: [
+    { label: "Hugging Face Spaces (free demo hosting)", url: "https://huggingface.co/spaces" },
+    { label: "GitHub (portfolio hosting)", url: "https://github.com/" },
+  ],
+  items: [
+    { text: "Beginner Capstone: Personal knowledge assistant. A RAG app over your own notes or documents, with citations, a refusal when the answer is not in the sources, and a 30-question eval set. Deploy a simple UI.", project: true },
+    { text: "Beginner Capstone: Structured extraction service. A FastAPI service that turns messy emails, resumes, or invoices into validated JSON with confidence flags, a human-review queue, and an accuracy report against 50 labeled examples.", project: true },
+    { text: "Intermediate Capstone: Customer-support copilot. Combines RAG over a help center, tool calls (order lookup, ticket creation), conversation memory, safe handoff to a human, and an eval suite with an LLM judge validated against human labels.", project: true },
+    { text: "Intermediate Capstone: Research and report agent. Plans a research question, searches and reads sources, keeps notes, writes a cited report, and enforces step and cost budgets, with full tracing in Langfuse or a similar tool.", project: true },
+    { text: "Advanced Capstone: Production multi-tenant AI product. Authenticated users, per-user data isolation, streaming UI, model routing for cost control, caching, a CI pipeline that runs evals on every change, monitoring dashboards, and a written threat model.", project: true },
+    { text: "Advanced Capstone: Voice agent. A realtime speech-in, speech-out assistant with tool use (such as booking or lookup), interruption handling, latency measurements, and safety tests.", project: true },
+    { text: "Advanced Capstone: Small specialist model. Fine-tune an open model with LoRA for a narrow task, prove with held-out evals that it matches or beats a larger prompted model on quality per dollar, and publish the adapter with a model card.", project: true },
+    { text: "Security Capstone: Red-team and harden. Take one of your agents, attack it systematically (injection, data leakage, tool abuse), implement layered defenses, re-test, and publish the before/after report.", project: true },
+    { text: "Knowledge Check: record or present a 10-minute walkthrough of one capstone covering the problem, architecture, eval results, costs, failures you found, and what you would change. Practice answering 'why this model, why this design, how do you know it works'.", check: true, checkInfo: {
+        name: "Capstone Presentation Check",
+        provider: "A friend, mentor, study group, or a self-recorded video",
+        format: "10-minute walkthrough followed by tough questions",
+        note: "AI engineering interviews probe exactly this: your decisions, your evals, and your handling of failure."
+    }},
+  ]
+},
+{
+  title: "Portfolio, Career, and Next Steps",
+  blurb: "Turning skills into a role, and deciding how deep to go next.",
+  resources: [
+    { label: "Chip Huyen's blog", url: "https://huyenchip.com/blog/" },
+    { label: "Hugging Face Spaces", url: "https://huggingface.co/spaces" },
+  ],
+  items: [
+    "Build a portfolio of 3 to 5 deployed projects. Each README should include the problem, architecture diagram, eval results, cost and latency numbers, and honest limitations.",
+    "Write about what you build: short posts on failures and lessons are more credible than polished marketing.",
+    "Prepare for AI engineer interviews: explain RAG, agents, evals, prompt injection, and cost tradeoffs, and be ready to design a system on a whiteboard.",
+    "Practice software fundamentals too: data structures, APIs, databases, and system design still matter in AI roles.",
+    "Contribute to open source AI tooling (documentation, bug reports, small features) to build a public track record.",
+    "Join communities, attend meetups, and share projects to get feedback and referrals.",
+    "Decide how deep to go: stay an AI application engineer, specialize (agents, evals and safety, voice, or search and retrieval), or go deeper into model training by following the AI & ML roadmap.",
+    "Review and refresh your roadmap every quarter, since tools, prices, and best practices change.",
+  ]
+},
+];
+
+const STORAGE_KEY = "genai-progress-v1";
+
+function loadState(){
+  try{
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+  }catch(e){ return {}; }
+}
+function saveState(state){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+let state = loadState();
+let totalItems = 0;
+
+function itemId(si, ii){ return `s${si}-i${ii}`; }
+
+function flagSVGOutline(){
+  return `<svg class="flag-outline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22V4"/><path d="M4 4c2-1.5 4-1.5 6 0s4 1.5 6 0v10c-2 1.5-4 1.5-6 0s-4-1.5-6 0"/></svg>`;
+}
+function flagSVGFilled(){
+  return `<svg class="flag-filled" viewBox="0 0 24 24" fill="currentColor"><path d="M5 21a1 1 0 0 1-1-1V4c2-1.3 4-1.3 6 0s4 1.3 6 0a1 1 0 0 1 1.4.9v9.6a1 1 0 0 1-.5.87c-2.2 1.3-4.4 1.3-6.4-.02-2-1.3-4-1.3-5.5-.35V20a1 1 0 0 1-1 1Z"/></svg>`;
+}
+
+function render(){
+  const trail = document.getElementById("trail");
+  trail.innerHTML = "";
+  totalItems = 0;
+
+  DATA.forEach((stage, si) => {
+    const stageEl = document.createElement("div");
+    stageEl.className = "stage";
+    stageEl.dataset.stageIndex = si;
+
+    const items = stage.items.map((it, ii) => {
+      totalItems++;
+      const obj = typeof it === "string" ? { text: it, cert: false } : it;
+      obj.id = itemId(si, ii);
+      return obj;
+    });
+
+    const doneCount = items.filter(it => state[it.id]).length;
+    if (doneCount === items.length) stageEl.classList.add("complete");
+
+    stageEl.innerHTML = `
+      <div class="stage-marker"></div>
+      <div class="stage-head">
+        <div class="stage-title-wrap">
+          <span class="stage-num mono">STAGE ${String(si+1).padStart(2,"0")}</span>
+          <h2 class="stage-title">${stage.title}</h2>
+          <p class="stage-blurb">${stage.blurb}</p>
+        </div>
+        <div class="stage-meta">
+          <span class="stage-count mono">${doneCount}/${items.length}</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+        </div>
+      </div>
+      <div class="stage-body"></div>
+    `;
+
+    if (stage.resources && stage.resources.length) {
+      const resRow = document.createElement("div");
+      resRow.className = "stage-resources";
+      resRow.innerHTML = stage.resources.map(
+        r => `<a class="resource-chip mono" href="${r.url}" target="_blank" rel="noopener">${r.label}</a>`
+      ).join("");
+      stageEl.querySelector(".stage-body").before(resRow);
+    }
+
+    const body = stageEl.querySelector(".stage-body");
+    items.forEach(it => {
+      const itemEl = document.createElement("div");
+      itemEl.className = "item"
+        + (it.cert ? " cert" : "")
+        + (it.project ? " project" : "")
+        + (it.check ? " check" : "")
+        + (state[it.id] ? " done" : "");
+      itemEl.dataset.id = it.id;
+      itemEl.innerHTML = `
+        <button class="flag-btn" aria-label="Toggle complete">
+          ${flagSVGOutline()}
+          ${flagSVGFilled()}
+        </button>
+        <div class="item-text">
+          ${it.text}
+          ${it.cert ? `<div class="cert-badge">CERTIFICATION — tap for details</div>` : ``}
+          ${it.project ? `<div class="project-badge">HANDS-ON PROJECT</div>` : ``}
+          ${it.check ? `<div class="check-badge">KNOWLEDGE CHECK — tap for practice resources</div>` : ``}
+        </div>
+      `;
+      itemEl.querySelector(".flag-btn").addEventListener("click", () => {
+        state[it.id] = !state[it.id];
+        saveState(state);
+        render();
+        restoreOpenStages();
+      });
+      if (it.cert && it.certInfo) {
+        itemEl.querySelector(".item-text").addEventListener("click", () => {
+          openCertModal(it.certInfo);
+        });
+      }
+      if (it.check && it.checkInfo) {
+        itemEl.querySelector(".item-text").addEventListener("click", () => {
+          openCertModal(it.checkInfo);
+        });
+      }
+      body.appendChild(itemEl);
+    });
+
+    stageEl.querySelector(".stage-head").addEventListener("click", () => {
+      stageEl.classList.toggle("open");
+    });
+
+    trail.appendChild(stageEl);
+  });
+
+  updateProgress();
+}
+
+function updateProgress(){
+  const doneCount = Object.values(state).filter(Boolean).length;
+  const pct = totalItems ? Math.round((doneCount / totalItems) * 100) : 0;
+  document.getElementById("statDone").textContent = doneCount;
+  document.getElementById("statPct").textContent = pct + "%";
+  document.getElementById("progressFill").style.width = pct + "%";
+}
+
+let openStageIndexes = new Set([0]);
+function restoreOpenStages(){
+  document.querySelectorAll(".stage").forEach(el => {
+    if (openStageIndexes.has(Number(el.dataset.stageIndex))) el.classList.add("open");
+  });
+}
+document.addEventListener("click", (e) => {
+  const head = e.target.closest(".stage-head");
+  if (!head) return;
+  const stageEl = head.closest(".stage");
+  const idx = Number(stageEl.dataset.stageIndex);
+  if (openStageIndexes.has(idx)) openStageIndexes.delete(idx);
+  else openStageIndexes.add(idx);
+});
+
+document.getElementById("resetBtn").addEventListener("click", () => {
+  if (confirm("Reset all progress on this device? This can't be undone.")) {
+    state = {};
+    saveState(state);
+    render();
+    restoreOpenStages();
+  }
+});
+
+function encodeStateToCode(obj){
+  return btoa(encodeURIComponent(JSON.stringify(obj))).replace(/=+$/,"");
+}
+function decodeCodeToState(code){
+  const padded = code + "=".repeat((4 - code.length % 4) % 4);
+  return JSON.parse(decodeURIComponent(atob(padded)));
+}
+function buildSyncLink(){
+  const code = encodeStateToCode(state);
+  const base = location.origin + location.pathname;
+  return base + "#sync=" + code;
+}
+function extractCodeFromInput(value){
+  const trimmed = value.trim();
+  const hashIdx = trimmed.indexOf("#sync=");
+  if (hashIdx !== -1) return trimmed.slice(hashIdx + 6);
+  const qIdx = trimmed.indexOf("sync=");
+  if (qIdx !== -1) return trimmed.slice(qIdx + 5);
+  return trimmed;
+}
+function applyIncomingState(incoming){
+  if (typeof incoming !== "object" || incoming === null) throw new Error("bad format");
+  const mergeChoice = confirm(
+    "Click OK to MERGE this with what's already flagged on this device.\nClick Cancel to REPLACE this device's progress entirely with the incoming data."
+  );
+  state = mergeChoice ? Object.assign({}, state, incoming) : Object.assign({}, incoming);
+  saveState(state);
+  render();
+  restoreOpenStages();
+}
+
+let qrRendered = false;
+function renderSyncPanel(){
+  const link = buildSyncLink();
+  document.getElementById("syncLinkInput").value = link;
+  const box = document.getElementById("qrcodeBox");
+  box.innerHTML = "";
+  try {
+    new QRCode(box, { text: link, width: 176, height: 176, correctLevel: QRCode.CorrectLevel.M });
+  } catch(e) { box.textContent = "QR unavailable — use the link/copy option below."; }
+}
+
+document.getElementById("syncBtn").addEventListener("click", () => {
+  const panel = document.getElementById("syncPanel");
+  panel.classList.toggle("open");
+  if (panel.classList.contains("open")) renderSyncPanel();
+});
+
+document.getElementById("copyLinkBtn").addEventListener("click", () => {
+  const input = document.getElementById("syncLinkInput");
+  input.select();
+  input.setSelectionRange(0, 99999);
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(input.value).then(() => alert("Link copied.")).catch(() => document.execCommand("copy"));
+  } else {
+    document.execCommand("copy");
+  }
+});
+
+document.getElementById("applyPasteBtn").addEventListener("click", () => {
+  const raw = document.getElementById("pasteCodeInput").value;
+  if (!raw.trim()) return;
+  try {
+    const code = extractCodeFromInput(raw);
+    const incoming = decodeCodeToState(code);
+    applyIncomingState(incoming);
+    document.getElementById("pasteCodeInput").value = "";
+    alert("Progress applied.");
+  } catch (e) {
+    alert("Could not read that — make sure it's a sync link or code from this same roadmap.");
+  }
+});
+
+(function checkIncomingHash(){
+  const hash = location.hash;
+  if (hash && hash.indexOf("sync=") !== -1) {
+    try {
+      const code = hash.slice(hash.indexOf("sync=") + 5);
+      const incoming = decodeCodeToState(code);
+      applyIncomingState(incoming);
+    } catch(e) { /* ignore malformed hash */ }
+    history.replaceState(null, "", location.pathname + location.search);
+  }
+})();
+
+function openCertModal(info){
+  document.getElementById("certModalTitle").textContent = info.name || "Certification";
+  document.getElementById("certModalProvider").textContent = info.provider || "";
+  const rows = [
+    ["Cost", info.cost],
+    ["Format", info.format],
+    ["Typical duration", info.duration],
+  ].filter(r => r[1]);
+  document.getElementById("certModalRows").innerHTML = rows.map(
+    r => `<div class="modal-row"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`
+  ).join("");
+  document.getElementById("certModalNote").textContent = info.note || "Pricing and format can change — verify current details on the provider's site before enrolling.";
+  document.getElementById("certModalOverlay").classList.add("open");
+}
+document.getElementById("certModalClose").addEventListener("click", () => {
+  document.getElementById("certModalOverlay").classList.remove("open");
+});
+document.getElementById("certModalOverlay").addEventListener("click", (e) => {
+  if (e.target.id === "certModalOverlay") e.target.classList.remove("open");
+});
+
+render();
+restoreOpenStages();
+</script>
+</body>
+</html>

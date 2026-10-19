@@ -1,0 +1,2003 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI and Machine Learning — Zero to Pro — Learning Trail</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+      :root {
+        --bg: #0d0a1c;
+        --panel: #161228;
+        --panel-2: #1c1733;
+        --line: #2e2850;
+        --ink: #f0edfa;
+        --ink-dim: #aaa3c9;
+        --ink-faint: #706a94;
+        --gold: #fbbf24;
+        --gold-dim: #6e5410;
+        --teal: #a78bfa;
+        --teal-dim: #3a2c6b;
+        --green: #34d399;
+        --green-dim: #144a38;
+        --danger: #ff6b6b;
+        --check: #38bdf8;
+        --check-dim: #123b52;
+        --radius: 10px;
+        --maxw: 900px;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        background:
+          radial-gradient(
+            1200px 600px at 15% -10%,
+            rgba(167, 139, 250, 0.1),
+            transparent 60%
+          ),
+          radial-gradient(
+            900px 500px at 100% 0%,
+            rgba(251, 191, 36, 0.08),
+            transparent 55%
+          ),
+          var(--bg);
+        color: var(--ink);
+        font-family: "IBM Plex Sans", system-ui, sans-serif;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+      }
+      .mono {
+        font-family: "IBM Plex Mono", monospace;
+      }
+
+      header.hero {
+        max-width: var(--maxw);
+        margin: 0 auto;
+        padding: 48px 20px 28px;
+      }
+      .eyebrow {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 13px;
+        color: var(--teal);
+        letter-spacing: 0.02em;
+      }
+      h1 {
+        font-size: clamp(28px, 5vw, 42px);
+        line-height: 1.15;
+        margin: 10px 0 14px;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+      }
+      .hero p {
+        color: var(--ink-dim);
+        font-size: 16px;
+        max-width: 62ch;
+      }
+
+      .trailbar {
+        max-width: var(--maxw);
+        margin: 0 auto 8px;
+        padding: 0 20px;
+      }
+      .progress-shell {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 18px 20px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .progress-stat {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .progress-stat .num {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 22px;
+        font-weight: 600;
+        color: var(--gold);
+      }
+      .progress-stat .lbl {
+        font-size: 12px;
+        color: var(--ink-faint);
+      }
+      .progress-track {
+        flex: 1 1 240px;
+        height: 8px;
+        background: var(--panel-2);
+        border-radius: 999px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+      }
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--teal), var(--green));
+        width: 0%;
+        transition: width 0.4s ease;
+      }
+      .reset-btn {
+        background: transparent;
+        border: 1px solid var(--line);
+        color: var(--ink-faint);
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 12px;
+        padding: 8px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      .reset-btn:hover {
+        border-color: var(--danger);
+        color: var(--danger);
+      }
+
+      main {
+        max-width: var(--maxw);
+        margin: 28px auto 80px;
+        padding: 0 20px;
+      }
+
+      .stage {
+        position: relative;
+        border-left: 2px solid var(--line);
+        margin-left: 14px;
+        padding-left: 26px;
+        margin-bottom: 6px;
+      }
+      .stage:last-child {
+        border-left-color: transparent;
+      }
+
+      .stage-marker {
+        position: absolute;
+        left: -9px;
+        top: 4px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--panel-2);
+        border: 2px solid var(--line);
+        transition: all 0.2s ease;
+      }
+      .stage.complete .stage-marker {
+        background: var(--green);
+        border-color: var(--green);
+      }
+
+      .stage-head {
+        cursor: pointer;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 14px 0;
+        user-select: none;
+      }
+      .stage-title-wrap {
+        flex: 1;
+      }
+      .stage-num {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 12px;
+        color: var(--ink-faint);
+        display: block;
+        margin-bottom: 2px;
+      }
+      .stage-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin: 0;
+      }
+      .stage-blurb {
+        color: var(--ink-dim);
+        font-size: 13.5px;
+        margin: 6px 0 0;
+        max-width: 60ch;
+      }
+      .stage-meta {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        white-space: nowrap;
+      }
+      .stage-count {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 12px;
+        color: var(--ink-faint);
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        padding: 3px 8px;
+        border-radius: 999px;
+      }
+      .chevron {
+        width: 18px;
+        height: 18px;
+        color: var(--ink-faint);
+        transition: transform 0.2s ease;
+        flex-shrink: 0;
+      }
+      .stage.open .chevron {
+        transform: rotate(90deg);
+      }
+
+      .stage-body {
+        display: none;
+        padding: 2px 0 22px;
+      }
+      .stage.open .stage-body {
+        display: block;
+      }
+
+      .item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 10px 12px 10px 14px;
+        border-radius: 8px;
+        margin-bottom: 6px;
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        border-left: 3px solid var(--teal-dim);
+      }
+      .item.cert {
+        border-color: var(--gold-dim);
+        border-left: 3px solid var(--gold);
+        background: linear-gradient(
+          180deg,
+          rgba(251, 191, 36, 0.1),
+          rgba(251, 191, 36, 0.03)
+        );
+      }
+      .item.done {
+        opacity: 0.6;
+        border-left: 3px solid var(--green);
+        background: linear-gradient(
+          180deg,
+          rgba(52, 211, 153, 0.08),
+          rgba(52, 211, 153, 0.02)
+        );
+      }
+      .item.done.cert {
+        border-left: 3px solid var(--green);
+      }
+      .flag-btn {
+        flex-shrink: 0;
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        border: 1px solid var(--line);
+        background: var(--panel);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        margin-top: 1px;
+      }
+      .flag-btn svg {
+        width: 15px;
+        height: 15px;
+      }
+      .flag-btn .flag-outline {
+        color: var(--ink-faint);
+      }
+      .flag-btn .flag-filled {
+        color: var(--green);
+        display: none;
+      }
+      .item.done .flag-btn {
+        background: var(--green-dim);
+        border-color: var(--green);
+      }
+      .item.done .flag-outline {
+        display: none;
+      }
+      .item.done .flag-filled {
+        display: block;
+      }
+
+      .item-text {
+        flex: 1;
+        font-size: 14.5px;
+      }
+      .item.done .item-text {
+        text-decoration: line-through;
+        text-decoration-color: var(--ink-faint);
+      }
+
+      .cert-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 11px;
+        color: var(--gold);
+        background: rgba(232, 179, 75, 0.1);
+        border: 1px solid var(--gold-dim);
+        padding: 2px 7px;
+        border-radius: 999px;
+        margin-top: 6px;
+      }
+
+      footer {
+        max-width: var(--maxw);
+        margin: 0 auto 60px;
+        padding: 24px 20px;
+        color: var(--ink-faint);
+        font-size: 12.5px;
+        border-top: 1px solid var(--line);
+      }
+
+      .sync-panel {
+        display: none;
+        max-width: var(--maxw);
+        margin: 10px auto 0;
+        padding: 0 20px;
+      }
+      .sync-panel.open {
+        display: block;
+      }
+      .sync-panel .sync-note {
+        color: var(--ink-dim);
+        font-size: 13px;
+        margin: 10px 0 8px;
+      }
+      #qrcodeBox {
+        display: inline-block;
+        padding: 10px;
+        background: #fff;
+        border-radius: 8px;
+        margin: 4px 0 12px;
+      }
+      .sync-row {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 6px;
+        flex-wrap: wrap;
+      }
+      .sync-input {
+        flex: 1 1 220px;
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        color: var(--ink);
+        padding: 8px 10px;
+        border-radius: 8px;
+        font-size: 12px;
+        min-width: 0;
+      }
+
+      .item.project {
+        border-left: 3px solid var(--teal);
+        background: linear-gradient(
+          180deg,
+          rgba(34, 211, 238, 0.09),
+          rgba(34, 211, 238, 0.03)
+        );
+      }
+      .item.project.done {
+        border-left: 3px solid var(--green);
+      }
+      .project-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 11px;
+        color: var(--teal);
+        background: rgba(167, 139, 250, 0.1);
+        border: 1px solid var(--teal-dim);
+        padding: 2px 7px;
+        border-radius: 999px;
+        margin-top: 6px;
+      }
+      .item.cert .item-text {
+        cursor: pointer;
+      }
+      .item.cert .item-text:hover .cert-badge {
+        text-decoration: underline;
+      }
+      .item.check {
+        border-left: 3px solid var(--check);
+        background: linear-gradient(
+          180deg,
+          rgba(192, 132, 252, 0.09),
+          rgba(192, 132, 252, 0.03)
+        );
+      }
+      .item.check.done {
+        border-left: 3px solid var(--green);
+      }
+      .check-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 11px;
+        color: var(--check);
+        background: rgba(192, 132, 252, 0.1);
+        border: 1px solid var(--check-dim);
+        padding: 2px 7px;
+        border-radius: 999px;
+        margin-top: 6px;
+      }
+      .item.check .item-text {
+        cursor: pointer;
+      }
+      .stage-resources {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 4px 0 14px;
+        padding-left: 2px;
+      }
+      .resource-chip {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 11px;
+        color: var(--ink-dim);
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        padding: 4px 9px;
+        border-radius: 999px;
+        text-decoration: none;
+      }
+      .resource-chip:hover {
+        border-color: var(--gold);
+        color: var(--gold);
+      }
+      .exam-callout {
+        max-width: var(--maxw);
+        margin: 0 auto 8px;
+        padding: 0 20px;
+      }
+      .exam-callout-inner {
+        background: var(--panel);
+        border: 1px solid var(--gold-dim);
+        border-radius: var(--radius);
+        padding: 14px 18px;
+        font-size: 13px;
+        color: var(--ink-dim);
+        line-height: 1.6;
+      }
+      .exam-callout-inner strong {
+        color: var(--gold);
+      }
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 50;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+      .modal-overlay.open {
+        display: flex;
+      }
+      .modal-card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        max-width: 440px;
+        width: 100%;
+        padding: 22px;
+        position: relative;
+      }
+      .modal-close {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        color: var(--ink-faint);
+        width: 26px;
+        height: 26px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        line-height: 1;
+      }
+      .modal-title {
+        font-size: 17px;
+        font-weight: 600;
+        margin: 0 0 4px;
+        padding-right: 24px;
+      }
+      .modal-provider {
+        color: var(--gold);
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 12px;
+        margin: 0 0 16px;
+      }
+      .modal-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 9px 0;
+        border-top: 1px solid var(--line);
+        font-size: 13.5px;
+      }
+      .modal-row .k {
+        color: var(--ink-faint);
+      }
+      .modal-row .v {
+        color: var(--ink);
+        text-align: right;
+      }
+      .modal-note {
+        margin-top: 14px;
+        font-size: 12px;
+        color: var(--ink-faint);
+        line-height: 1.5;
+      }
+
+      @media (max-width: 520px) {
+        .stage {
+          margin-left: 6px;
+          padding-left: 18px;
+        }
+        .stage-title {
+          font-size: 16.5px;
+        }
+        .progress-shell {
+          padding: 14px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="hero">
+      <span class="eyebrow mono">// LEARNING ROADMAP</span>
+      <h1>AI and Machine Learning — Zero to Pro</h1>
+      <p>
+        A complete path for someone starting with no knowledge of AI, ML,
+        Python, or even the terminology: a plain-language glossary, Python from
+        zero, the math you need, classical ML, deep learning, transformers,
+        modern LLMs, MLOps, and responsible AI, with capstone projects and
+        certifications along the way.
+      </p>
+    </header>
+
+    <div class="exam-callout">
+      <div class="exam-callout-inner">
+        <strong>How to use this:</strong> work top to bottom, because later
+        stages depend on earlier ones. Tap <strong>knowledge checks</strong> and
+        <strong>certifications</strong> for resources and costs. Stage titles
+        marked as projects are where you build, and building is what makes this
+        stick. The glossary stage is meant to be revisited whenever a word feels
+        unfamiliar.
+      </div>
+    </div>
+
+    <div class="trailbar">
+      <div class="progress-shell">
+        <div class="progress-stat">
+          <span class="num" id="statDone">0</span>
+          <span class="lbl">completed</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-stat">
+          <span class="num" id="statPct">0%</span>
+          <span class="lbl">of trail</span>
+        </div>
+        <button class="reset-btn mono" id="syncBtn">SYNC ACROSS DEVICES</button>
+        <button class="reset-btn mono" id="resetBtn">RESET PROGRESS</button>
+      </div>
+
+      <div class="sync-panel" id="syncPanel">
+        <p class="sync-note">
+          Scan this code with a camera app, or open the link, to load this
+          progress.
+        </p>
+        <div id="qrcodeBox"></div>
+        <div class="sync-row">
+          <input
+            type="text"
+            id="syncLinkInput"
+            class="sync-input mono"
+            readonly
+          />
+          <button class="reset-btn mono" id="copyLinkBtn">COPY LINK</button>
+        </div>
+        <p class="sync-note">
+          Have a link or code to load instead? Paste it below.
+        </p>
+        <div class="sync-row">
+          <input
+            type="text"
+            id="pasteCodeInput"
+            class="sync-input mono"
+            placeholder="paste sync link or code here"
+          />
+          <button class="reset-btn mono" id="applyPasteBtn">APPLY</button>
+        </div>
+      </div>
+    </div>
+
+    <main id="trail"></main>
+
+    <footer>
+      Progress is saved automatically in this browser as items are completed.
+    </footer>
+
+    <div class="modal-overlay" id="certModalOverlay">
+      <div class="modal-card">
+        <button class="modal-close" id="certModalClose">&times;</button>
+        <h3 class="modal-title" id="certModalTitle"></h3>
+        <p class="modal-provider mono" id="certModalProvider"></p>
+        <div id="certModalRows"></div>
+        <p class="modal-note" id="certModalNote"></p>
+      </div>
+    </div>
+    <script>
+      const DATA = [
+        {
+          title: "Start Here: How to Use This Roadmap",
+          blurb:
+            "You are starting from zero, and that is a completely valid place to start. This stage sets expectations so you do not burn out in month two.",
+          resources: [
+            {
+              label: "Learning How to Learn (free, Coursera)",
+              url: "https://www.coursera.org/learn/learning-how-to-learn",
+            },
+          ],
+          items: [
+            "Realistic timeline: going from zero to job-ready in AI/ML typically takes 12 to 24 months of steady part-time effort. 'Pro' is a direction you keep moving in, not a finish line.",
+            "The order matters: Python, then math, then classical machine learning, then deep learning, then modern AI. Skipping ahead to LLMs without the base leaves you copying code you cannot debug.",
+            "Study rhythm that works: 60 to 90 minutes a day beats a 10-hour weekend binge. Consistency builds memory.",
+            "The 'build to learn' rule: for every concept, write a small piece of code that uses it. Reading alone does not stick.",
+            "Keep a learning log (a notes app or a GitHub repo) where you write each concept in your own words. If you cannot explain it simply, you do not know it yet.",
+            "It is normal to feel lost in math and AI terminology for the first few months. Everybody does. Come back to the glossary stage whenever a word is unfamiliar.",
+          ],
+        },
+        {
+          title: "The Glossary: Terminology From Zero",
+          blurb:
+            "Before any code, learn the words. Every term here is defined in plain language and reappears later in depth. Flag each one once you can explain it to a friend without looking.",
+          resources: [
+            {
+              label: "Google ML Glossary",
+              url: "https://developers.google.com/machine-learning/glossary",
+            },
+            {
+              label: "Elements of AI (free, beginner-friendly)",
+              url: "https://www.elementsofai.com/",
+            },
+          ],
+          items: [
+            "Artificial Intelligence (AI): the broad goal of making computers do tasks that normally need human intelligence, like understanding language, recognizing images, or making decisions.",
+            "Machine Learning (ML): a way of building AI where the computer learns patterns from examples (data) instead of following rules a programmer wrote by hand.",
+            "Deep Learning (DL): a kind of ML that uses neural networks with many layers. It powers image recognition, speech recognition, and modern chatbots.",
+            "Generative AI: AI that creates new content (text, images, audio, code, video) rather than only classifying or predicting.",
+            "Large Language Model (LLM): a very large neural network trained on huge amounts of text to predict the next piece of text. ChatGPT, Claude, and Gemini are products built on LLMs.",
+            "Data and dataset: the examples a model learns from. A dataset is just an organized collection of them, often a table where each row is one example.",
+            "Feature: one measurable input property of an example (for a house: size, number of rooms, location). The model looks at features.",
+            "Label (or target): the answer you want the model to predict (for a house: its price). Data with labels is called labeled data.",
+            "Model: the mathematical function that has learned patterns from data. Think of it as a very flexible formula with adjustable knobs.",
+            "Parameters and weights: the adjustable knobs inside a model. Training means finding good values for them. When people say a model has 70 billion parameters, they mean 70 billion knobs.",
+            "Training: the process of showing the model many examples and adjusting its parameters so its predictions get better.",
+            "Inference: using an already-trained model to make a prediction on new data. Training teaches; inference uses.",
+            "Loss function: a number that measures how wrong the model's predictions are. Training tries to make this number small.",
+            "Epoch and batch: an epoch is one full pass through the training data. A batch is a small chunk of data processed at once.",
+            "Overfitting and underfitting: overfitting is memorizing the training data so well that the model fails on new data. Underfitting is being too simple to learn the pattern at all.",
+            "Neural network: a model built from layers of simple connected units ('neurons') loosely inspired by the brain. Stack many layers and you get deep learning.",
+            "Token: a chunk of text (a word or part of a word) that language models read and write. 'Understanding' might be split into 'Under' + 'standing'.",
+            "Embedding: a list of numbers that represents the meaning of something (a word, sentence, or image) so that similar things have similar numbers.",
+            "Prompt: the input text you give an LLM. Context window: the maximum amount of text (prompt plus reply) a model can handle at once.",
+            "Hallucination: when an LLM states something false but sounds confident. It is a built-in risk of how these models work, not a rare glitch.",
+            "GPU: a chip originally for graphics that is excellent at the parallel math deep learning needs. Why AI hardware is such a big deal.",
+            "Python: the programming language almost all AI work is done in. You will learn it from scratch in the next stages.",
+            "Notebook (Jupyter): an interactive document where you mix code, results, charts, and notes. The standard tool for data and ML experiments.",
+            {
+              text: "Knowledge Check: without looking, explain to a friend the difference between AI, ML, deep learning, and generative AI, and what 'training' versus 'inference' means. Use one real-world example for each.",
+              check: true,
+              checkInfo: {
+                name: "Glossary Recall Check",
+                provider:
+                  "Self-assessment, plus Elements of AI's chapter quizzes",
+                format:
+                  "Explain out loud or write a one-paragraph answer. No score needed.",
+                note: "If any term still feels fuzzy, reread its entry here. These words come up in every later stage.",
+              },
+            },
+          ],
+        },
+        {
+          title: "Computer Basics for Builders",
+          blurb:
+            "The practical computer skills nobody teaches in AI courses but everyone assumes you have.",
+          resources: [
+            {
+              label: "CS50x: Introduction to Computer Science (Harvard, free)",
+              url: "https://cs50.harvard.edu/x/",
+            },
+            {
+              label: "The Missing Semester of Your CS Education (MIT)",
+              url: "https://missing.csail.mit.edu/",
+            },
+          ],
+          items: [
+            "Files and folders: paths, extensions, hidden files, and organizing a project directory.",
+            "The terminal (command line): navigating with cd and ls, creating files and folders, running programs. You will use it daily.",
+            "Installing software and understanding what a package manager is (pip, conda, brew, apt).",
+            "A code editor: install VS Code, learn its basics (open folder, terminal, extensions, debugger).",
+            "What a program is, what an operating system does, and the difference between your computer and a remote server or the cloud.",
+            "Git and GitHub basics: init, add, commit, push, branches, and why every project you build belongs in a repository.",
+            "Using Google Colab (free browser notebooks with GPUs) so you can run ML code without setting anything up locally.",
+            "How to ask good technical questions and read error messages: copy the last line of an error, search it, and read the docs before asking.",
+          ],
+        },
+        {
+          title: "Python From Absolute Zero (Part 1)",
+          blurb:
+            "No prior programming assumed. Type every example yourself instead of copy-pasting.",
+          resources: [
+            {
+              label: "CS50's Introduction to Programming with Python (free)",
+              url: "https://cs50.harvard.edu/python/",
+            },
+            {
+              label: "Automate the Boring Stuff with Python (free online)",
+              url: "https://automatetheboringstuff.com/",
+            },
+            {
+              label: "Python official tutorial",
+              url: "https://docs.python.org/3/tutorial/",
+            },
+          ],
+          items: [
+            "Install Python 3 and run your first program: print('Hello'). Learn the difference between the REPL and running a script file.",
+            "Variables: storing values and naming them well. Assignment is not the same as equality.",
+            "Basic data types: integers, floats, strings, booleans. Converting between them and why '5' + '5' is '55'.",
+            "Arithmetic and operators: + - * / // % **, and operator order of operations.",
+            "Strings in depth: indexing, slicing, f-strings for formatting, common methods (upper, split, replace, strip).",
+            "Getting input from a user and printing output cleanly.",
+            "Conditionals: if, elif, else, and combining conditions with and, or, not.",
+            "Loops: for loops over ranges and collections, while loops, break, continue, and avoiding infinite loops.",
+            "Lists: creating, indexing, slicing, appending, removing, sorting, and looping over them.",
+            "Tuples and sets: what makes them different from lists and when to use each.",
+            "Dictionaries: key-value pairs, looking up, adding, deleting, and looping over them. You will use these constantly.",
+            "Reading error messages (tracebacks): find the line number, read the error type, and fix the cause.",
+            {
+              text: "Hands-on Project: build a command-line number-guessing game and a tip/bill-splitting calculator using only variables, loops, conditionals, and input.",
+              project: true,
+            },
+          ],
+        },
+        {
+          title: "Python From Absolute Zero (Part 2)",
+          blurb: "The tools that turn small scripts into real programs.",
+          resources: [
+            {
+              label: "Real Python (tutorials)",
+              url: "https://realpython.com/",
+            },
+            {
+              label: "Python Tutor (visualize how code runs)",
+              url: "https://pythontutor.com/",
+            },
+          ],
+          items: [
+            "Functions: defining, parameters, return values, default arguments, and why small functions beat long scripts.",
+            "Scope: local versus global variables, and why functions should not secretly change outside state.",
+            "List, dict, and set comprehensions: compact ways to build collections.",
+            "Working with files: reading and writing text files, CSV files, and JSON files, always using 'with'.",
+            "Errors and exceptions: try, except, finally, raising your own errors, and handling bad input gracefully.",
+            "Modules and packages: importing from the standard library (math, random, datetime, collections, pathlib).",
+            "Virtual environments (venv or conda) and pip: install libraries per project so projects never break each other.",
+            "Object-oriented basics: classes, objects, attributes, methods, __init__, and the idea of bundling data with behavior.",
+            "Inheritance and dunder methods (__str__, __repr__, __len__) at a working level, since ML libraries use classes heavily.",
+            "Lambda functions, map, filter, sorted with a key function, and zip/enumerate.",
+            "Iterators and generators: what 'yield' does and why generators save memory with big data.",
+            "Type hints and docstrings: making code readable for your future self.",
+            "Debugging: print debugging, using the VS Code debugger with breakpoints, and reading stack traces.",
+            "Testing with pytest: write three simple tests for a function you made.",
+            {
+              text: "Hands-on Project: build a personal expense tracker that saves to a CSV file, supports add/list/summary by category, and handles bad input without crashing.",
+              project: true,
+            },
+            {
+              text: "Knowledge Check: solve 15 beginner problems on a coding practice site (Python track) without looking at solutions, then read the best solutions to learn cleaner patterns.",
+              check: true,
+              checkInfo: {
+                name: "Python Fluency Check",
+                provider:
+                  "Exercism Python track, HackerRank Python domain, or LeetCode Easy",
+                cost: "Free",
+                format: "15 problems, untimed",
+                note: "The goal is fluency with loops, lists, dicts, and functions. If you get stuck on most, repeat Parts 1 and 2 with more practice before moving on.",
+              },
+            },
+          ],
+        },
+        {
+          title: "Python for Data: NumPy, Pandas, Visualization",
+          blurb:
+            "The data toolkit every AI practitioner uses daily. This is where Python starts feeling like a superpower.",
+          resources: [
+            {
+              label: "Kaggle Learn: Python, Pandas, Data Visualization (free)",
+              url: "https://www.kaggle.com/learn",
+            },
+            {
+              label: "Pandas documentation: 10 minutes to pandas",
+              url: "https://pandas.pydata.org/docs/user_guide/10min.html",
+            },
+            {
+              label: "NumPy absolute beginners guide",
+              url: "https://numpy.org/doc/stable/user/absolute_beginners.html",
+            },
+          ],
+          items: [
+            "Jupyter notebooks: cells, running order, markdown cells, and the restart-and-run-all habit that prevents hidden-state bugs.",
+            "NumPy arrays: why they are faster than lists, shapes, dtypes, indexing, and slicing.",
+            "NumPy vectorization and broadcasting: doing math on whole arrays without loops.",
+            "NumPy essentials: reshape, concatenate, random numbers with seeds, aggregations (sum, mean, std) along axes.",
+            "Pandas Series and DataFrames: loading CSVs, head, info, describe, and understanding rows, columns, and indexes.",
+            "Selecting and filtering data: loc, iloc, boolean masks, query.",
+            "Cleaning data: missing values (detect, drop, fill), duplicates, wrong types, inconsistent text, and outliers.",
+            "Transforming data: apply, map, string methods, datetime handling, and creating new columns.",
+            "Grouping and aggregating: groupby, pivot tables, merge/join/concat for combining tables.",
+            "Visualization with Matplotlib: line, bar, scatter, histogram, and labeling axes so charts are readable.",
+            "Visualization with Seaborn: distributions, box plots, heatmaps for correlations, pair plots.",
+            "How to lie with charts (and how not to): misleading axes, cherry-picked ranges, and chart choices for different questions.",
+            {
+              text: "Hands-on Project: take a real public dataset (for example, a movies, cricket, or city-bikes dataset from Kaggle), clean it, and write a notebook that answers 5 questions about it with charts and short written findings.",
+              project: true,
+            },
+          ],
+        },
+        {
+          title: "Math for AI I: Algebra, Functions, and Statistics Basics",
+          blurb:
+            "Gentle on-ramp. You do not need a math degree. You need intuition, and enough fluency to read formulas without panic.",
+          resources: [
+            {
+              label: "Khan Academy: Algebra and Functions (free)",
+              url: "https://www.khanacademy.org/math/algebra",
+            },
+            {
+              label: "Khan Academy: Statistics and Probability (free)",
+              url: "https://www.khanacademy.org/math/statistics-probability",
+            },
+            {
+              label: "Mathematics for Machine Learning (free book)",
+              url: "https://mml-book.github.io/",
+            },
+          ],
+          items: [
+            "Reading math notation without fear: variables, subscripts, summation (the big sigma), and what a function f(x) means.",
+            "Equations of lines (y = mx + b) and why linear relationships are the starting point of ML.",
+            "Exponents, logarithms, and e: what log does, why log turns multiplication into addition, and why ML uses it everywhere.",
+            "Functions and graphs: plotting a function, slope, increasing/decreasing, minimum and maximum.",
+            "The sigmoid and other S-shaped functions: squashing any number into 0 to 1, which you will meet in neural networks.",
+            "Descriptive statistics: mean, median, mode, range, variance, and standard deviation, and when each is misleading.",
+            "Percentiles, quartiles, and outliers: reading a box plot and spotting unusual values.",
+            "Correlation versus causation: why two things moving together does not mean one causes the other.",
+            "Sampling and bias: why a dataset can be big and still unrepresentative.",
+          ],
+        },
+        {
+          title: "Math for AI II: Linear Algebra",
+          blurb:
+            "The language of data in ML. Every dataset, image, and neural network layer is a vector or matrix underneath.",
+          resources: [
+            {
+              label: "3Blue1Brown: Essence of Linear Algebra (video)",
+              url: "https://www.3blue1brown.com/topics/linear-algebra",
+            },
+            {
+              label: "Khan Academy: Linear Algebra (free)",
+              url: "https://www.khanacademy.org/math/linear-algebra",
+            },
+          ],
+          items: [
+            "Scalars, vectors, and matrices: what each is and how a table of data is a matrix.",
+            "Vector operations: addition, scaling, and the geometric picture of vectors as arrows or points.",
+            "Dot product: how it measures alignment between two vectors, and why it is the core operation inside neural networks and attention.",
+            "Vector length (norm) and distance: Euclidean distance and why 'closeness' of vectors means similarity.",
+            "Cosine similarity: comparing direction instead of size. The standard way to compare embeddings.",
+            "Matrix multiplication: how to do it by hand and, more importantly, what it means (applying a transformation).",
+            "Matrix transpose, identity, and inverse at a working level.",
+            "Systems of equations as matrices (Ax = b), and why solving them underlies linear regression.",
+            "Eigenvalues and eigenvectors: the intuition (directions a transformation only stretches), needed later for PCA.",
+            "Dimensionality and shape: tracking what shape your arrays have. Most beginner ML bugs are shape errors.",
+            "Practice: implement dot product, matrix multiply, and cosine similarity in NumPy and check them against built-in functions.",
+          ],
+        },
+        {
+          title: "Math for AI III: Calculus and Optimization",
+          blurb:
+            "How models actually learn. You need the idea of the gradient, not heavy symbolic calculus.",
+          resources: [
+            {
+              label: "3Blue1Brown: Essence of Calculus (video)",
+              url: "https://www.3blue1brown.com/topics/calculus",
+            },
+            {
+              label: "3Blue1Brown: Neural Networks series (video)",
+              url: "https://www.3blue1brown.com/topics/neural-networks",
+            },
+          ],
+          items: [
+            "What a derivative is: the slope of a function at a point, and the rate of change.",
+            "Common derivative rules: power rule, sum rule, and the chain rule (the chain rule is the heart of backpropagation).",
+            "Partial derivatives: changing one input while holding others fixed.",
+            "The gradient: a vector of partial derivatives that points in the direction of steepest increase.",
+            "Gradient descent: walking downhill on the loss to find good parameters. Explain it with the 'hiker in fog' picture.",
+            "Learning rate: step size, and what happens when it is too large (overshoot) or too small (crawling).",
+            "Local minima, saddle points, and why deep learning works anyway in practice.",
+            "Convex versus non-convex problems at a conceptual level.",
+            "Implement gradient descent by hand in Python to fit a line to data, and watch the loss fall.",
+          ],
+        },
+        {
+          title: "Math for AI IV: Probability and Statistics for ML",
+          blurb:
+            "The language of uncertainty. Models do not give certainties. They give probabilities.",
+          resources: [
+            {
+              label: "StatQuest with Josh Starmer (video, beginner friendly)",
+              url: "https://statquest.org/",
+            },
+            {
+              label: "Seeing Theory (interactive probability visuals)",
+              url: "https://seeing-theory.brown.edu/",
+            },
+            {
+              label: "Think Stats (free book)",
+              url: "https://greenteapress.com/wp/think-stats-2e/",
+            },
+          ],
+          items: [
+            "Probability basics: events, sample space, independent versus dependent events, and the rules of adding and multiplying probabilities.",
+            "Conditional probability and Bayes' theorem: updating beliefs with evidence. The base of spam filters and medical-test reasoning.",
+            "Random variables and distributions: uniform, Bernoulli, binomial, and especially the normal (Gaussian) distribution.",
+            "Expected value and variance of a random variable.",
+            "Law of large numbers and central limit theorem: why averages behave nicely and why sample size matters.",
+            "Maximum likelihood estimation: choosing parameters that make the observed data most probable. The idea behind most loss functions.",
+            "Hypothesis testing, p-values, and confidence intervals: what they do and do not mean (p-values are widely misread).",
+            "A/B testing: how to compare two versions properly and avoid declaring victory too early.",
+            "Entropy, cross-entropy, and KL divergence at an intuitive level. You will see cross-entropy as a loss function constantly.",
+            {
+              text: "Knowledge Check: from memory, explain gradient, dot product, conditional probability, and why cross-entropy loss makes sense, each in two sentences with an example. Then solve 10 mixed practice questions.",
+              check: true,
+              checkInfo: {
+                name: "Math Foundations Check",
+                provider:
+                  "Khan Academy unit tests plus your own written explanations",
+                cost: "Free",
+                format: "Written explanations and 10 practice problems",
+                note: "You are aiming for intuition, not speed. If gradients or Bayes still feel foggy, rewatch the 3Blue1Brown and StatQuest videos before the next stage.",
+              },
+            },
+          ],
+        },
+        {
+          title: "Data Skills: SQL, EDA, and Working With Real Data",
+          blurb:
+            "In real jobs, most ML time goes into data. This is the unglamorous skill that separates beginners from practitioners.",
+          resources: [
+            {
+              label: "SQLBolt (interactive SQL lessons)",
+              url: "https://sqlbolt.com/",
+            },
+            {
+              label: "Kaggle Learn: Intro to SQL and Data Cleaning",
+              url: "https://www.kaggle.com/learn",
+            },
+          ],
+          items: [
+            "Relational databases: tables, rows, columns, primary keys, and foreign keys.",
+            "SQL basics: SELECT, WHERE, ORDER BY, LIMIT, and aggregate functions.",
+            "SQL joins (inner, left) and GROUP BY with HAVING. Window functions at an introductory level.",
+            "Exploratory Data Analysis (EDA) workflow: shape, types, missing values, distributions, relationships, and writing down hypotheses.",
+            "Data leakage: when information from the future or from the answer sneaks into your features. A top cause of models that look great and fail in production.",
+            "Data quality checks: duplicates, impossible values, inconsistent units, and label noise.",
+            "Working with text, dates, and categorical data and how each needs special handling.",
+            "Data ethics and privacy basics: personal data, consent, anonymization, and why you should not scrape or use data you have no right to.",
+            "Reading and respecting dataset documentation, licenses, and known biases (datasheets for datasets).",
+          ],
+        },
+        {
+          title: "Machine Learning Foundations",
+          blurb:
+            "Your first real ML. Learn the workflow and the vocabulary properly. Every later model plugs into this frame.",
+          resources: [
+            {
+              label: "Google Machine Learning Crash Course (free)",
+              url: "https://developers.google.com/machine-learning/crash-course",
+            },
+            {
+              label: "Machine Learning Specialization, Andrew Ng (Coursera)",
+              url: "https://www.coursera.org/specializations/machine-learning-introduction",
+            },
+            {
+              label: "scikit-learn user guide",
+              url: "https://scikit-learn.org/stable/user_guide.html",
+            },
+          ],
+          items: [
+            "The three flavors: supervised learning (learn from labeled examples), unsupervised learning (find structure without labels), and reinforcement learning (learn by trial and reward).",
+            "Regression versus classification: predicting a number versus predicting a category.",
+            "The ML workflow end to end: define the problem, collect data, clean, split, choose a baseline, train, evaluate, iterate, deploy.",
+            "Always build a dumb baseline first (predict the average, or the most common class). A model must beat it to be useful.",
+            "Train, validation, and test sets: why you need three, and why you touch the test set only once at the very end.",
+            "Overfitting, underfitting, and the bias-variance tradeoff, with pictures of curves fitting data.",
+            "Linear regression: the idea, the loss (mean squared error), solving with gradient descent, and using scikit-learn.",
+            "Multiple features, feature scaling (standardization and normalization), and why scaling helps many models.",
+            "Regularization (L1/Lasso and L2/Ridge): penalizing complexity to reduce overfitting.",
+            "Logistic regression: classification with probabilities, the decision threshold, and log loss.",
+            "Classification metrics: accuracy, precision, recall, F1, confusion matrix, ROC curve, AUC, and why accuracy alone can mislead on imbalanced data.",
+            "Regression metrics: MAE, MSE, RMSE, R-squared, and choosing based on how errors cost in the real problem.",
+          ],
+        },
+        {
+          title: "Classical Machine Learning Algorithms",
+          blurb:
+            "These still win on a huge share of real-world business data (tables), often beating deep learning. Know them well.",
+          resources: [
+            {
+              label: "StatQuest ML playlist (video)",
+              url: "https://statquest.org/video-index/",
+            },
+            {
+              label:
+                "Hands-On Machine Learning with scikit-learn, Keras, and TensorFlow (book)",
+              url: "https://www.oreilly.com/library/view/hands-on-machine-learning/9781098125967/",
+            },
+          ],
+          items: [
+            "k-Nearest Neighbors: predict from the closest examples, and the curse of dimensionality.",
+            "Naive Bayes: fast probabilistic classifier, great for text baselines.",
+            "Decision trees: how they split data, entropy/Gini impurity, and why a single tree overfits.",
+            "Random forests: many trees voting, and the idea of bagging.",
+            "Gradient boosting (XGBoost, LightGBM, CatBoost): the state of the art for tabular data, and how boosting differs from bagging.",
+            "Support Vector Machines: margins, kernels, and when they are worth using.",
+            "Choosing an algorithm: a practical decision guide based on data size, interpretability needs, and data type.",
+            "Reading feature importance and understanding what a model relies on.",
+            {
+              text: "Hands-on Project: predict house prices (regression) end to end with a proper train/validation/test split, a baseline, at least three algorithms compared, and a short written report of what worked and why.",
+              project: true,
+            },
+            {
+              text: "Hands-on Project: build a customer churn or loan default classifier on an imbalanced dataset, using precision/recall/F1 rather than accuracy, and explain which errors cost the business more.",
+              project: true,
+            },
+          ],
+        },
+        {
+          title: "Unsupervised Learning and Recommenders",
+          blurb: "Finding structure when nobody has labeled the data.",
+          resources: [
+            {
+              label: "scikit-learn: Clustering and Decomposition guides",
+              url: "https://scikit-learn.org/stable/modules/clustering.html",
+            },
+            {
+              label: "Google Recommendation Systems course",
+              url: "https://developers.google.com/machine-learning/recommendation",
+            },
+          ],
+          items: [
+            "Clustering with k-means: how it works, choosing k (elbow, silhouette), and its weaknesses.",
+            "Hierarchical clustering and DBSCAN: when shape and noise matter.",
+            "Dimensionality reduction with PCA: compressing features while keeping variance, and visualizing high-dimensional data in 2D.",
+            "t-SNE and UMAP for visualization (and why you should not over-interpret the pictures).",
+            "Anomaly and outlier detection: isolation forest and simple statistical methods, used in fraud and monitoring.",
+            "Recommender systems: popularity baseline, content-based filtering, collaborative filtering, matrix factorization.",
+            "Evaluating recommenders: precision@k, recall@k, and why offline metrics can differ from real user happiness.",
+            {
+              text: "Hands-on Project: segment customers with k-means and PCA on a retail dataset, name each segment, and write what a business could do differently for each one.",
+              project: true,
+            },
+          ],
+        },
+        {
+          title: "Model Evaluation, Tuning, and Pipelines",
+          blurb:
+            "Doing ML properly instead of by accident. This stage is what separates a competent practitioner from someone who just calls fit().",
+          resources: [
+            {
+              label: "scikit-learn: Model selection and evaluation",
+              url: "https://scikit-learn.org/stable/model_selection.html",
+            },
+            {
+              label: "Google Rules of Machine Learning",
+              url: "https://developers.google.com/machine-learning/guides/rules-of-ml",
+            },
+            {
+              label: "SHAP documentation (explainability)",
+              url: "https://shap.readthedocs.io/",
+            },
+          ],
+          items: [
+            "Cross-validation: k-fold, stratified k-fold, and time-series splits for data that has an order.",
+            "Hyperparameters versus parameters, and tuning with grid search, random search, and Bayesian optimization (Optuna).",
+            "scikit-learn Pipelines and ColumnTransformer: bundling preprocessing and the model so no leakage happens during cross-validation.",
+            "Handling categorical features: one-hot, ordinal, target encoding, and the risks of each.",
+            "Handling missing values inside a pipeline using imputers.",
+            "Handling class imbalance: class weights, resampling, SMOTE, and threshold tuning.",
+            "Probability calibration: whether a model's 70% really means 70%.",
+            "Model interpretability: permutation importance, partial dependence, and SHAP values to explain individual predictions.",
+            "Error analysis: look at the examples the model gets wrong and find patterns. Often the most valuable hour in a project.",
+            "Reproducibility: fixing random seeds, versioning data and code, and writing experiments others can rerun.",
+            {
+              text: "Hands-on Project: enter a beginner Kaggle competition (for example, Titanic or House Prices), build a full pipeline, tune it with cross-validation, submit, and write up what moved your score.",
+              project: true,
+            },
+            {
+              text: "Knowledge Check: take a full ML fundamentals quiz or practice exam, and be able to explain data leakage, overfitting, cross-validation, and precision versus recall using your own project examples.",
+              check: true,
+              checkInfo: {
+                name: "Classical ML Check",
+                provider:
+                  "Coursera ML Specialization graded quizzes, Kaggle Learn exercises, or a mock interview with a friend",
+                cost: "Free to low cost",
+                format: "Quiz plus verbal explanations",
+                note: "Interviews for ML roles lean heavily on exactly these topics. Being able to explain them with your own examples is the goal.",
+              },
+            },
+            {
+              text: "Certification milestone: Machine Learning Specialization (DeepLearning.AI and Stanford, on Coursera). A well-regarded first credential that proves solid ML fundamentals.",
+              cert: true,
+              certInfo: {
+                name: "Machine Learning Specialization",
+                provider: "DeepLearning.AI and Stanford Online, via Coursera",
+                cost: "Coursera subscription (roughly $49 per month in many regions; financial aid available)",
+                format:
+                  "3 self-paced courses with videos, graded quizzes, and Python labs",
+                duration: "About 2 to 3 months at 5 to 8 hours per week",
+                note: "A learning credential rather than a proctored exam, so the real value is the skills and the projects you build alongside it. Verify current pricing on Coursera.",
+              },
+            },
+          ],
+        },
+        {
+          title: "Deep Learning Foundations",
+          blurb:
+            "Neural networks from the ground up. Take your time. Everything modern AI builds on this.",
+          resources: [
+            {
+              label: "3Blue1Brown: Neural Networks (video)",
+              url: "https://www.3blue1brown.com/topics/neural-networks",
+            },
+            {
+              label: "Deep Learning Specialization (Coursera)",
+              url: "https://www.coursera.org/specializations/deep-learning",
+            },
+            {
+              label: "Dive into Deep Learning (free interactive book)",
+              url: "https://d2l.ai/",
+            },
+            {
+              label: "Karpathy: Neural Networks, Zero to Hero (video)",
+              url: "https://karpathy.ai/zero-to-hero.html",
+            },
+          ],
+          items: [
+            "The neuron: weighted sum of inputs plus a bias, passed through an activation function.",
+            "Why we need non-linear activations: ReLU, sigmoid, tanh, GELU, and softmax for turning scores into probabilities.",
+            "Layers and architecture: input, hidden, and output layers, and what width and depth mean.",
+            "Forward pass: computing a prediction by walking data through the layers.",
+            "Loss functions for networks: mean squared error, binary cross-entropy, and categorical cross-entropy.",
+            "Backpropagation: using the chain rule to compute how each weight affected the loss. Understand it by working a tiny example by hand.",
+            "Optimizers: SGD, momentum, RMSProp, and Adam, and why Adam is the common default.",
+            "Initialization and vanishing/exploding gradients: why deep networks used to be untrainable and what fixed it.",
+            "Regularization for neural nets: dropout, weight decay, early stopping, and data augmentation.",
+            "Normalization layers: batch normalization and layer normalization, and why they stabilize training.",
+            "Learning-rate schedules and warmup.",
+            "Reading training curves: diagnosing overfitting, underfitting, and bugs from loss plots.",
+            {
+              text: "Hands-on Project: build a small neural network from scratch using only NumPy (forward pass, loss, backpropagation, gradient descent) and train it to classify handwritten digits (MNIST) or a toy dataset. Doing this once makes everything else click.",
+              project: true,
+            },
+          ],
+        },
+        {
+          title: "PyTorch: Building and Training Models",
+          blurb:
+            "The dominant framework in research and most industry work. Learn it properly.",
+          resources: [
+            {
+              label: "PyTorch official tutorials",
+              url: "https://pytorch.org/tutorials/",
+            },
+            {
+              label: "fast.ai: Practical Deep Learning for Coders (free)",
+              url: "https://course.fast.ai/",
+            },
+            {
+              label: "Learn PyTorch for Deep Learning (free book/course)",
+              url: "https://www.learnpytorch.io/",
+            },
+          ],
+          items: [
+            "Tensors: creating them, shapes, dtypes, indexing, and moving between NumPy and PyTorch.",
+            "Autograd: how PyTorch computes gradients automatically and what requires_grad means.",
+            "nn.Module: defining a model as a class with layers and a forward method.",
+            "The standard training loop: forward, loss, zero_grad, backward, optimizer step. Write it from memory.",
+            "Dataset and DataLoader: batching, shuffling, and custom datasets.",
+            "Evaluation mode versus training mode, torch.no_grad, and why dropout and batch norm behave differently.",
+            "Using a GPU: moving models and data to the device, and mixed precision for speed.",
+            "Saving and loading checkpoints and resuming training.",
+            "Debugging shape errors and NaN losses, which are the two most common PyTorch headaches.",
+            "Experiment tracking with TensorBoard or Weights & Biases: logging loss, metrics, and hyperparameters.",
+            "Overview of the ecosystem: torchvision, torchaudio, Hugging Face, PyTorch Lightning, and when each helps.",
+          ],
+        },
+        {
+          title: "Computer Vision",
+          blurb:
+            "How machines see. Also the gateway to understanding multimodal AI later.",
+          resources: [
+            {
+              label:
+                "CS231n: CNNs for Visual Recognition (Stanford notes, free)",
+              url: "https://cs231n.github.io/",
+            },
+            {
+              label: "Hugging Face Computer Vision course",
+              url: "https://huggingface.co/learn/computer-vision-course",
+            },
+          ],
+          items: [
+            "Images as data: pixels, channels, shapes, normalization, and common formats.",
+            "Convolution: how a small filter slides over an image to detect edges and patterns.",
+            "Convolutional Neural Networks (CNNs): convolution, pooling, stride, padding, and stacking layers into feature hierarchies.",
+            "Classic architectures by idea: LeNet, AlexNet, VGG, ResNet (skip connections), and EfficientNet.",
+            "Data augmentation for images: flips, crops, color jitter, and why it helps generalization.",
+            "Transfer learning: reuse a pretrained model and fine-tune only the final layers. The practical default for small datasets.",
+            "Object detection (YOLO family, DETR) and segmentation (U-Net, SAM) at a working level.",
+            "Vision Transformers (ViT): how attention is applied to image patches.",
+            "Evaluation metrics for vision: IoU, mAP, and confusion matrices for classes.",
+            {
+              text: "Hands-on Project: fine-tune a pretrained image model (for example, ResNet or ViT) on your own small custom dataset (say, 5 types of plants or foods you photographed or collected legally) and deploy a simple demo with Gradio.",
+              project: true,
+            },
+          ],
+        },
+        {
+          title: "Sequences, Classic NLP, and Embeddings",
+          blurb:
+            "How machines read language before transformers. Skipping this makes transformers feel like magic.",
+          resources: [
+            {
+              label: "Stanford CS224n: NLP with Deep Learning (free lectures)",
+              url: "https://web.stanford.edu/class/cs224n/",
+            },
+            {
+              label: "Hugging Face LLM Course (also covers NLP basics)",
+              url: "https://huggingface.co/learn/llm-course",
+            },
+          ],
+          items: [
+            "Text as data: cleaning, tokenization, lowercasing, stop words, stemming versus lemmatization.",
+            "Bag-of-words and TF-IDF: simple, strong baselines for text classification and search.",
+            "Word embeddings: Word2Vec and GloVe, where similar words get similar vectors and 'king - man + woman is near queen'.",
+            "Subword tokenization: Byte-Pair Encoding (BPE), WordPiece, and why modern models do not use whole words.",
+            "Recurrent Neural Networks (RNNs): reading text one token at a time with a memory, and their problems with long text.",
+            "LSTM and GRU: gated memory that fixed some of the RNN problems.",
+            "Sequence-to-sequence models and the encoder-decoder idea (translation, summarization).",
+            "The attention idea: letting the model look back at the most relevant words, the breakthrough that led to transformers.",
+            "Sentiment analysis and text classification baselines with scikit-learn.",
+            {
+              text: "Hands-on Project: build a text classifier (for example, spam detection or news topic classification) first with TF-IDF and logistic regression, then with embeddings, and compare accuracy and error types.",
+              project: true,
+            },
+          ],
+        },
+        {
+          title: "Transformers and Attention",
+          blurb:
+            "The architecture behind nearly every modern AI system. Understand it deeply and you can reason about any LLM.",
+          resources: [
+            {
+              label: "The Illustrated Transformer (Jay Alammar)",
+              url: "https://jalammar.github.io/illustrated-transformer/",
+            },
+            {
+              label: "Attention Is All You Need (original paper)",
+              url: "https://arxiv.org/abs/1706.03762",
+            },
+            {
+              label: "Karpathy: Let's build GPT from scratch (video)",
+              url: "https://karpathy.ai/zero-to-hero.html",
+            },
+            {
+              label: "Hugging Face LLM Course",
+              url: "https://huggingface.co/learn/llm-course",
+            },
+          ],
+          items: [
+            "Self-attention: every token looks at every other token and decides what to focus on. Learn queries, keys, and values with a concrete example.",
+            "Scaled dot-product attention: the formula, the softmax, and why we divide by the square root of the dimension.",
+            "Multi-head attention: several attention patterns in parallel, each learning to track something different.",
+            "Positional encoding: how a model that sees all tokens at once still knows word order (sinusoidal, learned, RoPE).",
+            "The transformer block: attention, feed-forward network, residual connections, and layer normalization.",
+            "Encoder-only (BERT style), decoder-only (GPT style), and encoder-decoder (T5 style) models, and what each is good at.",
+            "Causal masking: why a language model can only look at earlier tokens when generating.",
+            "Training objectives: masked language modeling versus next-token prediction.",
+            "The cost of attention: why it grows with the square of the sequence length, and ideas like FlashAttention that make it faster.",
+            "The Hugging Face ecosystem: transformers library, tokenizers, datasets, and the Hub.",
+            {
+              text: "Hands-on Project: implement a small GPT-style transformer from scratch in PyTorch (following Karpathy's walkthrough) and train it on a small text file (like Shakespeare), then generate text from it.",
+              project: true,
+            },
+            {
+              text: "Hands-on Project: fine-tune a pretrained BERT-family model with Hugging Face on a classification task (sentiment or intent detection), and compare to your earlier TF-IDF baseline.",
+              project: true,
+            },
+          ],
+        },
+        {
+          title: "Large Language Models and Generative AI (Present Day)",
+          blurb:
+            "How modern AI systems are actually built and behave. This is the stage most courses assume you already understand.",
+          resources: [
+            {
+              label: "Karpathy: Intro to Large Language Models (video)",
+              url: "https://www.youtube.com/watch?v=zjkBMFhNj_g",
+            },
+            {
+              label: "Hugging Face LLM Course",
+              url: "https://huggingface.co/learn/llm-course",
+            },
+            {
+              label: "Lilian Weng's blog (deep technical explainers)",
+              url: "https://lilianweng.github.io/",
+            },
+          ],
+          items: [
+            "The LLM training pipeline in order: pretraining on huge text, supervised fine-tuning (SFT) on instructions, and preference tuning to match human taste.",
+            "RLHF and DPO: how human preference data shapes helpful and safe behavior, in plain language.",
+            "Scaling laws: how performance improves with more data, parameters, and compute, and why compute budgets matter.",
+            "Tokens, context windows, and the KV cache: why long inputs cost more memory and time.",
+            "Sampling and decoding: temperature, top-k, top-p, greedy versus sampling, and why outputs differ run to run.",
+            "Mixture of Experts (MoE): activating only part of the model per token to be efficient at huge scale.",
+            "Reasoning models: models trained to think step by step before answering, and test-time compute as a new scaling axis.",
+            "Multimodal models: one model that handles text, images, audio, and sometimes video.",
+            "Diffusion models: how image and video generators start from noise and denoise toward a picture.",
+            "Why LLMs hallucinate, why they are not databases, and what that means for how you use them.",
+            "Evaluating LLMs: benchmarks and their limits, human preference leaderboards, and contamination concerns.",
+            "Open-weight versus closed models: what you gain and give up with each, and how licenses differ.",
+            "Efficiency techniques: quantization, distillation, pruning, and why small models matter.",
+            "Where the field is heading: agents, long-running tasks, tool use, and world models, treated as things to keep tracking rather than settled facts.",
+          ],
+        },
+        {
+          title: "Reinforcement Learning Basics",
+          blurb:
+            "Learning by trial and reward. Smaller niche than supervised learning, but central to how modern reasoning models are trained.",
+          resources: [
+            {
+              label: "OpenAI Spinning Up in Deep RL",
+              url: "https://spinningup.openai.com/",
+            },
+            {
+              label: "Hugging Face Deep RL Course (free)",
+              url: "https://huggingface.co/learn/deep-rl-course",
+            },
+          ],
+          items: [
+            "The RL loop: agent, environment, state, action, reward.",
+            "Markov decision processes, policies, value functions, and the discount factor.",
+            "Exploration versus exploitation, shown with the multi-armed bandit problem.",
+            "Q-learning and Deep Q-Networks (DQN).",
+            "Policy gradient methods and PPO, the workhorse algorithm.",
+            "How RL connects to LLMs: RLHF and training reasoning with verifiable rewards.",
+            "Using Gymnasium environments to experiment.",
+            {
+              text: "Hands-on Project: train an agent to solve CartPole or LunarLander with Stable-Baselines3 and plot the reward curve.",
+              project: true,
+            },
+          ],
+        },
+        {
+          title: "Specialization Tracks: Time Series, Graphs, Tabular at Scale",
+          blurb:
+            "Optional depth areas you can sample now and return to later depending on the career you pick.",
+          resources: [
+            {
+              label: "Forecasting: Principles and Practice (free book)",
+              url: "https://otexts.com/fpp3/",
+            },
+            {
+              label: "Stanford CS224W: ML with Graphs",
+              url: "https://web.stanford.edu/class/cs224w/",
+            },
+          ],
+          items: [
+            "Time series basics: trend, seasonality, stationarity, and why random train/test splits are wrong for time data.",
+            "Forecasting baselines: naive, moving average, ARIMA, and Prophet-style models, then gradient boosting with lag features.",
+            "Deep learning for time series and modern foundation models for forecasting, at an awareness level.",
+            "Graph machine learning: nodes, edges, graph neural networks, and where graphs appear (social networks, fraud, molecules).",
+            "Tabular data at scale: when gradient boosting still beats neural networks, and how to handle millions of rows.",
+            "Audio and speech ML: spectrograms, speech recognition models, and speaker tasks at an awareness level.",
+          ],
+        },
+        {
+          title: "MLOps: From Notebook to Production",
+          blurb:
+            "A model that lives only in a notebook is not a product. This stage is what hiring managers for ML engineer roles care about.",
+          resources: [
+            {
+              label: "Made With ML (free MLOps course)",
+              url: "https://madewithml.com/",
+            },
+            {
+              label: "Full Stack Deep Learning (free)",
+              url: "https://fullstackdeeplearning.com/",
+            },
+            {
+              label: "MLflow documentation",
+              url: "https://mlflow.org/docs/latest/index.html",
+            },
+            {
+              label: "Docker getting started",
+              url: "https://docs.docker.com/get-started/",
+            },
+          ],
+          items: [
+            "The ML lifecycle in production: data, training, evaluation, deployment, monitoring, retraining.",
+            "Project structure and code quality: turning notebooks into modules, config files, linting, and tests.",
+            "Experiment tracking and model registry with MLflow or Weights & Biases.",
+            "Data and model versioning with DVC or similar tools.",
+            "Serving a model as an API with FastAPI, including input validation with Pydantic.",
+            "Docker: containerize your model service so it runs the same everywhere.",
+            "CI/CD for ML: automated tests, training checks, and deployment pipelines (GitHub Actions).",
+            "Batch versus real-time inference, latency, throughput, and cost tradeoffs.",
+            "Monitoring in production: data drift, concept drift, performance decay, and alerting.",
+            "Feature stores and data pipelines at an awareness level (Feast, Airflow, Prefect).",
+            "Model optimization for deployment: quantization, ONNX, and batching.",
+            {
+              text: "Hands-on Project: take your best earlier model, wrap it in a FastAPI service, containerize it with Docker, add a CI pipeline that runs tests, deploy it to a free cloud tier, and log predictions for basic monitoring.",
+              project: true,
+            },
+          ],
+        },
+        {
+          title: "Cloud, GPUs, and Big Data for ML",
+          blurb:
+            "Where real ML systems run, and the certifications that employers actually recognize.",
+          resources: [
+            {
+              label: "AWS Skill Builder (free AI/ML learning plans)",
+              url: "https://skillbuilder.aws/",
+            },
+            {
+              label: "Google Cloud Skills Boost",
+              url: "https://www.cloudskillsboost.google/",
+            },
+            {
+              label: "Microsoft Learn: AI and ML paths",
+              url: "https://learn.microsoft.com/en-us/training/browse/?products=azure-machine-learning",
+            },
+          ],
+          items: [
+            "Cloud basics: compute, storage, networking, IAM, and billing alerts so you never get a surprise bill.",
+            "Managed ML platforms: AWS SageMaker, Google Vertex AI, and Azure Machine Learning, and what each offers.",
+            "GPUs and accelerators: memory limits, cost per hour, spot instances, and when a free Colab is enough.",
+            "Distributed training concepts: data parallelism versus model parallelism, at an awareness level.",
+            "Big data tooling: Apache Spark and the idea of processing data too large for one machine.",
+            "Cost control habits: shut down idle resources, set budgets, and checkpoint frequently.",
+            {
+              text: "Certification milestone: AWS Certified AI Practitioner (AIF-C01). A foundational, beginner-friendly cloud AI credential. A good first cloud cert.",
+              cert: true,
+              certInfo: {
+                name: "AWS Certified AI Practitioner (AIF-C01)",
+                provider: "Amazon Web Services, via Pearson VUE",
+                cost: "About $100 USD (varies by country)",
+                format:
+                  "Around 65 questions, multiple choice and multiple response",
+                duration: "About 90 minutes; valid 3 years",
+                note: "Foundational level: AI/ML concepts, generative AI, and AWS AI services, with no coding required. Verify current price and exam guide on AWS before registering.",
+              },
+            },
+            {
+              text: "Certification milestone: AWS Certified Machine Learning Engineer, Associate (MLA-C01). A hands-on credential for building, deploying, and operating ML on AWS.",
+              cert: true,
+              certInfo: {
+                name: "AWS Certified Machine Learning Engineer, Associate (MLA-C01)",
+                provider: "Amazon Web Services, via Pearson VUE",
+                cost: "About $150 USD (varies by country)",
+                format:
+                  "Around 65 questions, multiple choice and multiple response",
+                duration: "About 130 minutes; valid 3 years",
+                note: "AWS recommends some prior hands-on experience with ML and AWS services, so it fits after you have completed the MLOps stage and built a deployed project. Verify details on AWS.",
+              },
+            },
+            {
+              text: "Certification milestone: Google Cloud Professional Machine Learning Engineer. A respected professional-level ML credential.",
+              cert: true,
+              certInfo: {
+                name: "Google Cloud Professional Machine Learning Engineer",
+                provider: "Google Cloud",
+                cost: "About $200 USD",
+                format: "Multiple choice and multiple select, about 2 hours",
+                duration: "Valid 2 years",
+                note: "Professional-level, with a recommended 3+ years of industry experience. Treat it as a later goal rather than a first certification.",
+              },
+            },
+            {
+              text: "Certification milestone (Azure path): Microsoft MLOps Engineer Associate (exam AI-300). Note: the old DP-100 Azure Data Scientist exam was retired in 2026 and replaced by this path.",
+              cert: true,
+              certInfo: {
+                name: "Microsoft Certified: MLOps Engineer Associate (AI-300)",
+                provider: "Microsoft, via Pearson VUE",
+                cost: "Typically about $165 USD for associate exams (varies by country)",
+                format: "Proctored exam on Azure ML and MLOps topics",
+                duration:
+                  "Associate-level credentials renew yearly via a free online assessment",
+                note: "Microsoft restructured its AI certifications in 2026 (DP-100 retired, AI-102 retired, replaced by newer exams). This area changes often, so confirm the current exam code and scope on Microsoft Learn before studying.",
+              },
+            },
+          ],
+        },
+        {
+          title: "Responsible AI, Safety, and Law",
+          blurb:
+            "Non-negotiable for anyone shipping AI that affects real people.",
+          resources: [
+            {
+              label: "Google PAIR People + AI Guidebook",
+              url: "https://pair.withgoogle.com/guidebook/",
+            },
+            {
+              label: "EU AI Act explorer",
+              url: "https://artificialintelligenceact.eu/",
+            },
+            {
+              label: "NIST AI Risk Management Framework",
+              url: "https://www.nist.gov/itl/ai-risk-management-framework",
+            },
+          ],
+          items: [
+            "Bias in data and models: where it comes from (sampling, labels, history) and how to measure it across groups.",
+            "Fairness metrics and their tradeoffs: demographic parity, equalized odds, and why you cannot satisfy all at once.",
+            "Privacy: personal data, anonymization limits, differential privacy and federated learning at an awareness level.",
+            "Explainability and transparency: model cards, datasheets, and explaining decisions to non-experts.",
+            "Adversarial examples, data poisoning, and model extraction: how models can be attacked.",
+            "AI regulation overview: the EU AI Act's risk-based approach and the idea of high-risk systems. Treat as context, not legal advice.",
+            "Copyright, licensing, and data provenance for training data and generated content.",
+            "Deepfakes, misinformation, and misuse: your responsibilities as a builder.",
+            "Writing a short 'model card' for one of your own projects.",
+          ],
+        },
+        {
+          title: "Research Skills and Staying Current",
+          blurb:
+            "The field moves in weeks, not years. Learning how to learn new things in AI is a skill in itself.",
+          resources: [
+            {
+              label: "Hugging Face Daily Papers",
+              url: "https://huggingface.co/papers",
+            },
+            {
+              label: "arXiv cs.LG",
+              url: "https://arxiv.org/list/cs.LG/recent",
+            },
+            {
+              label: "How to Read a Paper (S. Keshav)",
+              url: "https://web.stanford.edu/class/ee384m/Handouts/HowtoReadPaper.pdf",
+            },
+          ],
+          items: [
+            "How to read a paper in three passes: abstract and figures, then method, then details.",
+            "Reading math in papers without panic: map each symbol back to code.",
+            "Finding good sources: arXiv, Hugging Face papers, lab blogs, and a few trusted newsletters or researchers.",
+            "Reproducing a small paper's result yourself, and noting where your numbers differ from the paper's.",
+            "Evaluating claims critically: baselines, ablations, benchmark leakage, and cherry-picked results.",
+            "Writing about what you learn: short blog posts or notes, which also become your portfolio.",
+            "A weekly habit: one paper or release note, one small experiment.",
+          ],
+        },
+        {
+          title: "Capstone Projects (Pick and Build)",
+          blurb:
+            "Capstones are where learning turns into proof. Build at least one from each tier, put them on GitHub, and write a clear README for each.",
+          resources: [
+            {
+              label: "Kaggle (datasets and competitions)",
+              url: "https://www.kaggle.com/",
+            },
+            {
+              label: "Hugging Face Spaces (host demos free)",
+              url: "https://huggingface.co/spaces",
+            },
+            {
+              label: "Papers with Code datasets via Hugging Face",
+              url: "https://huggingface.co/datasets",
+            },
+          ],
+          items: [
+            {
+              text: "Beginner Capstone: End-to-end tabular ML app. Choose a real dataset (loan approval, diabetes risk, used-car prices). Deliver: cleaned data, EDA notebook, three compared models, tuned best model, explanation with SHAP, and a Streamlit app where a user enters features and gets a prediction with a plain-language explanation.",
+              project: true,
+            },
+            {
+              text: "Beginner Capstone: Computer vision demo. Fine-tune a pretrained model on a custom image dataset you assemble legally, evaluate with a confusion matrix, and host a Gradio demo on Hugging Face Spaces with a model card.",
+              project: true,
+            },
+            {
+              text: "Intermediate Capstone: Text intelligence system. Build a news or review classifier plus a semantic search over a document collection using embeddings, with an evaluation of retrieval quality and a short write-up on failure cases.",
+              project: true,
+            },
+            {
+              text: "Intermediate Capstone: Forecasting or recommender project. Build either a demand forecasting pipeline with proper time-based validation, or a movie/product recommender comparing popularity, content-based, and collaborative approaches with ranking metrics.",
+              project: true,
+            },
+            {
+              text: "Advanced Capstone: Production ML system. Train a model, track experiments in MLflow, serve it behind FastAPI in Docker, add CI tests, deploy to the cloud, and add a monitoring dashboard that detects input drift. Document the architecture and tradeoffs.",
+              project: true,
+            },
+            {
+              text: "Advanced Capstone: Fine-tune a small open language model (with LoRA) on a narrow task, evaluate it against the base model on a held-out test set, and publish the adapter and a clear model card with limitations.",
+              project: true,
+            },
+            {
+              text: "Research-style Capstone: reproduce a recent small paper's main result (or a classic like a ResNet or a small GPT), report your numbers versus the paper's, and write up honestly what differed and why.",
+              project: true,
+            },
+            {
+              text: "Knowledge Check: present one capstone to a friend or record yourself explaining the problem, data, approach, results, and limitations in 10 minutes. Being able to explain your work clearly is half of a technical interview.",
+              check: true,
+              checkInfo: {
+                name: "Capstone Presentation Check",
+                provider:
+                  "A friend, mentor, study group, or a recorded video for yourself",
+                format: "10-minute walkthrough followed by questions",
+                note: "Expect questions like: why this model, how did you avoid leakage, what would you change with more time. Prepare answers from your own project.",
+              },
+            },
+          ],
+        },
+        {
+          title: "Choosing a Path, Portfolio, and Career",
+          blurb:
+            "Everything before this makes you broadly capable. This stage turns it into a direction and a job.",
+          resources: [
+            {
+              label: "Chip Huyen: Machine Learning interviews resources",
+              url: "https://huyenchip.com/ml-interviews-book/",
+            },
+            {
+              label: "Kaggle (build public profile)",
+              url: "https://www.kaggle.com/",
+            },
+          ],
+          items: [
+            "Understand the main roles: Data Analyst, Data Scientist, ML Engineer, Applied Scientist, Research Scientist, AI/LLM Engineer, and MLOps Engineer, and which skills each stresses.",
+            "Pick a primary track after your first capstones: modeling and research, ML engineering and MLOps, or applied LLM engineering. You can switch later.",
+            "Build a portfolio: 3 to 5 polished projects on GitHub with READMEs that state the problem, approach, results, and honest limitations.",
+            "Practice data structures and algorithms to a reasonable level, since many companies test it even for ML roles.",
+            "Prepare ML interview topics: bias-variance, metrics, regularization, leakage, how transformers work, and system design for ML.",
+            "Practice explaining tradeoffs out loud: simple model versus complex, accuracy versus latency, and when not to use ML at all.",
+            "Contribute to an open-source ML library, even with documentation fixes or small bug reports.",
+            "Network: join communities, attend meetups, share your learning publicly, and ask for feedback on projects.",
+            "Plan your next step after this roadmap: go deeper on LLM engineering (see the Applied AI roadmap), research, or a specialty like vision or time series.",
+          ],
+        },
+      ];
+
+      const STORAGE_KEY = "aiml-progress-v1";
+
+      function loadState() {
+        try {
+          return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+        } catch (e) {
+          return {};
+        }
+      }
+      function saveState(state) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      }
+
+      let state = loadState();
+      let totalItems = 0;
+
+      function itemId(si, ii) {
+        return `s${si}-i${ii}`;
+      }
+
+      function flagSVGOutline() {
+        return `<svg class="flag-outline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22V4"/><path d="M4 4c2-1.5 4-1.5 6 0s4 1.5 6 0v10c-2 1.5-4 1.5-6 0s-4-1.5-6 0"/></svg>`;
+      }
+      function flagSVGFilled() {
+        return `<svg class="flag-filled" viewBox="0 0 24 24" fill="currentColor"><path d="M5 21a1 1 0 0 1-1-1V4c2-1.3 4-1.3 6 0s4 1.3 6 0a1 1 0 0 1 1.4.9v9.6a1 1 0 0 1-.5.87c-2.2 1.3-4.4 1.3-6.4-.02-2-1.3-4-1.3-5.5-.35V20a1 1 0 0 1-1 1Z"/></svg>`;
+      }
+
+      function render() {
+        const trail = document.getElementById("trail");
+        trail.innerHTML = "";
+        totalItems = 0;
+
+        DATA.forEach((stage, si) => {
+          const stageEl = document.createElement("div");
+          stageEl.className = "stage";
+          stageEl.dataset.stageIndex = si;
+
+          const items = stage.items.map((it, ii) => {
+            totalItems++;
+            const obj = typeof it === "string" ? { text: it, cert: false } : it;
+            obj.id = itemId(si, ii);
+            return obj;
+          });
+
+          const doneCount = items.filter((it) => state[it.id]).length;
+          if (doneCount === items.length) stageEl.classList.add("complete");
+
+          stageEl.innerHTML = `
+      <div class="stage-marker"></div>
+      <div class="stage-head">
+        <div class="stage-title-wrap">
+          <span class="stage-num mono">STAGE ${String(si + 1).padStart(2, "0")}</span>
+          <h2 class="stage-title">${stage.title}</h2>
+          <p class="stage-blurb">${stage.blurb}</p>
+        </div>
+        <div class="stage-meta">
+          <span class="stage-count mono">${doneCount}/${items.length}</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+        </div>
+      </div>
+      <div class="stage-body"></div>
+    `;
+
+          if (stage.resources && stage.resources.length) {
+            const resRow = document.createElement("div");
+            resRow.className = "stage-resources";
+            resRow.innerHTML = stage.resources
+              .map(
+                (r) =>
+                  `<a class="resource-chip mono" href="${r.url}" target="_blank" rel="noopener">${r.label}</a>`,
+              )
+              .join("");
+            stageEl.querySelector(".stage-body").before(resRow);
+          }
+
+          const body = stageEl.querySelector(".stage-body");
+          items.forEach((it) => {
+            const itemEl = document.createElement("div");
+            itemEl.className =
+              "item" +
+              (it.cert ? " cert" : "") +
+              (it.project ? " project" : "") +
+              (it.check ? " check" : "") +
+              (state[it.id] ? " done" : "");
+            itemEl.dataset.id = it.id;
+            itemEl.innerHTML = `
+        <button class="flag-btn" aria-label="Toggle complete">
+          ${flagSVGOutline()}
+          ${flagSVGFilled()}
+        </button>
+        <div class="item-text">
+          ${it.text}
+          ${it.cert ? `<div class="cert-badge">CERTIFICATION — tap for details</div>` : ``}
+          ${it.project ? `<div class="project-badge">HANDS-ON PROJECT</div>` : ``}
+          ${it.check ? `<div class="check-badge">KNOWLEDGE CHECK — tap for practice resources</div>` : ``}
+        </div>
+      `;
+            itemEl.querySelector(".flag-btn").addEventListener("click", () => {
+              state[it.id] = !state[it.id];
+              saveState(state);
+              render();
+              restoreOpenStages();
+            });
+            if (it.cert && it.certInfo) {
+              itemEl
+                .querySelector(".item-text")
+                .addEventListener("click", () => {
+                  openCertModal(it.certInfo);
+                });
+            }
+            if (it.check && it.checkInfo) {
+              itemEl
+                .querySelector(".item-text")
+                .addEventListener("click", () => {
+                  openCertModal(it.checkInfo);
+                });
+            }
+            body.appendChild(itemEl);
+          });
+
+          stageEl.querySelector(".stage-head").addEventListener("click", () => {
+            stageEl.classList.toggle("open");
+          });
+
+          trail.appendChild(stageEl);
+        });
+
+        updateProgress();
+      }
+
+      function updateProgress() {
+        const doneCount = Object.values(state).filter(Boolean).length;
+        const pct = totalItems ? Math.round((doneCount / totalItems) * 100) : 0;
+        document.getElementById("statDone").textContent = doneCount;
+        document.getElementById("statPct").textContent = pct + "%";
+        document.getElementById("progressFill").style.width = pct + "%";
+      }
+
+      let openStageIndexes = new Set([0]);
+      function restoreOpenStages() {
+        document.querySelectorAll(".stage").forEach((el) => {
+          if (openStageIndexes.has(Number(el.dataset.stageIndex)))
+            el.classList.add("open");
+        });
+      }
+      document.addEventListener("click", (e) => {
+        const head = e.target.closest(".stage-head");
+        if (!head) return;
+        const stageEl = head.closest(".stage");
+        const idx = Number(stageEl.dataset.stageIndex);
+        if (openStageIndexes.has(idx)) openStageIndexes.delete(idx);
+        else openStageIndexes.add(idx);
+      });
+
+      document.getElementById("resetBtn").addEventListener("click", () => {
+        if (
+          confirm("Reset all progress on this device? This can't be undone.")
+        ) {
+          state = {};
+          saveState(state);
+          render();
+          restoreOpenStages();
+        }
+      });
+
+      function encodeStateToCode(obj) {
+        return btoa(encodeURIComponent(JSON.stringify(obj))).replace(/=+$/, "");
+      }
+      function decodeCodeToState(code) {
+        const padded = code + "=".repeat((4 - (code.length % 4)) % 4);
+        return JSON.parse(decodeURIComponent(atob(padded)));
+      }
+      function buildSyncLink() {
+        const code = encodeStateToCode(state);
+        const base = location.origin + location.pathname;
+        return base + "#sync=" + code;
+      }
+      function extractCodeFromInput(value) {
+        const trimmed = value.trim();
+        const hashIdx = trimmed.indexOf("#sync=");
+        if (hashIdx !== -1) return trimmed.slice(hashIdx + 6);
+        const qIdx = trimmed.indexOf("sync=");
+        if (qIdx !== -1) return trimmed.slice(qIdx + 5);
+        return trimmed;
+      }
+      function applyIncomingState(incoming) {
+        if (typeof incoming !== "object" || incoming === null)
+          throw new Error("bad format");
+        const mergeChoice = confirm(
+          "Click OK to MERGE this with what's already flagged on this device.\nClick Cancel to REPLACE this device's progress entirely with the incoming data.",
+        );
+        state = mergeChoice
+          ? Object.assign({}, state, incoming)
+          : Object.assign({}, incoming);
+        saveState(state);
+        render();
+        restoreOpenStages();
+      }
+
+      let qrRendered = false;
+      function renderSyncPanel() {
+        const link = buildSyncLink();
+        document.getElementById("syncLinkInput").value = link;
+        const box = document.getElementById("qrcodeBox");
+        box.innerHTML = "";
+        try {
+          new QRCode(box, {
+            text: link,
+            width: 176,
+            height: 176,
+            correctLevel: QRCode.CorrectLevel.M,
+          });
+        } catch (e) {
+          box.textContent = "QR unavailable — use the link/copy option below.";
+        }
+      }
+
+      document.getElementById("syncBtn").addEventListener("click", () => {
+        const panel = document.getElementById("syncPanel");
+        panel.classList.toggle("open");
+        if (panel.classList.contains("open")) renderSyncPanel();
+      });
+
+      document.getElementById("copyLinkBtn").addEventListener("click", () => {
+        const input = document.getElementById("syncLinkInput");
+        input.select();
+        input.setSelectionRange(0, 99999);
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard
+            .writeText(input.value)
+            .then(() => alert("Link copied."))
+            .catch(() => document.execCommand("copy"));
+        } else {
+          document.execCommand("copy");
+        }
+      });
+
+      document.getElementById("applyPasteBtn").addEventListener("click", () => {
+        const raw = document.getElementById("pasteCodeInput").value;
+        if (!raw.trim()) return;
+        try {
+          const code = extractCodeFromInput(raw);
+          const incoming = decodeCodeToState(code);
+          applyIncomingState(incoming);
+          document.getElementById("pasteCodeInput").value = "";
+          alert("Progress applied.");
+        } catch (e) {
+          alert(
+            "Could not read that — make sure it's a sync link or code from this same roadmap.",
+          );
+        }
+      });
+
+      (function checkIncomingHash() {
+        const hash = location.hash;
+        if (hash && hash.indexOf("sync=") !== -1) {
+          try {
+            const code = hash.slice(hash.indexOf("sync=") + 5);
+            const incoming = decodeCodeToState(code);
+            applyIncomingState(incoming);
+          } catch (e) {
+            /* ignore malformed hash */
+          }
+          history.replaceState(null, "", location.pathname + location.search);
+        }
+      })();
+
+      function openCertModal(info) {
+        document.getElementById("certModalTitle").textContent =
+          info.name || "Certification";
+        document.getElementById("certModalProvider").textContent =
+          info.provider || "";
+        const rows = [
+          ["Cost", info.cost],
+          ["Format", info.format],
+          ["Typical duration", info.duration],
+        ].filter((r) => r[1]);
+        document.getElementById("certModalRows").innerHTML = rows
+          .map(
+            (r) =>
+              `<div class="modal-row"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`,
+          )
+          .join("");
+        document.getElementById("certModalNote").textContent =
+          info.note ||
+          "Pricing and format can change — verify current details on the provider's site before enrolling.";
+        document.getElementById("certModalOverlay").classList.add("open");
+      }
+      document
+        .getElementById("certModalClose")
+        .addEventListener("click", () => {
+          document.getElementById("certModalOverlay").classList.remove("open");
+        });
+      document
+        .getElementById("certModalOverlay")
+        .addEventListener("click", (e) => {
+          if (e.target.id === "certModalOverlay")
+            e.target.classList.remove("open");
+        });
+
+      render();
+      restoreOpenStages();
+    </script>
+  </body>
+</html>

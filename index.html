@@ -1,352 +1,648 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Learning Roadmaps</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --bg: #0B0D10;
-    --panel: #14171B;
-    --panel-2: #191D22;
-    --line: #262B31;
-    --ink: #ECEFF3;
-    --ink-dim: #9AA3AC;
-    --ink-faint: #626B73;
-    --radius: 12px;
-    --maxw: 1080px;
-  }
-  *{ box-sizing: border-box; }
-  html{ scroll-behavior: smooth; }
-  body{
-    margin:0;
-    background:
-      radial-gradient(1100px 550px at 10% -10%, rgba(79,209,197,0.06), transparent 60%),
-      radial-gradient(900px 500px at 100% 0%, rgba(244,114,182,0.05), transparent 55%),
-      var(--bg);
-    color: var(--ink);
-    font-family: "IBM Plex Sans", system-ui, sans-serif;
-    line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
-  }
-  .mono{ font-family: "IBM Plex Mono", monospace; }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learning Roadmaps</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0a0a12;
+        --panel: rgba(255, 255, 255, 0.045);
+        --line: rgba(255, 255, 255, 0.09);
+        --ink: #f5f5fa;
+        --ink-dim: #a2a2b8;
+        --ink-faint: #6c6c82;
+        --radius: 18px;
+        --maxw: 1120px;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Space Grotesk", system-ui, sans-serif;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+        position: relative;
+      }
+      .mono {
+        font-family: "IBM Plex Mono", monospace;
+      }
 
-  header.hero{
-    max-width: var(--maxw);
-    margin: 0 auto;
-    padding: 56px 20px 20px;
-  }
-  .eyebrow{
-    font-family: "IBM Plex Mono", monospace;
-    font-size: 13px;
-    color: #4FD1C5;
-    letter-spacing: 0.02em;
-  }
-  h1{
-    font-size: clamp(28px, 5vw, 44px);
-    line-height: 1.15;
-    margin: 10px 0 14px;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-  }
-  .hero p{
-    color: var(--ink-dim);
-    font-size: 16px;
-    max-width: 64ch;
-    margin: 0;
-  }
+      .blob {
+        position: fixed;
+        border-radius: 50%;
+        filter: blur(90px);
+        opacity: 0.5;
+        z-index: 0;
+        pointer-events: none;
+      }
+      .blob1 {
+        width: 480px;
+        height: 480px;
+        top: -160px;
+        left: -120px;
+        background: radial-gradient(circle, #ff6ec7, transparent 70%);
+        animation: float1 16s ease-in-out infinite;
+      }
+      .blob2 {
+        width: 520px;
+        height: 520px;
+        top: 10%;
+        right: -180px;
+        background: radial-gradient(circle, #22d3ee, transparent 70%);
+        animation: float2 20s ease-in-out infinite;
+      }
+      .blob3 {
+        width: 420px;
+        height: 420px;
+        bottom: -140px;
+        left: 30%;
+        background: radial-gradient(circle, #a78bfa, transparent 70%);
+        animation: float3 18s ease-in-out infinite;
+      }
+      @keyframes float1 {
+        0%,
+        100% {
+          transform: translate(0, 0) scale(1);
+        }
+        50% {
+          transform: translate(60px, 40px) scale(1.1);
+        }
+      }
+      @keyframes float2 {
+        0%,
+        100% {
+          transform: translate(0, 0) scale(1);
+        }
+        50% {
+          transform: translate(-50px, 60px) scale(0.95);
+        }
+      }
+      @keyframes float3 {
+        0%,
+        100% {
+          transform: translate(0, 0) scale(1);
+        }
+        50% {
+          transform: translate(40px, -50px) scale(1.08);
+        }
+      }
 
-  .overall{
-    max-width: var(--maxw);
-    margin: 0 auto;
-    padding: 20px 20px 0;
-  }
-  .overall-shell{
-    background: var(--panel);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    padding: 18px 22px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 18px;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .overall-stat .num{
-    font-family: "IBM Plex Mono", monospace;
-    font-size: 24px;
-    font-weight: 600;
-    color: #ECEFF3;
-  }
-  .overall-stat .lbl{
-    font-size: 12px;
-    color: var(--ink-faint);
-  }
-  .overall-track{
-    flex: 1 1 260px;
-    height: 8px;
-    background: var(--panel-2);
-    border-radius: 999px;
-    overflow: hidden;
-    border: 1px solid var(--line);
-  }
-  .overall-fill{
-    height: 100%;
-    background: linear-gradient(90deg, #4FD1C5, #34D399);
-    width: 0%;
-    transition: width 0.4s ease;
-  }
+      .content {
+        position: relative;
+        z-index: 1;
+      }
 
-  main{
-    max-width: var(--maxw);
-    margin: 26px auto 60px;
-    padding: 0 20px;
-  }
+      header.hero {
+        max-width: var(--maxw);
+        margin: 0 auto;
+        padding: 72px 24px 8px;
+        text-align: center;
+      }
+      .eyebrow {
+        display: inline-block;
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 12.5px;
+        letter-spacing: 0.08em;
+        color: #22d3ee;
+        background: rgba(34, 211, 238, 0.1);
+        border: 1px solid rgba(34, 211, 238, 0.3);
+        padding: 5px 14px;
+        border-radius: 999px;
+        margin-bottom: 20px;
+      }
+      h1 {
+        font-size: clamp(36px, 6vw, 58px);
+        line-height: 1.08;
+        margin: 0 0 18px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        background: linear-gradient(
+          120deg,
+          #fff 30%,
+          #b9b9ff 60%,
+          #22d3ee 100%
+        );
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .hero p {
+        color: var(--ink-dim);
+        font-size: 17px;
+        max-width: 60ch;
+        margin: 0 auto;
+      }
 
-  .grid{
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-  }
-  @media (max-width: 720px){
-    .grid{ grid-template-columns: 1fr; }
-  }
+      .overall {
+        max-width: 560px;
+        margin: 44px auto 0;
+        padding: 0 24px;
+        display: flex;
+        justify-content: center;
+      }
+      .ring-wrap {
+        position: relative;
+        width: 220px;
+        height: 220px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .ring-wrap svg {
+        transform: rotate(-90deg);
+      }
+      .ring-bg {
+        fill: none;
+        stroke: rgba(255, 255, 255, 0.07);
+        stroke-width: 12;
+      }
+      .ring-fill {
+        fill: none;
+        stroke: url(#ringGrad);
+        stroke-width: 12;
+        stroke-linecap: round;
+        stroke-dasharray: 597;
+        stroke-dashoffset: 597;
+        transition: stroke-dashoffset 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .ring-center {
+        position: absolute;
+        text-align: center;
+      }
+      .ring-center .pct {
+        font-size: 34px;
+        font-weight: 700;
+      }
+      .ring-center .lbl {
+        font-size: 11.5px;
+        color: var(--ink-faint);
+        font-family: "IBM Plex Mono", monospace;
+        margin-top: 2px;
+      }
 
-  .card{
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    background: var(--panel);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    padding: 20px;
-    text-decoration: none;
-    color: inherit;
-    overflow: hidden;
-    transition: transform 0.15s ease, border-color 0.15s ease;
-  }
-  .card:hover{
-    transform: translateY(-2px);
-    border-color: var(--card-accent, #4FD1C5);
-  }
-  .card::before{
-    content: "";
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 4px;
-    background: var(--card-accent, #4FD1C5);
-  }
-  .card-top{
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 10px;
-    margin-bottom: 8px;
-  }
-  .card-title{
-    font-size: 17px;
-    font-weight: 600;
-    margin: 0;
-    padding-left: 8px;
-  }
-  .card-tag{
-    font-family: "IBM Plex Mono", monospace;
-    font-size: 10.5px;
-    color: var(--card-accent, #4FD1C5);
-    background: color-mix(in srgb, var(--card-accent, #4FD1C5) 14%, transparent);
-    border: 1px solid color-mix(in srgb, var(--card-accent, #4FD1C5) 40%, transparent);
-    padding: 2px 8px;
-    border-radius: 999px;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-  .card-desc{
-    color: var(--ink-dim);
-    font-size: 13.5px;
-    margin: 0 0 16px;
-    padding-left: 8px;
-    flex: 1;
-  }
-  .card-meta{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-family: "IBM Plex Mono", monospace;
-    font-size: 11.5px;
-    color: var(--ink-faint);
-    margin-bottom: 8px;
-    padding-left: 8px;
-  }
-  .card-track{
-    height: 6px;
-    background: var(--panel-2);
-    border-radius: 999px;
-    overflow: hidden;
-    border: 1px solid var(--line);
-    margin: 0 0 4px 8px;
-  }
-  .card-fill{
-    height: 100%;
-    background: var(--card-accent, #4FD1C5);
-    width: 0%;
-    transition: width 0.4s ease;
-  }
-  .card-unmanaged{
-    padding-left: 8px;
-    font-size: 12px;
-    color: var(--ink-faint);
-    font-style: italic;
-  }
+      main {
+        max-width: var(--maxw);
+        margin: 48px auto 70px;
+        padding: 0 24px;
+      }
 
-  footer{
-    max-width: var(--maxw);
-    margin: 0 auto 60px;
-    padding: 24px 20px;
-    color: var(--ink-faint);
-    font-size: 12.5px;
-    border-top: 1px solid var(--line);
-  }
-</style>
-</head>
-<body>
+      .section-label {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        color: var(--ink-faint);
+        margin: 40px 0 14px;
+        text-transform: uppercase;
+      }
+      .section-label:first-child {
+        margin-top: 0;
+      }
 
-<header class="hero">
-  <span class="eyebrow mono">// LEARNING ROADMAPS</span>
-  <h1>Roadmaps</h1>
-  <p>A single hub for every concept-by-concept learning trail. Each one tracks its own progress automatically — open a roadmap, work through it, and the progress shown here updates the next time this page loads.</p>
-</header>
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+      }
+      @media (max-width: 760px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
 
-<div class="overall">
-  <div class="overall-shell">
-    <div class="overall-stat">
-      <span class="num mono" id="overallDone">0</span>
-      <span class="lbl">concepts completed</span>
+      .card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        background: var(--panel);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 26px;
+        text-decoration: none;
+        color: inherit;
+        overflow: hidden;
+        transition:
+          transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+          border-color 0.25s ease,
+          box-shadow 0.25s ease;
+      }
+      .card::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(
+          90deg,
+          var(--card-a, #22d3ee),
+          var(--card-b, #a78bfa)
+        );
+      }
+      .card:hover {
+        transform: translateY(-6px) scale(1.01);
+        border-color: transparent;
+        box-shadow:
+          0 20px 50px -12px rgba(0, 0, 0, 0.6),
+          0 0 0 1px var(--card-a, #22d3ee) inset;
+      }
+      .card-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        background: linear-gradient(
+          135deg,
+          var(--card-a, #22d3ee),
+          var(--card-b, #a78bfa)
+        );
+        margin-bottom: 16px;
+        flex-shrink: 0;
+      }
+      .card-tag {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 10px;
+        letter-spacing: 0.04em;
+        color: var(--ink-faint);
+        border: 1px solid var(--line);
+        padding: 3px 9px;
+        border-radius: 999px;
+        white-space: nowrap;
+        display: inline-block;
+        margin-bottom: 10px;
+      }
+      .card-title {
+        font-size: 19px;
+        font-weight: 700;
+        margin: 0 0 8px;
+        letter-spacing: -0.01em;
+      }
+      .card-desc {
+        color: var(--ink-dim);
+        font-size: 13.5px;
+        margin: 0 0 20px;
+        flex: 1;
+      }
+      .card-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 11.5px;
+        color: var(--ink-faint);
+        margin-bottom: 8px;
+      }
+      .card-meta .pct-num {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--ink);
+      }
+      .card-track {
+        height: 7px;
+        background: rgba(255, 255, 255, 0.06);
+        border-radius: 999px;
+        overflow: hidden;
+      }
+      .card-fill {
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          var(--card-a, #22d3ee),
+          var(--card-b, #a78bfa)
+        );
+        width: 0%;
+        border-radius: 999px;
+        transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        position: relative;
+      }
+      .card-fill::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.5),
+          transparent
+        );
+        animation: shimmer 2.2s ease-in-out infinite;
+      }
+      @keyframes shimmer {
+        0% {
+          transform: translateX(-100%);
+        }
+        100% {
+          transform: translateX(100%);
+        }
+      }
+      .card-arrow {
+        position: absolute;
+        top: 26px;
+        right: 26px;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.06);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+          transform 0.25s ease,
+          background 0.25s ease;
+      }
+      .card:hover .card-arrow {
+        transform: translate(3px, -3px);
+        background: linear-gradient(
+          135deg,
+          var(--card-a, #22d3ee),
+          var(--card-b, #a78bfa)
+        );
+      }
+      .card-arrow svg {
+        width: 14px;
+        height: 14px;
+      }
+      .card-unmanaged-note {
+        font-size: 12px;
+        color: var(--ink-faint);
+        font-style: italic;
+        margin-top: auto;
+      }
+
+      footer {
+        max-width: var(--maxw);
+        margin: 0 auto 60px;
+        padding: 28px 24px 0;
+        color: var(--ink-faint);
+        font-size: 12.5px;
+        border-top: 1px solid var(--line);
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="blob blob1"></div>
+    <div class="blob blob2"></div>
+    <div class="blob blob3"></div>
+
+    <div class="content">
+      <header class="hero">
+        <span class="eyebrow mono">⚡ LEARNING ROADMAPS</span>
+        <h1>Level up, one<br />flag at a time.</h1>
+        <p>
+          Every roadmap tracked below is a concept-by-concept trail. Open one,
+          work through it, flag what's done — the progress here updates
+          automatically.
+        </p>
+      </header>
+
+      <div class="overall">
+        <div class="ring-wrap">
+          <svg width="220" height="220" viewBox="0 0 220 220">
+            <defs>
+              <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#22D3EE" />
+                <stop offset="100%" stop-color="#A78BFA" />
+              </linearGradient>
+            </defs>
+            <circle class="ring-bg" cx="110" cy="110" r="95" />
+            <circle class="ring-fill" id="ringFill" cx="110" cy="110" r="95" />
+          </svg>
+          <div class="ring-center">
+            <div class="pct mono" id="overallPct">0%</div>
+            <div class="lbl" id="overallDone">0 completed</div>
+          </div>
+        </div>
+      </div>
+
+      <main>
+        <div class="section-label">Software Development</div>
+        <div class="grid" id="devGrid"></div>
+
+        <div class="section-label">AI &amp; Machine Learning</div>
+        <div class="grid" id="aiGrid"></div>
+
+        <div class="section-label">Cybersecurity &amp; Blockchain</div>
+        <div class="grid" id="secGrid"></div>
+
+        <div class="section-label" id="unmanagedLabel" style="display: none">
+          Not tracked here
+        </div>
+        <div class="grid" id="unmanagedGrid"></div>
+      </main>
+
+      <footer>
+        Progress is read directly from this browser's storage for each roadmap —
+        nothing is uploaded anywhere. Each roadmap page also has its own sync
+        option for moving progress to another device.
+      </footer>
     </div>
-    <div class="overall-track"><div class="overall-fill" id="overallFill"></div></div>
-    <div class="overall-stat">
-      <span class="num mono" id="overallPct">0%</span>
-      <span class="lbl">across tracked roadmaps</span>
-    </div>
-  </div>
-</div>
 
-<main>
-  <div class="grid" id="cardGrid"></div>
-</main>
+    <script>
+      const DEV_ROADMAPS = [
+        {
+          href: "BackendFastAPI/",
+          title: "FastAPI Backend Development",
+          tag: "BACKEND",
+          icon: "⚡",
+          desc: "Basics through advanced backend engineering built around FastAPI — databases, auth, async, caching, and deployment.",
+          storageKey: "backend-fastapi-progress-v1",
+          total: 128,
+          a: "#34D399",
+          b: "#22D3EE",
+        },
+        {
+          href: "python/",
+          title: "Python — Beginner to Advanced",
+          tag: "LANGUAGE",
+          icon: "🐍",
+          desc: "Core Python from first script to advanced internals — OOP, standard library, testing, concurrency, and packaging.",
+          storageKey: "python-progress-v1",
+          total: 108,
+          a: "#FFD43B",
+          b: "#FF9900",
+        },
+        {
+          href: "react/",
+          title: "React.js — Beginner to Advanced",
+          tag: "FRONTEND",
+          icon: "⚛️",
+          desc: "Plain JavaScript React from JSX and components through hooks, state management, testing, performance, and deployment.",
+          storageKey: "reactjs-progress-v1",
+          total: 93,
+          a: "#A78BFA",
+          b: "#FF6EC7",
+        },
+        {
+          href: "reactts/",
+          title: "Professional Frontend Developer",
+          tag: "FRONTEND · REACT + TS",
+          icon: "🔷",
+          desc: "The full-depth professional path on React + TypeScript — HTML/CSS foundations through architecture, security, best practices, and AI-assisted development.",
+          storageKey: "professional-frontend-progress-v1",
+          total: 260,
+          a: "#3B9EFF",
+          b: "#22D3EE",
+        },
+      ];
 
-<footer>
-  Progress is read directly from this browser's storage for each roadmap — nothing is uploaded anywhere. Each roadmap page also has its own sync option for moving progress to another device.
-</footer>
+      const AI_ROADMAPS = [
+        {
+          href: "aiml/",
+          title: "AI & Machine Learning — Zero to Pro",
+          tag: "AI · ML · DL",
+          icon: "🧠",
+          desc: "From zero knowledge: terminology, Python, math, classical ML, deep learning, transformers, LLMs, MLOps, and responsible AI, with capstones and certifications.",
+          storageKey: "aiml-progress-v1",
+          total: 310,
+          a: "#A78BFA",
+          b: "#FBBF24",
+        },
+        {
+          href: "genai/",
+          title: "Applied AI Engineering — Zero to Pro",
+          tag: "LLMs · RAG · AGENTS",
+          icon: "🤖",
+          desc: "Build real AI products: LLM APIs, prompting, context engineering, RAG, evals, agents, MCP, fine-tuning, multimodal, security, and production.",
+          storageKey: "genai-progress-v1",
+          total: 315,
+          a: "#2DD4BF",
+          b: "#FACC15",
+        },
+      ];
 
-<script>
-// Roadmaps with progress tracked on this hub (storageKey + total known).
-const ROADMAPS = [
-  {
-    href: "BackendFastAPI/",
-    title: "FastAPI Backend Development",
-    tag: "BACKEND",
-    desc: "Basics through advanced backend engineering built around FastAPI — databases, auth, async, caching, and deployment.",
-    storageKey: "backend-fastapi-progress-v1",
-    total: 128,
-    accent: "#4FD1C5",
-  },
-  {
-    href: "python/",
-    title: "Python — Beginner to Advanced",
-    tag: "LANGUAGE",
-    desc: "Core Python from first script to advanced internals — OOP, standard library, testing, concurrency, and packaging.",
-    storageKey: "python-progress-v1",
-    total: 108,
-    accent: "#FFD43B",
-  },
-  {
-    href: "react/",
-    title: "React.js — Beginner to Advanced",
-    tag: "FRONTEND",
-    desc: "Plain JavaScript React from JSX and components through hooks, state management, testing, performance, and deployment.",
-    storageKey: "reactjs-progress-v1",
-    total: 93,
-    accent: "#A78BFA",
-  },
-];
+      const SEC_ROADMAPS = [
+        {
+          href: "cybersecurity/",
+          title: "Cybersecurity — Zero to Pro",
+          tag: "SECURITY",
+          icon: "🛡️",
+          desc: "Networking and OS foundations through offensive security, blue team/SOC skills, cloud security, and OSCP-level pentesting.",
+          storageKey: "cybersecurity-progress-v1",
+          total: 148,
+          a: "#F87171",
+          b: "#FB923C",
+        },
+        {
+          href: "blockchain/",
+          title: "Blockchain — Zero to Pro",
+          tag: "WEB3",
+          icon: "⛓️",
+          desc: "Cryptography and consensus fundamentals through Solidity smart contracts, DeFi, dApp development, and security auditing.",
+          storageKey: "blockchain-progress-v1",
+          total: 103,
+          a: "#818CF8",
+          b: "#34D399",
+        },
+      ];
 
-// Roadmap(s) not managed here — linked, but progress isn't read since the content/storage key is yours.
-const UNMANAGED = [
-  {
-    href: "reactts/",
-    title: "Frontend Development with React + TypeScript",
-    tag: "FRONTEND",
-    desc: "Your own React + TypeScript roadmap.",
-    accent: "#3B9EFF",
-  },
-];
+      const UNMANAGED = [];
 
-function getDoneCount(storageKey){
-  try{
-    const raw = localStorage.getItem(storageKey);
-    if (!raw) return 0;
-    const state = JSON.parse(raw);
-    return Object.values(state).filter(Boolean).length;
-  }catch(e){ return 0; }
-}
+      function getDoneCount(storageKey) {
+        try {
+          const raw = localStorage.getItem(storageKey);
+          if (!raw) return 0;
+          const state = JSON.parse(raw);
+          return Object.values(state).filter(Boolean).length;
+        } catch (e) {
+          return 0;
+        }
+      }
 
-function render(){
-  const grid = document.getElementById("cardGrid");
-  grid.innerHTML = "";
-  let grandDone = 0;
-  let grandTotal = 0;
+      const RING_CIRC = 2 * Math.PI * 95;
 
-  ROADMAPS.forEach(r => {
-    const done = Math.min(getDoneCount(r.storageKey), r.total);
-    const pct = r.total ? Math.round((done / r.total) * 100) : 0;
-    grandDone += done;
-    grandTotal += r.total;
+      function buildCard(r) {
+        const card = document.createElement("a");
+        card.className = "card";
+        card.href = r.href;
+        card.style.setProperty("--card-a", r.a);
+        card.style.setProperty("--card-b", r.b);
+        return card;
+      }
 
-    const card = document.createElement("a");
-    card.className = "card";
-    card.href = r.href;
-    card.style.setProperty("--card-accent", r.accent);
-    card.innerHTML = `
-      <div class="card-top">
-        <h2 class="card-title">${r.title}</h2>
+      function render() {
+        const devGrid = document.getElementById("devGrid");
+        const secGrid = document.getElementById("secGrid");
+        const aiGrid = document.getElementById("aiGrid");
+        const unmanagedGrid = document.getElementById("unmanagedGrid");
+        devGrid.innerHTML = "";
+        aiGrid.innerHTML = "";
+        secGrid.innerHTML = "";
+        unmanagedGrid.innerHTML = "";
+        let grandDone = 0;
+        let grandTotal = 0;
+
+        [
+          [DEV_ROADMAPS, devGrid],
+          [AI_ROADMAPS, aiGrid],
+          [SEC_ROADMAPS, secGrid],
+        ].forEach(([list, grid]) => {
+          list.forEach((r) => {
+            const done = Math.min(getDoneCount(r.storageKey), r.total);
+            const pct = r.total ? Math.round((done / r.total) * 100) : 0;
+            grandDone += done;
+            grandTotal += r.total;
+
+            const card = buildCard(r);
+            card.innerHTML = `
+        <div class="card-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M7 17L17 7M17 7H9M17 7V15"/></svg></div>
+        <div class="card-icon">${r.icon}</div>
         <span class="card-tag mono">${r.tag}</span>
-      </div>
-      <p class="card-desc">${r.desc}</p>
-      <div class="card-meta">
-        <span>${done} / ${r.total} completed</span>
-        <span>${pct}%</span>
-      </div>
-      <div class="card-track"><div class="card-fill" style="width:${pct}%"></div></div>
-    `;
-    grid.appendChild(card);
-  });
-
-  UNMANAGED.forEach(r => {
-    const card = document.createElement("a");
-    card.className = "card";
-    card.href = r.href;
-    card.style.setProperty("--card-accent", r.accent);
-    card.innerHTML = `
-      <div class="card-top">
         <h2 class="card-title">${r.title}</h2>
-        <span class="card-tag mono">${r.tag}</span>
-      </div>
+        <p class="card-desc">${r.desc}</p>
+        <div class="card-meta"><span>${done} / ${r.total}</span><span class="pct-num">${pct}%</span></div>
+        <div class="card-track"><div class="card-fill" style="width:${pct}%"></div></div>
+      `;
+            grid.appendChild(card);
+          });
+        });
+
+        UNMANAGED.forEach((r) => {
+          const card = buildCard(r);
+          card.innerHTML = `
+      <div class="card-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M7 17L17 7M17 7H9M17 7V15"/></svg></div>
+      <div class="card-icon">${r.icon}</div>
+      <span class="card-tag mono">${r.tag}</span>
+      <h2 class="card-title">${r.title}</h2>
       <p class="card-desc">${r.desc}</p>
-      <p class="card-unmanaged">Progress tracked on that page directly.</p>
+      <p class="card-unmanaged-note">Progress tracked on that page directly →</p>
     `;
-    grid.appendChild(card);
-  });
+          unmanagedGrid.appendChild(card);
+        });
+        document.getElementById("unmanagedLabel").style.display =
+          UNMANAGED.length ? "block" : "none";
 
-  const grandPct = grandTotal ? Math.round((grandDone / grandTotal) * 100) : 0;
-  document.getElementById("overallDone").textContent = grandDone;
-  document.getElementById("overallPct").textContent = grandPct + "%";
-  document.getElementById("overallFill").style.width = grandPct + "%";
-}
+        const grandPct = grandTotal
+          ? Math.round((grandDone / grandTotal) * 100)
+          : 0;
+        document.getElementById("overallPct").textContent = grandPct + "%";
+        document.getElementById("overallDone").textContent =
+          grandDone + " completed";
+        const offset = RING_CIRC - (grandPct / 100) * RING_CIRC;
+        requestAnimationFrame(() => {
+          document.getElementById("ringFill").style.strokeDashoffset = offset;
+        });
+      }
 
-render();
-</script>
-</body>
+      render();
+    </script>
+  </body>
 </html>
